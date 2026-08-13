@@ -1143,20 +1143,31 @@
       height: 74px;
       margin-left: -20px;
       margin-top: -37px;
+      will-change: transform;
+    }
+
+    .bloom-petal-shape {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
       background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 55%, #d94a63 100%);
       border-radius: 60% 60% 50% 50% / 65% 65% 35% 35%;
       box-shadow: inset 0 -8px 14px rgba(190, 45, 75, 0.35), 0 6px 14px rgba(217, 74, 99, 0.25);
       opacity: 0;
-      will-change: transform;
+      transform: scale(0.1);
+      animation: bloomPetalPop 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .bloom-petal.p1 { background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 60%, #d94a63 100%); }
-    .bloom-petal.p2 { background: linear-gradient(180deg, #f8c2ca 0%, #f2889c 60%, #e76f86 100%); }
-    .bloom-petal.p3 { background: linear-gradient(180deg, #ffd7dd 0%, #f9a3b3 60%, #ef8aa0 100%); }
+    .bloom-petal.p1 .bloom-petal-shape { background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 60%, #d94a63 100%); }
+    .bloom-petal.p2 .bloom-petal-shape { background: linear-gradient(180deg, #f8c2ca 0%, #f2889c 60%, #e76f86 100%); }
+    .bloom-petal.p3 .bloom-petal-shape { background: linear-gradient(180deg, #ffd7dd 0%, #f9a3b3 60%, #ef8aa0 100%); }
 
-    .bloom-petal.arrive {
-      opacity: 1;
-      transition: transform 0.7s var(--spring), opacity 0.4s ease;
+    @keyframes bloomPetalPop {
+      0% { opacity: 0; transform: scale(0.1); }
+      60% { opacity: 1; transform: scale(1.12); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     .bloom-center {
@@ -2804,13 +2815,15 @@
           petal.style.marginLeft = (-w / 2) + 'px';
           petal.style.marginTop = (-w * 0.81) + 'px';
           const angle = (360 / ring.count) * i;
-          petal.style.transform = 'rotate(' + angle + 'deg) translateY(-' + (ring.radius - 14) + 'px) scale(0.4)';
+          petal.style.transform = 'rotate(' + angle + 'deg) translateY(-' + ring.radius + 'px)';
+
+          const shape = document.createElement('span');
+          shape.className = 'bloom-petal-shape';
+          shape.style.animationDelay = (ring.delay + i * ring.step) + 'ms';
+          shape.style.animationDuration = '0.7s';
+          petal.appendChild(shape);
           head.appendChild(petal);
-          setTimeout(function(el, a, r) {
-            el.classList.add('arrive');
-            el.style.transform = 'rotate(' + a + 'deg) translateY(-' + r + 'px) scale(1)';
-            vibrate(8);
-          }, ring.delay + i * ring.step, petal, angle, ring.radius);
+          setTimeout(function() { vibrate(8); }, ring.delay + i * ring.step);
           t = Math.max(t, ring.delay + i * ring.step);
         }
       });
