@@ -762,74 +762,33 @@
       50% { transform: translateY(7px); opacity: 1; }
     }
 
-    .intro-letter {
+    .intro-letter-container {
       position: absolute;
-      z-index: 3;
-      width: 100%;
-      max-width: 260px;
-      padding: 2rem 1.5rem;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      border-radius: 24px;
-      box-shadow: 0 20px 45px -15px rgba(201, 138, 143, 0.45);
-      text-align: center;
-      transform: translateY(30px) scale(0.96);
-      transition: all 0.5s var(--spring);
-    }
-
-    .intro-letter.hidden {
-      opacity: 0;
-      transform: translateY(30px) scale(0.96);
+      inset: 0;
       pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
     }
 
-    .intro-letter:not(.hidden) {
-      animation: introLetterIn 0.8s var(--spring) forwards;
-    }
-
-    @keyframes introLetterIn {
-      0% { opacity: 0; transform: translateY(30px) scale(0.96); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .intro-letter-title {
+    .intro-letter-word {
+      position: absolute;
       font-family: var(--serif);
-      font-size: 1.2rem;
       font-weight: 400;
-      margin-bottom: 0.75rem;
-      color: var(--fg-primary);
-    }
-
-    .intro-letter-text {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 0.9rem;
-      color: var(--fg-secondary);
-      margin-bottom: 1.5rem;
-    }
-
-    .intro-letter-contents {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      font-family: var(--serif);
-      font-size: 0.88rem;
-      color: var(--fg-secondary);
-      line-height: 1.5;
-      min-height: 120px;
-    }
-
-    .intro-letter-content-line {
+      white-space: nowrap;
+      color: #fff6f4;
+      text-shadow: 0 4px 22px rgba(0, 0, 0, 0.45), 0 0 30px rgba(251, 217, 221, 0.35);
       opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.4s ease;
+      will-change: transform, opacity;
     }
 
-    .intro-letter-content-line.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .intro-letter-word.pop {
+      animation: letterWordPop 0.55s var(--spring) forwards;
+    }
+
+    @keyframes letterWordPop {
+      0% { opacity: 0; transform: translateY(14px) scale(0.6); }
+      60% { opacity: 1; transform: translateY(0) scale(1.12); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .intro-letter-btn {
@@ -2209,16 +2168,12 @@
 <body>
   <div class="noise-overlay"></div>
   <div class="scroll-progress" id="scrollProgress"></div>
-  <div class="intro-screen" id="introScreen">
+    <div class="intro-screen" id="introScreen">
     <div class="lock-hearts" id="introHearts"></div>
     <div class="lock-floating-names" id="introFloatingNames"></div>
+    <div class="intro-letter-container" id="introLetterContainer"></div>
     <div class="intro-inner">
       <button class="intro-letter-btn" id="introLetterBtn">Open the letter</button>
-      <div class="intro-letter hidden" id="introLetter">
-        <h1 class="intro-letter-title">Hey you</h1>
-        <p class="intro-letter-text">just a little note to say I'm thinking of you</p>
-        <div class="intro-letter-contents" id="introLetterContents"></div>
-      </div>
       <div class="intro-word-wrap">
         <span class="intro-word hi" id="introHi">HI</span>
         <span class="intro-word zing" id="introZing">ZING!</span>
@@ -2457,7 +2412,6 @@
     const introScreen = document.getElementById('introScreen');
     const loveScreen = document.getElementById('loveScreen');
     const loveCard = document.getElementById('loveCard');
-    const introLetterContents = document.getElementById('introLetterContents');
     let introDone = false;
 
     const LOVE_LETTER_LINES = [
@@ -2501,14 +2455,29 @@
       if (e) e.stopPropagation();
       if (letterOpen) return;
       letterOpen = true;
-      const letter = document.getElementById('introLetter');
       const btn = document.getElementById('introLetterBtn');
       btn.style.display = 'none';
-      letter.classList.remove('hidden');
-      const lines = document.querySelectorAll('.intro-letter-content-line');
-      setTimeout(function() {
-        lines.forEach(function(line) { line.classList.add('visible'); });
-      }, 50);
+      spawnLetterWords();
+    }
+
+    function spawnLetterWords() {
+      const container = document.getElementById('introLetterContainer');
+      const words = LOVE_LETTER_LINES.join(' ').split(' ');
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      words.forEach(function(word, i) {
+        setTimeout(function() {
+          const el = document.createElement('span');
+          el.className = 'intro-letter-word';
+          el.textContent = word;
+          el.style.left = (vw * 0.08 + Math.random() * vw * 0.84) + 'px';
+          el.style.top = (vh * 0.14 + Math.random() * vh * 0.7) + 'px';
+          el.style.fontSize = (Math.random() * 14 + 18) + 'px';
+          container.appendChild(el);
+          void el.offsetWidth;
+          el.classList.add('pop');
+        }, i * 650);
+      });
     }
 
     document.getElementById('introLetterBtn').addEventListener('click', openLetter);
@@ -2941,13 +2910,6 @@
 
       container.appendChild(el);
       setTimeout(function() { el.remove(); }, 28000);
-    }
-
-    for (let i = 0; i < LOVE_LETTER_LINES.length; i++) {
-      const line = document.createElement('span');
-      line.className = 'intro-letter-content-line';
-      line.textContent = LOVE_LETTER_LINES[i];
-      introLetterContents.appendChild(line);
     }
 
     function startIntroAmbience() {
