@@ -856,43 +856,6 @@
       50% { box-shadow: 0 12px 40px 0 rgba(232, 165, 169, 0.75); }
     }
 
-    .intro-float-photo {
-      position: absolute;
-      bottom: -90px;
-      width: 58px;
-      height: 76px;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(255, 255, 255, 0.75);
-      opacity: 0;
-      animation: photoRise linear infinite;
-      pointer-events: none;
-    }
-
-    .intro-float-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    @keyframes photoRise {
-      0% {
-        transform: translateY(0) rotate(var(--rot0, -8deg)) scale(0.7);
-        opacity: 0;
-      }
-      10% { opacity: 0.9; }
-      50% {
-        transform: translateY(-50vh) rotate(var(--rot1, 6deg)) translateX(var(--sway, 10px)) scale(1);
-        opacity: 0.85;
-      }
-      100% {
-        transform: translateY(-110vh) rotate(var(--rot1, 12deg)) translateX(calc(var(--sway, 10px) * -1)) scale(0.8);
-        opacity: 0;
-      }
-    }
-
     .intro-word.zing {
       font-size: clamp(3rem, 15vw, 5.5rem);
       font-style: italic;
@@ -3228,44 +3191,9 @@
     const introHearts = document.getElementById('introHearts');
     const introFloatingNames = document.getElementById('introFloatingNames');
 
-    function createFloatingPhoto(container) {
-      if (!PHOTOS || !PHOTOS.length) return;
-      const photo = PHOTOS[Math.floor(Math.random() * PHOTOS.length)];
-      const el = document.createElement('div');
-      el.className = 'intro-float-photo';
-      const img = document.createElement('img');
-      img.src = photo.src;
-      img.alt = '';
-      img.loading = 'lazy';
-      img.onerror = function() { el.remove(); };
-      el.appendChild(img);
-
-      const edge = Math.random() < 0.5 ? 4 : 66;
-      el.style.left = (edge + Math.random() * 24) + '%';
-      el.style.setProperty('--sway', (Math.random() * 24 - 12) + 'px');
-      el.style.setProperty('--rot0', (Math.random() * 20 - 10) + 'deg');
-      el.style.setProperty('--rot1', (Math.random() * 24 - 12) + 'deg');
-      el.style.animationDuration = (Math.random() * 9 + 15) + 's';
-      el.style.animationDelay = (Math.random() * 8) + 's';
-
-      img.onload = function() {
-        const landscape = img.naturalWidth > img.naturalHeight;
-        const w = Math.random() * 22 + 46;
-        el.style.width = (landscape ? w * 1.35 : w) + 'px';
-        el.style.height = (landscape ? w * 0.92 : w * 1.32) + 'px';
-      };
-
-      container.appendChild(el);
-      setTimeout(function() { el.remove(); }, 28000);
-    }
-
     function startIntroAmbience() {
       if (!introHearts) return;
       startAmbience(introHearts, introFloatingNames);
-      for (let i = 0; i < 3; i++) {
-        setTimeout(function() { createFloatingPhoto(introHearts); }, i * 1500);
-      }
-      setInterval(function() { createFloatingPhoto(introHearts); }, 5000);
     }
 
     function startLoveAmbience() {
