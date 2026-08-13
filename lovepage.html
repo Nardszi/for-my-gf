@@ -715,6 +715,7 @@
     }
 
     .intro-inner {
+      position: relative;
       text-align: center;
       perspective: 800px;
     }
@@ -763,6 +764,7 @@
 
     .intro-letter {
       position: absolute;
+      z-index: 3;
       width: 100%;
       max-width: 260px;
       padding: 2rem 1.5rem;
@@ -773,9 +775,23 @@
       border-radius: 24px;
       box-shadow: 0 20px 45px -15px rgba(201, 138, 143, 0.45);
       text-align: center;
+      transform: translateY(30px) scale(0.96);
+      transition: all 0.5s var(--spring);
+    }
+
+    .intro-letter.hidden {
       opacity: 0;
       transform: translateY(30px) scale(0.96);
-      animation: introLetterIn 1s var(--spring) forwards 1.2s;
+      pointer-events: none;
+    }
+
+    .intro-letter:not(.hidden) {
+      animation: introLetterIn 0.8s var(--spring) forwards;
+    }
+
+    @keyframes introLetterIn {
+      0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .intro-letter-title {
@@ -802,38 +818,65 @@
       font-size: 0.88rem;
       color: var(--fg-secondary);
       line-height: 1.5;
+      min-height: 120px;
+    }
+
+    .intro-letter-content-line {
       opacity: 0;
-      animation: introLetterOpen 0.8s ease forwards 1.8s;
+      transform: translateY(10px);
+      transition: all 0.4s ease;
     }
 
-    .intro-letter-contents span {
-      animation: introLineReveal 0.4s ease forwards;
+    .intro-letter-content-line.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .intro-letter-contents span:nth-child(1) { animation-delay: 1.8s; }
-    .intro-letter-contents span:nth-child(2) { animation-delay: 1.95s; }
-    .intro-letter-contents span:nth-child(3) { animation-delay: 2.1s; }
-    .intro-letter-contents span:nth-child(4) { animation-delay: 2.25s; }
-    .intro-letter-contents span:nth-child(5) { animation-delay: 2.4s; }
-    .intro-letter-contents span:nth-child(6) { animation-delay: 2.55s; }
-    .intro-letter-contents span:nth-child(7) { animation-delay: 2.7s; }
-    .intro-letter-contents span:nth-child(8) { animation-delay: 2.85s; }
-    .intro-letter-contents span:nth-child(9) { animation-delay: 3s; }
+    .intro-letter-btn {
+      position: relative;
+      z-index: 5;
+      display: block;
+      margin: 0 auto 1.5rem;
+      padding: 0.85rem 2.2rem;
+      background: rgba(255, 246, 244, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 26px;
+      box-shadow: 0 12px 30px -8px rgba(201, 138, 143, 0.55);
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #59384a;
+      cursor: pointer;
+      opacity: 0;
+      animation: introBtnIn 0.7s var(--spring) forwards 1.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    @keyframes introLetterIn {
-      0% { opacity: 0; transform: translateY(40px) scale(0.92); }
+    @keyframes introBtnIn {
+      0% { opacity: 0; transform: translateY(14px) scale(0.94); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    @keyframes introLetterOpen {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
+    .intro-letter-btn:hover {
+      background: #fff;
+      box-shadow: 0 16px 36px -8px rgba(201, 138, 143, 0.7);
+      transform: translateY(-2px);
     }
 
-     @keyframes introLineReveal {
-       0% { opacity: 0; transform: translateY(12px); }
-       100% { opacity: 1; transform: translateY(0); }
-     }
+    .intro-letter-btn:active {
+      transform: scale(0.95);
+    }
+
+    .intro-screen.ready .intro-letter-btn {
+      animation: introBtnIn 0.7s var(--spring) forwards, btnGlow 1.8s ease-in-out 2.2s infinite;
+    }
+
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 12px 30px -8px rgba(201, 138, 143, 0.55); }
+      50% { box-shadow: 0 12px 40px 0 rgba(232, 165, 169, 0.75); }
+    }
 
     .intro-float-photo {
       position: absolute;
@@ -2170,15 +2213,18 @@
     <div class="lock-hearts" id="introHearts"></div>
     <div class="lock-floating-names" id="introFloatingNames"></div>
     <div class="intro-inner">
-      <div class="intro-letter">
+      <button class="intro-letter-btn" id="introLetterBtn">Open the letter</button>
+      <div class="intro-letter hidden" id="introLetter">
         <h1 class="intro-letter-title">Hey you</h1>
         <p class="intro-letter-text">just a little note to say I'm thinking of you</p>
         <div class="intro-letter-contents" id="introLetterContents"></div>
       </div>
-      <span class="intro-word hi" id="introHi">HI</span>
-      <span class="intro-word zing" id="introZing">ZING!</span>
+      <div class="intro-word-wrap">
+        <span class="intro-word hi" id="introHi">HI</span>
+        <span class="intro-word zing" id="introZing">ZING!</span>
+      </div>
     </div>
-    <span class="intro-tap">tap to continue</span>
+    <span class="intro-tap">tap HI ZING</span>
   </div>
 
   <div class="love-screen hidden" id="loveScreen">
@@ -2422,8 +2468,7 @@
       "You are my favorite adventure",
       "I cherish every moment we share",
       "My heart is yours, completely",
-      "Forever and always, I love you",
-      "Zing nard 8.13.2026 ❤"
+      "Forever and always, I love you"
     ];
 
     function showScreenUnder(el) {
@@ -2449,6 +2494,24 @@
         spawnLoveSparks();
       }, 1150);
     }
+
+    let letterOpen = false;
+
+    function openLetter(e) {
+      if (e) e.stopPropagation();
+      if (letterOpen) return;
+      letterOpen = true;
+      const letter = document.getElementById('introLetter');
+      const btn = document.getElementById('introLetterBtn');
+      btn.style.display = 'none';
+      letter.classList.remove('hidden');
+      const lines = document.querySelectorAll('.intro-letter-content-line');
+      setTimeout(function() {
+        lines.forEach(function(line) { line.classList.add('visible'); });
+      }, 50);
+    }
+
+    document.getElementById('introLetterBtn').addEventListener('click', openLetter);
 
     introScreen.addEventListener('click', showLoveScreen);
 
@@ -2882,6 +2945,7 @@
 
     for (let i = 0; i < LOVE_LETTER_LINES.length; i++) {
       const line = document.createElement('span');
+      line.className = 'intro-letter-content-line';
       line.textContent = LOVE_LETTER_LINES[i];
       introLetterContents.appendChild(line);
     }
