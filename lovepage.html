@@ -1201,8 +1201,8 @@
       text-shadow: 0 10px 30px rgba(201, 138, 143, 0.25);
     }
 
-    .love-screen.visible .love-title {
-      animation: loveReveal 0.9s var(--spring) forwards 0.35s;
+    .love-title.reveal {
+      animation: loveReveal 0.9s var(--spring) forwards;
     }
 
     .love-title em {
@@ -2786,6 +2786,8 @@
       }, 160);
       setTimeout(function() {
         giftWrap.style.display = 'none';
+        const title = document.querySelector('.love-title');
+        if (title) title.classList.add('reveal');
         bloomFlower();
       }, 620);
     });
