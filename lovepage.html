@@ -1998,6 +1998,39 @@
       animation: caretBlink 0.8s step-end infinite;
     }
 
+    .float-photos-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .float-photo {
+      position: absolute;
+      bottom: -90px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 12px 28px rgba(201, 138, 143, 0.35);
+      opacity: 0;
+      animation: sideFloat linear infinite;
+    }
+
+    .float-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+
+    @keyframes sideFloat {
+      0% { transform: translateY(0) rotate(var(--rot0, 0deg)); opacity: 0; }
+      8% { opacity: var(--op, 0.5); }
+      88% { opacity: var(--op, 0.5); }
+      100% { transform: translateY(-115vh) rotate(var(--rot1, 0deg)); opacity: 0; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -2243,6 +2276,8 @@
       <img src="" alt="Full size photo" id="modalImage">
     </div>
   </div>
+
+  <div class="float-photos-layer" id="floatPhotosLayer"></div>
 
   <script>
     const introScreen = document.getElementById('introScreen');
@@ -3040,6 +3075,51 @@
         setTimeout(function() { sparkle.remove(); }, 600);
       });
     });
+
+    const floatPhotosLayer = document.getElementById('floatPhotosLayer');
+    const FLOAT_PHOTO_COUNT = 20;
+
+    function createSidePhoto() {
+      const n = Math.floor(Math.random() * FLOAT_PHOTO_COUNT) + 1;
+      const el = document.createElement('div');
+      el.className = 'float-photo';
+      const img = document.createElement('img');
+      img.alt = '';
+      img.loading = 'lazy';
+      img.dataset.tried = 'jpg';
+      img.onerror = function() {
+        if (img.dataset.tried === 'jpg') {
+          img.dataset.tried = 'png';
+          img.src = 'float-photos/' + n + '.png';
+        } else {
+          el.remove();
+        }
+      };
+      img.src = 'float-photos/' + n + '.jpg';
+      el.appendChild(img);
+
+      const left = Math.random() < 0.5;
+      const size = Math.random() * 22 + 42;
+      el.style.width = size + 'px';
+      el.style.height = (size * 1.3) + 'px';
+      if (left) {
+        el.style.left = (Math.random() * 4 + 1) + '%';
+      } else {
+        el.style.right = (Math.random() * 4 + 1) + '%';
+      }
+      el.style.setProperty('--rot0', (Math.random() * 16 - 8) + 'deg');
+      el.style.setProperty('--rot1', (Math.random() * 20 - 10) + 'deg');
+      el.style.setProperty('--op', (Math.random() * 0.25 + 0.4).toFixed(2));
+      el.style.animationDuration = (Math.random() * 12 + 18) + 's';
+      el.style.animationDelay = (Math.random() * 10) + 's';
+      floatPhotosLayer.appendChild(el);
+      setTimeout(function() { el.remove(); }, 35000);
+    }
+
+    for (let i = 0; i < 5; i++) {
+      setTimeout(createSidePhoto, i * 2500);
+    }
+    setInterval(createSidePhoto, 4000);
   </script>
 </body>
 </html>
