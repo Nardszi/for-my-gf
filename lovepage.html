@@ -770,13 +770,32 @@
       z-index: 2;
     }
 
-    .intro-letter-word {
+    .intro-letter-line {
       position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.15rem 0.5rem;
+      max-width: 92vw;
+      padding: 0.3rem 0.9rem;
+      border-radius: 14px;
+      background: rgba(89, 56, 74, 0.18);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      box-shadow: 0 10px 26px -14px rgba(0, 0, 0, 0.5);
+    }
+
+    .intro-letter-word {
       font-family: var(--serif);
       font-weight: 400;
       white-space: nowrap;
       color: #fff6f4;
       text-shadow: 0 4px 22px rgba(0, 0, 0, 0.45), 0 0 30px rgba(251, 217, 221, 0.35);
+      font-size: clamp(0.95rem, 4.2vw, 1.15rem);
+      line-height: 1.45;
       opacity: 0;
       will-change: transform, opacity;
     }
@@ -2462,21 +2481,29 @@
 
     function spawnLetterWords() {
       const container = document.getElementById('introLetterContainer');
-      const words = LOVE_LETTER_LINES.join(' ').split(' ');
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      words.forEach(function(word, i) {
-        setTimeout(function() {
+      const topStart = vh * 0.16;
+      const topEnd = vh * 0.78;
+      const gap = Math.max(26, (topEnd - topStart) / Math.max(1, LOVE_LETTER_LINES.length - 1));
+
+      LOVE_LETTER_LINES.forEach(function(line, li) {
+        const lineEl = document.createElement('div');
+        lineEl.className = 'intro-letter-line';
+        lineEl.style.top = (topStart + li * gap) + 'px';
+        container.appendChild(lineEl);
+
+        const words = line.split(' ');
+        words.forEach(function(word, wi) {
           const el = document.createElement('span');
           el.className = 'intro-letter-word';
           el.textContent = word;
-          el.style.left = (vw * 0.08 + Math.random() * vw * 0.84) + 'px';
-          el.style.top = (vh * 0.14 + Math.random() * vh * 0.7) + 'px';
-          el.style.fontSize = (Math.random() * 14 + 18) + 'px';
-          container.appendChild(el);
-          void el.offsetWidth;
-          el.classList.add('pop');
-        }, i * 650);
+          lineEl.appendChild(el);
+          setTimeout(function() {
+            void el.offsetWidth;
+            el.classList.add('pop');
+          }, li * 700 + wi * 420);
+        });
       });
     }
 
