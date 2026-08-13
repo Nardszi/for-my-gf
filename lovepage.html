@@ -1211,33 +1211,37 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 46px;
-      height: 84px;
-      margin-left: -23px;
-      margin-top: -42px;
-      background: linear-gradient(180deg, #ffe6e8 0%, #f2b3b9 55%, #d98b95 100%);
-      border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
-      box-shadow: inset 0 -10px 16px rgba(201, 117, 128, 0.35);
+      width: 40px;
+      height: 70px;
+      margin-left: -20px;
+      margin-top: -35px;
+      background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 55%, #d94a63 100%);
+      border-radius: 60% 60% 50% 50% / 65% 65% 35% 35%;
+      box-shadow: inset 0 -8px 14px rgba(190, 45, 75, 0.35), 0 6px 14px rgba(217, 74, 99, 0.25);
       transform-style: preserve-3d;
       opacity: 0;
       will-change: transform;
     }
 
+    .bloom-petal.p1 { background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 60%, #d94a63 100%); }
+    .bloom-petal.p2 { background: linear-gradient(180deg, #f8c2ca 0%, #f2889c 60%, #e76f86 100%); }
+    .bloom-petal.p3 { background: linear-gradient(180deg, #ffd7dd 0%, #f9a3b3 60%, #ef8aa0 100%); }
+
     .bloom-petal.arrive {
       opacity: 1;
-      transition: transform 0.6s var(--spring), opacity 0.3s ease;
+      transition: transform 0.7s var(--spring), opacity 0.35s ease;
     }
 
     .bloom-center {
       position: absolute;
       left: 50%;
       bottom: 0;
-      width: 46px;
-      height: 46px;
-      margin-left: -23px;
-      background: radial-gradient(circle at 38% 32%, #ffe9a3 0%, #f2c14e 55%, #d99b2b 100%);
+      width: 40px;
+      height: 40px;
+      margin-left: -20px;
+      background: radial-gradient(circle at 38% 32%, #ffd9de 0%, #f48fa2 50%, #e05673 100%);
       border-radius: 50%;
-      box-shadow: 0 0 24px rgba(242, 193, 78, 0.6), inset 0 -4px 10px rgba(180, 120, 30, 0.4);
+      box-shadow: 0 0 22px rgba(240, 110, 130, 0.65), inset 0 -5px 10px rgba(180, 40, 65, 0.35);
       transform-style: preserve-3d;
       opacity: 0;
       z-index: 2;
@@ -1256,10 +1260,10 @@
       position: absolute;
       left: 50%;
       bottom: 104px;
-      width: 120px;
-      height: 120px;
-      margin-left: -60px;
-      background: radial-gradient(circle, rgba(255, 220, 180, 0.45) 0%, transparent 70%);
+      width: 150px;
+      height: 150px;
+      margin-left: -75px;
+      background: radial-gradient(circle, rgba(240, 140, 165, 0.5) 0%, transparent 70%);
       border-radius: 50%;
       opacity: 0;
       pointer-events: none;
@@ -2874,35 +2878,50 @@
         leaves[1].classList.add('pop');
       }, 720);
 
-      const PETALS = 8;
-      const RADIUS = 52;
-      for (let i = 0; i < PETALS; i++) {
-        const petal = document.createElement('div');
-        petal.className = 'bloom-petal';
-        const angle = (360 / PETALS) * i;
-        petal.style.opacity = '0';
-        petal.style.transform = 'rotateY(' + angle + 'deg) translateZ(0px) rotateX(80deg)';
-        head.appendChild(petal);
-        setTimeout(function(el, a) {
-          el.classList.add('arrive');
-          el.style.transform = 'rotateY(' + a + 'deg) translateZ(' + RADIUS + 'px) rotateX(-16deg)';
-          vibrate(8);
-        }, 900 + i * 260, petal, angle);
-      }
+      const RINGS = [
+        { count: 8, radius: 42, tilt: -68, size: 44, shade: 'p1', step: 180, delay: 800 },
+        { count: 8, radius: 28, tilt: -50, size: 35, shade: 'p2', step: 150, delay: 1750 },
+        { count: 6, radius: 16, tilt: -32, size: 26, shade: 'p3', step: 140, delay: 2600 }
+      ];
+      let t = 0;
+      RINGS.forEach(function(ring) {
+        for (let i = 0; i < ring.count; i++) {
+          const petal = document.createElement('div');
+          petal.className = 'bloom-petal ' + ring.shade;
+          const w = ring.size;
+          petal.style.width = w + 'px';
+          petal.style.height = (w * 1.62) + 'px';
+          petal.style.marginLeft = (-w / 2) + 'px';
+          petal.style.marginTop = (-w * 0.81) + 'px';
+          const angle = (360 / ring.count) * i;
+          const targetTilt = ring.tilt;
+          petal.style.opacity = '0';
+          petal.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + ring.radius + 'px) rotateX(-95deg) scale(0.6)';
+          head.appendChild(petal);
+          setTimeout(function(el, a, r, tilt, sz) {
+            el.classList.add('arrive');
+            el.style.transform = 'rotateY(' + a + 'deg) translateZ(' + r + 'px) rotateX(' + tilt + 'deg) scale(1)';
+            vibrate(8);
+          }, ring.delay + i * ring.step, petal, angle, ring.radius, targetTilt);
+          t = Math.max(t, ring.delay + i * ring.step);
+        }
+      });
+
+      const bloomDone = t + 500;
 
       setTimeout(function() {
         center.classList.add('arrive');
         const rect = bloom.getBoundingClientRect();
         spawnBurst(rect.left + rect.width / 2, rect.top + 40, 14);
-      }, 900 + PETALS * 260);
+      }, bloomDone);
 
       setTimeout(function() {
         head.classList.add('spinning');
-      }, 900 + PETALS * 260 + 200);
+      }, bloomDone + 200);
 
       setTimeout(function() {
         document.getElementById('loveBtn').classList.add('show');
-      }, 900 + PETALS * 260 + 500);
+      }, bloomDone + 500);
     }
 
     function spawnLoveSparks() {
