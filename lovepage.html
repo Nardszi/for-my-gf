@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Our Love Story</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2029,6 +2029,52 @@
       8% { opacity: var(--op, 0.5); }
       88% { opacity: var(--op, 0.5); }
       100% { transform: translateY(-115vh) rotate(var(--rot1, 0deg)); opacity: 0; }
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      overscroll-behavior: none;
+      min-height: 100dvh;
+      touch-action: manipulation;
+    }
+
+    button, input, .love-btn, .quiz-start-btn, .quiz-option, .lock-btn, .replay-btn, .animated-heart, .time-card, .gallery-item img, .lock-input {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .lock-floating-name, .lock-float-heart, .lock-float-flower, .float-photo, .floating-heart, .mini-heart, .cursor-spark, .noise-overlay, .intro-tap {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    @media (max-width: 380px) {
+      .love-inner, .quiz-card, .lock-card {
+        padding-left: 1.4rem;
+        padding-right: 1.4rem;
+      }
+      .time-card { padding: 1.2rem 0.5rem; }
+      .time-number { font-size: 1.9rem; }
+      .gallery-section .section-header,
+      .gallery-container { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .timeline-entry { padding: 1.1rem 1.15rem; }
+      .lock-card { max-width: 300px; }
+      .quiz-card { max-width: 300px; }
+      .love-inner { max-width: 285px; }
+    }
+
+    @media (max-width: 420px) and (min-height: 700px) {
+      .closing-section { padding-bottom: 3rem; }
+      .letter-content { font-size: 1.05rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
