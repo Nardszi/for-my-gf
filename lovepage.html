@@ -2043,6 +2043,9 @@
       touch-action: manipulation;
     }
 
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
     button, input, .love-btn, .quiz-start-btn, .quiz-option, .lock-btn, .replay-btn, .animated-heart, .time-card, .gallery-item img, .lock-input {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
