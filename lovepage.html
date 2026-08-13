@@ -2774,6 +2774,8 @@
         setTimeout(function() {
           lockScreen.classList.add('unlocked');
           document.body.style.overflow = '';
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          startSidePhotos();
           document.getElementById('musicToggle').click();
         }, 700);
         setTimeout(function() {
@@ -3272,7 +3274,7 @@
       el.appendChild(img);
 
       const left = Math.random() < 0.5;
-      const size = Math.random() * 30 + 48;
+      const size = Math.random() * 14 + 24;
       el.style.width = size + 'px';
       el.style.height = (size * 1.32) + 'px';
       if (left) {
@@ -3299,10 +3301,13 @@
       setTimeout(function() { el.remove(); }, 35000);
     }
 
-    for (let i = 0; i < 6; i++) {
-      setTimeout(createSidePhoto, i * 2000);
+    let sidePhotosStarted = false;
+    function startSidePhotos() {
+      if (sidePhotosStarted) return;
+      sidePhotosStarted = true;
+      setTimeout(createSidePhoto, 800);
+      setInterval(createSidePhoto, 4500);
     }
-    setInterval(createSidePhoto, 3000);
   </script>
 </body>
 </html>
