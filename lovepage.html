@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -167,7 +167,7 @@
       will-change: transform;
     }
 
-    .floating-heart::before { content: '♥'; color: var(--accent-primary); font-size: inherit; }
+    .floating-heart::before { content: '?'; color: var(--accent-primary); font-size: inherit; }
 
     @keyframes floatUp {
       0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
@@ -1120,7 +1120,11 @@
       box-shadow: inset 0 -8px 14px rgba(190, 45, 75, 0.35), 0 6px 14px rgba(217, 74, 99, 0.25);
       opacity: 0;
       transform: scale(0.1);
-      animation: bloomPetalPop 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      will-change: transform, opacity;
+    }
+
+    .bloom-petal-shape.arrive {
+      animation: bloomPetalPop 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .bloom-petal.p1 .bloom-petal-shape { background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 60%, #d94a63 100%); }
@@ -2163,7 +2167,7 @@
     }
 
     .section-title::after {
-      content: '❦';
+      content: '?';
       display: block;
       font-size: 0.85rem;
       line-height: 1.6;
@@ -2404,34 +2408,34 @@
     <div class="bloom" id="bloom">
       <div class="bloom-head" id="bloomHead">
         <div class="bloom-center" id="bloomCenter"></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(0deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:700ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(36deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:860ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(72deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1020ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(108deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1180ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(144deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1340ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(180deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1500ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(216deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1660ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(252deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1820ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(288deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:1980ms;"></span></div>
-        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(324deg) translateY(-86px);"><span class="bloom-petal-shape" style="animation-delay:2140ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(18deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:1750ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(54deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:1890ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(90deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2030ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(126deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2170ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(162deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2310ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(198deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2450ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(234deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2590ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(270deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2730ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(306deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:2870ms;"></span></div>
-        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(342deg) translateY(-66px);"><span class="bloom-petal-shape" style="animation-delay:3010ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(0deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:2700ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(45deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:2830ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(90deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:2960ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(135deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:3090ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(180deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:3220ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(225deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:3350ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(270deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:3480ms;"></span></div>
-        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(315deg) translateY(-46px);"><span class="bloom-petal-shape" style="animation-delay:3610ms;"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(0deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(36deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(72deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(108deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(144deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(180deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(216deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(252deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(288deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p1" style="width:44px;height:71px;margin-left:-22px;margin-top:-36px;transform:rotate(324deg) translateY(-86px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(18deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(54deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(90deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(126deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(162deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(198deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(234deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(270deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(306deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p2" style="width:36px;height:58px;margin-left:-18px;margin-top:-29px;transform:rotate(342deg) translateY(-66px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(0deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(45deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(90deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(135deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(180deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(225deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(270deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
+        <div class="bloom-petal p3" style="width:28px;height:45px;margin-left:-14px;margin-top:-23px;transform:rotate(315deg) translateY(-46px);"><span class="bloom-petal-shape"></span></div>
       </div>
     </div>
   </div>
@@ -2467,16 +2471,16 @@
         <div class="lock-heart-wrap">
           <span class="lock-heart-ring"></span>
           <span class="lock-heart-ring"></span>
-          <span class="lock-heart-sparkle">✦</span>
-          <span class="lock-heart-sparkle">✦</span>
-          <span class="lock-heart-sparkle">✦</span>
-          <span class="lock-heart-sparkle">✦</span>
-          <div class="lock-heart">♥</div>
+          <span class="lock-heart-sparkle">?</span>
+          <span class="lock-heart-sparkle">?</span>
+          <span class="lock-heart-sparkle">?</span>
+          <span class="lock-heart-sparkle">?</span>
+          <div class="lock-heart">?</div>
         </div>
         <h1 class="lock-title"><span class="shimmer">A Surprise Awaits</span></h1>
         <p class="lock-subtitle">Enter the magic word to unlock</p>
         <div class="lock-input-wrap">
-          <input type="password" class="lock-input" id="lockInput" placeholder="••••••" autocomplete="off">
+          <input type="password" class="lock-input" id="lockInput" placeholder="������" autocomplete="off">
           <button class="lock-eye" id="lockEye" aria-label="Show password">
             <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -2625,7 +2629,7 @@
       <p class="closing-text" id="closingText"></p>
       <p class="closing-signature" id="closingSignature"></p>
       <div class="heart-container">
-        <div class="animated-heart" id="animatedHeart">♥</div>
+        <div class="animated-heart" id="animatedHeart">?</div>
       </div>
       <button class="replay-btn" id="replayBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2637,7 +2641,7 @@
     </section>
 
     <div class="photo-modal" id="photoModal">
-      <button class="photo-modal-close" aria-label="Close">×</button>
+      <button class="photo-modal-close" aria-label="Close">�</button>
       <img src="" alt="Full size photo" id="modalImage">
     </div>
   </div>
@@ -2791,7 +2795,28 @@
       head.classList.add('glow-ring');
       vibrate(8);
 
-      const bloomDone = 4200;
+      const shapes = head.querySelectorAll('.bloom-petal-shape');
+      const RINGS = [
+        { count: 10, step: 160, delay: 700 },
+        { count: 10, step: 140, delay: 1750 },
+        { count: 8, step: 130, delay: 2700 }
+      ];
+      let i = 0;
+      let t = 0;
+      RINGS.forEach(function(ring) {
+        for (let j = 0; j < ring.count; j++) {
+          const shape = shapes[i];
+          const d = ring.delay + j * ring.step;
+          setTimeout(function(el) {
+            el.classList.add('arrive');
+            vibrate(8);
+          }, d, shape);
+          i++;
+          t = Math.max(t, d);
+        }
+      });
+
+      const bloomDone = t + 700;
 
       setTimeout(function() {
         center.classList.add('arrive');
@@ -2815,7 +2840,7 @@
       for (let i = 0; i < 10; i++) {
         const spark = document.createElement('span');
         spark.className = 'love-spark';
-        spark.textContent = '♥';
+        spark.textContent = '?';
         spark.style.left = cx + 'px';
         spark.style.top = cy + 'px';
         const angle = (Math.PI * 2 / 10) * i;
@@ -2859,10 +2884,10 @@
       if (quizIndex === -1) {
         const heart = document.createElement('div');
         heart.className = 'quiz-heart-intro';
-        heart.textContent = '♥';
+        heart.textContent = '?';
         const title = document.createElement('h2');
         title.className = 'quiz-title';
-        title.textContent = 'Before the surprise…';
+        title.textContent = 'Before the surprise�';
         const sub = document.createElement('p');
         sub.className = 'quiz-subtitle';
         sub.textContent = 'Answer a few questions about us';
@@ -2968,7 +2993,7 @@
       quizBody.innerHTML = '';
       const heart = document.createElement('div');
       heart.className = 'quiz-heart-intro';
-      heart.textContent = '♥';
+      heart.textContent = '?';
       const title = document.createElement('h2');
       title.className = 'quiz-title';
       title.textContent = 'You know us so well';
@@ -3033,7 +3058,7 @@
       for (let i = 0; i < count; i++) {
         const heart = document.createElement('span');
         heart.className = 'success-heart';
-        heart.textContent = Math.random() > 0.5 ? '♥' : '✦';
+        heart.textContent = Math.random() > 0.5 ? '?' : '?';
         heart.style.left = x + 'px';
         heart.style.top = y + 'px';
         heart.style.fontSize = (Math.random() * 22 + 12) + 'px';
@@ -3111,7 +3136,7 @@
     function createHeart(container) {
       const heart = document.createElement('span');
       heart.className = 'lock-float-heart';
-      heart.textContent = '♥';
+      heart.textContent = '?';
       heart.style.left = Math.random() * 100 + '%';
       heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
       heart.style.animationDuration = (Math.random() * 8 + 10) + 's';
@@ -3386,7 +3411,7 @@
         for (let i = 0; i < 6; i++) {
           const heart = document.createElement('span');
           heart.className = 'mini-heart';
-          heart.textContent = '♥';
+          heart.textContent = '?';
           heart.style.left = e.clientX + 'px';
           heart.style.top = e.clientY + 'px';
           const angle = Math.random() * Math.PI * 2;
@@ -3446,7 +3471,7 @@
       for (let i = 0; i < 30; i++) {
         const heart = document.createElement('span');
         heart.className = 'mini-heart';
-        heart.textContent = '♥';
+        heart.textContent = '?';
         heart.style.left = e.clientX + 'px';
         heart.style.top = e.clientY + 'px';
         const angle = Math.random() * Math.PI * 2;
