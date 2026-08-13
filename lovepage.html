@@ -1122,6 +1122,163 @@
       100% { transform: translateX(-50%) scale(0.6); opacity: 0; }
     }
 
+    .bloom {
+      position: relative;
+      width: 180px;
+      height: 190px;
+      margin: 0 auto 1.1rem;
+      display: none;
+    }
+
+    .bloom.show { display: block; }
+
+    .bloom-stage {
+      position: absolute;
+      inset: 0;
+      perspective: 700px;
+    }
+
+    .bloom-stem {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 10px;
+      height: 130px;
+      margin-left: -5px;
+      background: linear-gradient(180deg, #7c9a4f 0%, #5c7a34 100%);
+      border-radius: 6px 6px 3px 3px;
+      transform-origin: bottom;
+      transform: scaleY(0);
+      box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.12);
+      z-index: 0;
+    }
+
+    .bloom-stem.grown {
+      animation: bloomStemGrow 0.7s var(--spring) forwards;
+    }
+
+    @keyframes bloomStemGrow {
+      0% { transform: scaleY(0); }
+      100% { transform: scaleY(1); }
+    }
+
+    .bloom-leaf {
+      position: absolute;
+      width: 40px;
+      height: 22px;
+      background: linear-gradient(160deg, #8fb05a 0%, #5c7a34 100%);
+      border-radius: 100% 0 100% 0;
+      box-shadow: 0 4px 10px rgba(92, 122, 52, 0.4);
+      opacity: 0;
+    }
+
+    .bloom-leaf-l {
+      bottom: 40px;
+      left: calc(50% - 24px);
+      transform: rotate(-24deg);
+    }
+
+    .bloom-leaf-r {
+      bottom: 62px;
+      left: calc(50% + 12px);
+      transform: rotate(150deg);
+    }
+
+    .bloom-leaf.pop {
+      animation: bloomLeafPop 0.5s var(--spring) forwards;
+    }
+
+    @keyframes bloomLeafPop {
+      0% { opacity: 0; transform: scale(0.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .bloom-head {
+      position: absolute;
+      left: 50%;
+      bottom: 104px;
+      width: 0;
+      height: 0;
+      transform-style: preserve-3d;
+      z-index: 1;
+    }
+
+    .bloom-head.spinning {
+      animation: bloomSpin 14s linear infinite;
+    }
+
+    @keyframes bloomSpin {
+      0% { transform: rotateX(-18deg) rotateY(0deg); }
+      100% { transform: rotateX(-18deg) rotateY(360deg); }
+    }
+
+    .bloom-petal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 46px;
+      height: 84px;
+      margin-left: -23px;
+      margin-top: -42px;
+      background: linear-gradient(180deg, #ffe6e8 0%, #f2b3b9 55%, #d98b95 100%);
+      border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
+      box-shadow: inset 0 -10px 16px rgba(201, 117, 128, 0.35);
+      transform-style: preserve-3d;
+      opacity: 0;
+      will-change: transform;
+    }
+
+    .bloom-petal.arrive {
+      opacity: 1;
+      transition: transform 0.6s var(--spring), opacity 0.3s ease;
+    }
+
+    .bloom-center {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 46px;
+      height: 46px;
+      margin-left: -23px;
+      background: radial-gradient(circle at 38% 32%, #ffe9a3 0%, #f2c14e 55%, #d99b2b 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 24px rgba(242, 193, 78, 0.6), inset 0 -4px 10px rgba(180, 120, 30, 0.4);
+      transform-style: preserve-3d;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    .bloom-center.arrive {
+      animation: bloomCenterArrive 0.5s var(--spring) forwards;
+    }
+
+    @keyframes bloomCenterArrive {
+      0% { opacity: 0; transform: scale(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .bloom-glow {
+      position: absolute;
+      left: 50%;
+      bottom: 104px;
+      width: 120px;
+      height: 120px;
+      margin-left: -60px;
+      background: radial-gradient(circle, rgba(255, 220, 180, 0.45) 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bloom.show .bloom-glow.glow {
+      animation: bloomGlow 1.4s ease forwards 2.2s;
+    }
+
+    @keyframes bloomGlow {
+      0% { opacity: 0; transform: scale(0.4); }
+      100% { opacity: 1; transform: scale(1.15); }
+    }
+
     .love-title {
       font-family: var(--serif);
       font-size: clamp(2rem, 8.5vw, 2.6rem);
@@ -2339,6 +2496,15 @@
         </div>
         <span class="gift-hint">tap to unwrap</span>
       </div>
+      <div class="bloom" id="bloom">
+        <div class="bloom-stem" id="bloomStem">
+          <span class="bloom-leaf bloom-leaf-l"></span>
+          <span class="bloom-leaf bloom-leaf-r"></span>
+        </div>
+        <div class="bloom-head" id="bloomHead">
+          <div class="bloom-center" id="bloomCenter"></div>
+        </div>
+      </div>
       <h1 class="love-title">You know how much I <em>love you</em></h1>
       <p class="love-sub">Ready to unwrap a little piece of us?</p>
       <button class="love-btn" id="loveBtn">Continue</button>
@@ -2685,9 +2851,64 @@
       }, 160);
       setTimeout(function() {
         giftWrap.style.display = 'none';
-        document.getElementById('loveBtn').classList.add('show');
+        bloomFlower();
       }, 620);
     });
+
+    let bloomStarted = false;
+    function bloomFlower() {
+      if (bloomStarted) return;
+      bloomStarted = true;
+      const bloom = document.getElementById('bloom');
+      bloom.classList.add('show');
+      const head = document.getElementById('bloomHead');
+      const stem = document.getElementById('bloomStem');
+      const center = document.getElementById('bloomCenter');
+      const glow = document.createElement('div');
+      glow.className = 'bloom-glow';
+      bloom.insertBefore(glow, head);
+      void bloom.offsetWidth;
+      glow.classList.add('glow');
+
+      setTimeout(function() { stem.classList.add('grown'); }, 120);
+      const leaves = document.querySelectorAll('.bloom-leaf');
+      setTimeout(function() {
+        leaves[0].classList.add('pop');
+      }, 520);
+      setTimeout(function() {
+        leaves[1].classList.add('pop');
+      }, 720);
+
+      const PETALS = 8;
+      const RADIUS = 52;
+      for (let i = 0; i < PETALS; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'bloom-petal';
+        const angle = (360 / PETALS) * i;
+        petal.style.opacity = '0';
+        petal.style.transform = 'rotateY(' + angle + 'deg) translateZ(0px) rotateX(80deg)';
+        head.appendChild(petal);
+        setTimeout(function(el, a) {
+          el.classList.add('arrive');
+          el.style.transform = 'rotateY(' + a + 'deg) translateZ(' + RADIUS + 'px) rotateX(-16deg)';
+          vibrate(8);
+        }, 900 + i * 260, petal, angle);
+      }
+
+      setTimeout(function() {
+        center.classList.add('arrive');
+        const rect = bloom.getBoundingClientRect();
+        spawnBurst(rect.left + rect.width / 2, rect.top + 40, 14);
+      }, 900 + PETALS * 260);
+
+      setTimeout(function() {
+        head.classList.add('spinning');
+      }, 900 + PETALS * 260 + 200);
+
+      setTimeout(function() {
+        document.getElementById('loveBtn').classList.add('show');
+      }, 900 + PETALS * 260 + 500);
+    }
 
     function spawnLoveSparks() {
       const rect = loveScreen.getBoundingClientRect();
