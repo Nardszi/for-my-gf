@@ -2879,9 +2879,9 @@
       }, 720);
 
       const RINGS = [
-        { count: 8, radius: 42, tilt: -68, size: 44, shade: 'p1', step: 180, delay: 800 },
-        { count: 8, radius: 28, tilt: -50, size: 35, shade: 'p2', step: 150, delay: 1750 },
-        { count: 6, radius: 16, tilt: -32, size: 26, shade: 'p3', step: 140, delay: 2600 }
+        { count: 8, radius: 40, tilt: -30, size: 44, shade: 'p1', step: 180, delay: 800 },
+        { count: 8, radius: 26, tilt: -22, size: 35, shade: 'p2', step: 150, delay: 1750 },
+        { count: 6, radius: 14, tilt: -14, size: 26, shade: 'p3', step: 140, delay: 2600 }
       ];
       let t = 0;
       RINGS.forEach(function(ring) {
@@ -2894,15 +2894,14 @@
           petal.style.marginLeft = (-w / 2) + 'px';
           petal.style.marginTop = (-w * 0.81) + 'px';
           const angle = (360 / ring.count) * i;
-          const targetTilt = ring.tilt;
           petal.style.opacity = '0';
-          petal.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + ring.radius + 'px) rotateX(-95deg) scale(0.6)';
+          petal.style.transform = 'rotateY(' + angle + 'deg) rotateX(18deg) translateZ(' + (ring.radius - 14) + 'px) scale(0.55)';
           head.appendChild(petal);
           setTimeout(function(el, a, r, tilt, sz) {
             el.classList.add('arrive');
-            el.style.transform = 'rotateY(' + a + 'deg) translateZ(' + r + 'px) rotateX(' + tilt + 'deg) scale(1)';
+            el.style.transform = 'rotateY(' + a + 'deg) rotateX(' + tilt + 'deg) translateZ(' + r + 'px) scale(1)';
             vibrate(8);
-          }, ring.delay + i * ring.step, petal, angle, ring.radius, targetTilt);
+          }, ring.delay + i * ring.step, petal, angle, ring.radius, ring.tilt);
           t = Math.max(t, ring.delay + i * ring.step);
         }
       });
