@@ -2804,7 +2804,6 @@
           petal.style.marginLeft = (-w / 2) + 'px';
           petal.style.marginTop = (-w * 0.81) + 'px';
           const angle = (360 / ring.count) * i;
-          petal.style.opacity = '0';
           petal.style.transform = 'rotate(' + angle + 'deg) translateY(-' + (ring.radius - 14) + 'px) scale(0.4)';
           head.appendChild(petal);
           setTimeout(function(el, a, r) {
