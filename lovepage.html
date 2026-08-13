@@ -2487,7 +2487,7 @@
         <h1 class="lock-title"><span class="shimmer">A Surprise Awaits</span></h1>
         <p class="lock-subtitle">Enter the magic word to unlock</p>
         <div class="lock-input-wrap">
-          <input type="password" class="lock-input" id="lockInput" placeholder="������" autocomplete="off">
+          <input type="password" class="lock-input" id="lockInput" placeholder="••••••" autocomplete="off">
           <button class="lock-eye" id="lockEye" aria-label="Show password">
             <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -2648,7 +2648,7 @@
     </section>
 
     <div class="photo-modal" id="photoModal">
-      <button class="photo-modal-close" aria-label="Close">�</button>
+      <button class="photo-modal-close" aria-label="Close">×</button>
       <img src="" alt="Full size photo" id="modalImage">
     </div>
   </div>
@@ -2822,7 +2822,7 @@
       for (let i = 0; i < 10; i++) {
         const spark = document.createElement('span');
         spark.className = 'love-spark';
-        spark.textContent = '?';
+        spark.textContent = '♥';
         spark.style.left = cx + 'px';
         spark.style.top = cy + 'px';
         const angle = (Math.PI * 2 / 10) * i;
@@ -2866,10 +2866,10 @@
       if (quizIndex === -1) {
         const heart = document.createElement('div');
         heart.className = 'quiz-heart-intro';
-        heart.textContent = '?';
+        heart.textContent = '♥';
         const title = document.createElement('h2');
         title.className = 'quiz-title';
-        title.textContent = 'Before the surprise�';
+        title.textContent = 'Before the surprise…';
         const sub = document.createElement('p');
         sub.className = 'quiz-subtitle';
         sub.textContent = 'Answer a few questions about us';
@@ -2975,7 +2975,7 @@
       quizBody.innerHTML = '';
       const heart = document.createElement('div');
       heart.className = 'quiz-heart-intro';
-      heart.textContent = '?';
+      heart.textContent = '♥';
       const title = document.createElement('h2');
       title.className = 'quiz-title';
       title.textContent = 'You know us so well';
@@ -3118,7 +3118,7 @@
     function createHeart(container) {
       const heart = document.createElement('span');
       heart.className = 'lock-float-heart';
-      heart.textContent = '?';
+      heart.textContent = '♥';
       heart.style.left = Math.random() * 100 + '%';
       heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
       heart.style.animationDuration = (Math.random() * 8 + 10) + 's';
@@ -3393,7 +3393,7 @@
         for (let i = 0; i < 6; i++) {
           const heart = document.createElement('span');
           heart.className = 'mini-heart';
-          heart.textContent = '?';
+          heart.textContent = '♥';
           heart.style.left = e.clientX + 'px';
           heart.style.top = e.clientY + 'px';
           const angle = Math.random() * Math.PI * 2;
@@ -3453,7 +3453,7 @@
       for (let i = 0; i < 30; i++) {
         const heart = document.createElement('span');
         heart.className = 'mini-heart';
-        heart.textContent = '?';
+        heart.textContent = '♥';
         heart.style.left = e.clientX + 'px';
         heart.style.top = e.clientY + 'px';
         const angle = Math.random() * Math.PI * 2;
