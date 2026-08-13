@@ -964,6 +964,17 @@
       font-size: 1.9rem;
       box-shadow: 0 20px 40px rgba(201, 138, 143, 0.45);
       margin-bottom: 1.75rem;
+      opacity: 0;
+    }
+
+    .love-heart.reveal {
+      animation: heartPop 0.8s var(--spring) forwards;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .gift-wrap {
@@ -1202,7 +1213,13 @@
     }
 
     .love-title.reveal {
-      animation: loveReveal 0.9s var(--spring) forwards;
+      animation: titlePop 0.9s var(--spring) forwards;
+    }
+
+    @keyframes titlePop {
+      0% { transform: translate3d(0, 30px, var(--z, 0px)) scale(0.3); filter: blur(12px); opacity: 0; }
+      55% { transform: translate3d(0, -4px, var(--z, 0px)) scale(1.06); filter: blur(0); opacity: 1; }
+      100% { transform: translate3d(0, 0, var(--z, 0px)) scale(1); filter: blur(0); opacity: 1; }
     }
 
     .love-title em {
@@ -2786,8 +2803,8 @@
       }, 160);
       setTimeout(function() {
         giftWrap.style.display = 'none';
-        const title = document.querySelector('.love-title');
-        if (title) title.classList.add('reveal');
+        const heart = document.querySelector('.love-heart');
+        if (heart) heart.classList.add('reveal');
         bloomFlower();
       }, 620);
     });
@@ -2798,22 +2815,33 @@
       bloomStarted = true;
       const bloom = document.getElementById('bloom');
       const head = document.getElementById('bloomHead');
-      bloom.classList.add('show');
-      head.classList.add('glow-ring');
-      vibrate(8);
 
-      const rect = bloom.getBoundingClientRect();
+      const title = document.querySelector('.love-title');
+      if (title) {
+        title.classList.add('reveal');
+        const tr = title.getBoundingClientRect();
+        const tcx = tr.left + tr.width / 2;
+        const tcy = tr.top + tr.height / 2;
+        setTimeout(function() { spawnBurst(tcx, tcy, 12); }, 200);
+      }
+
       setTimeout(function() {
-        spawnBurst(rect.left, rect.top, 16);
-      }, 600);
+        bloom.classList.add('show');
+        head.classList.add('glow-ring');
+        vibrate(8);
+        const rect = bloom.getBoundingClientRect();
+        setTimeout(function() {
+          spawnBurst(rect.left, rect.top, 16);
+        }, 500);
+      }, 650);
 
       setTimeout(function() {
         head.classList.add('breathing');
-      }, 1400);
+      }, 1900);
 
       setTimeout(function() {
         document.getElementById('loveBtn').classList.add('show');
-      }, 1600);
+      }, 2000);
     }
 
     function spawnLoveSparks() {
