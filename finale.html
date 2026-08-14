@@ -143,81 +143,6 @@
       backdrop-filter: blur(4px);
     }
 
-    .milestones {
-      width: 100%;
-      max-width: 480px;
-      text-align: left;
-      margin: 0.5rem 0;
-    }
-    .milestones-title {
-      text-align: center;
-      font-size: 0.78rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: rgba(255, 247, 238, 0.7);
-      margin-bottom: 1.2rem;
-    }
-    .milestone {
-      position: relative;
-      padding-left: 1.6rem;
-      padding-bottom: 1.5rem;
-      border-left: 1px solid rgba(255, 143, 171, 0.35);
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.7s ease, transform 0.7s var(--spring);
-    }
-    .milestone.revealed { opacity: 1; transform: translateY(0); }
-    .milestone:last-child { border-left-color: transparent; padding-bottom: 0; }
-    .milestone::before {
-      content: "♥";
-      position: absolute;
-      left: -0.62rem;
-      top: 0;
-      font-size: 0.85rem;
-      color: var(--rose);
-      text-shadow: 0 0 10px rgba(255, 143, 171, 0.7);
-    }
-    .milestone-text {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: var(--cream);
-    }
-    .milestones-caret { color: var(--rose); }
-
-    .hidden-heart-wrap {
-      margin-top: 0.4rem;
-      font-size: 0.78rem;
-      color: rgba(255, 247, 238, 0.5);
-    }
-    .hidden-heart-btn {
-      font-size: 1.3rem;
-      background: none;
-      border: 1px solid rgba(255, 143, 171, 0.35);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      color: rgba(255, 247, 238, 0.55);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s var(--spring);
-      filter: grayscale(0.4);
-    }
-    .hidden-heart-btn:hover { border-color: var(--rose); color: var(--rose); filter: none; }
-    .hidden-heart-btn.found { animation: heartPop 0.5s var(--spring); border-color: var(--rose); color: var(--rose); }
-    .hidden-heart-secret {
-      max-width: 460px;
-      margin: 0.8rem auto 0;
-      font-size: 0.95rem;
-      font-style: italic;
-      line-height: 1.6;
-      color: var(--gold);
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    .hidden-heart-secret.show { opacity: 1; }
-
     .ending {
       max-width: 500px;
       width: 100%;
@@ -319,11 +244,6 @@
       <h1 class="finale-title fade-up d2">The Finale</h1>
       <div class="day-badge fade-up d2" id="dayBadge"></div>
       <div class="finale-letter fade-up d2" id="finaleLetter"></div>
-      <div class="milestones fade-up d3" id="milestones"></div>
-      <div class="hidden-heart-wrap fade-up d3">
-        <button class="hidden-heart-btn" id="hiddenHeart" type="button" aria-label="tap me">♥</button>
-        <div class="hidden-heart-secret" id="hiddenSecret"></div>
-      </div>
       <div class="forever-meter fade-up d3">
         <p class="forever-label">hold my heart &mdash; fill forever</p>
         <div class="forever-track">
@@ -354,9 +274,6 @@
     var foreverHeart = document.getElementById('foreverHeart');
     var musicBtn = document.getElementById('musicBtn');
     var dayBadge = document.getElementById('dayBadge');
-    var milestonesEl = document.getElementById('milestones');
-    var hiddenHeart = document.getElementById('hiddenHeart');
-    var hiddenSecret = document.getElementById('hiddenSecret');
     var endingEl = document.getElementById('ending');
 
     var song = new Audio('music/song2.mp3');
@@ -364,13 +281,6 @@
     var musicOn = false;
     var fill = 0;
     var showEnding = false;
-
-    var MILESTONES = [
-      "The day we became us — where every story has to begin.",
-      "The small moments: the laughs, the talks, the quiet silences that say everything.",
-      "Looking back at all we've built and feeling like I won something no one can take away.",
-      "And it goes on — because you and I are the best kind of never-ending."
-    ];
 
     function typeLetter(el, text, speed) {
       var i = 0;
@@ -393,49 +303,14 @@
       return Math.max(1, Math.floor((now - start) / 86400000));
     }
 
-    function typeMilestones() {
-      var idx = 0;
-      var items = milestonesEl.querySelectorAll('.milestone');
-      function next() {
-        if (idx >= items.length) return;
-        var m = items[idx];
-        m.classList.add('revealed');
-        var textEl = m.querySelector('.milestone-text');
-        var text = textEl.textContent;
-        textEl.textContent = '';
-        var i = 0;
-        var timer = setInterval(function() {
-          i++;
-          textEl.textContent = text.slice(0, i);
-          if (i >= text.length) {
-            clearInterval(timer);
-            idx++;
-            var caret = document.createElement('span');
-            caret.className = 'milestones-caret';
-            textEl.appendChild(caret);
-            setTimeout(next, 700);
-          }
-        }, 22);
-      }
-      setTimeout(next, 500);
-    }
-
     function buildFinalePanels() {
       dayBadge.textContent = 'We\u2019ve loved for ' + daysTogether() + ' days';
-      MILESTONES.forEach(function(m) {
-        var el = document.createElement('div');
-        el.className = 'milestone';
-        el.innerHTML = '<div class="milestone-text"></div>';
-        el.querySelector('.milestone-text').textContent = m;
-        milestonesEl.appendChild(el);
-      });
     }
 
     function startFinale() {
       buildFinalePanels();
       var letter = 'This is where our story slows down, not to end, but to be savored. Every laugh, every fight, every quiet moment in between has brought me here, to you. I still choose you, today and in every tomorrow this page can hold. Thank you for being my favorite chapter. \u2014 Nard';
       setTimeout(function() { typeLetter(finaleLetter, letter, 26); }, 1300);
-      setTimeout(typeMilestones, 5200);
       setTimeout(function() {
         var burst = function(cx, cy) {
           for (var i = 0; i < 14; i++) {
@@ -473,33 +348,6 @@
     foreverHeart.addEventListener('click', addForever);
     foreverHeart.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); addForever(); }
-    });
-
-    hiddenHeart.addEventListener('click', function() {
-      hiddenHeart.classList.remove('found');
-      void hiddenHeart.offsetWidth;
-      hiddenHeart.classList.add('found');
-      hiddenSecret.textContent = 'You found me. You always do. \u2014 but the real secret is that every time you say my name, I still smile like it\u2019s the first time.';
-      hiddenSecret.classList.add('show');
-      setTimeout(function() {
-        var r = hiddenHeart.getBoundingClientRect();
-        var b = function(cx, cy) {
-          for (var i = 0; i < 10; i++) {
-            var s = document.createElement('span');
-            s.className = 'burst';
-            s.textContent = '\u2665';
-            var a = Math.random() * Math.PI * 2;
-            var d = Math.random() * 70 + 30;
-            s.style.left = (cx + Math.cos(a) * 10) + 'px';
-            s.style.top = (cy + Math.sin(a) * 10) + 'px';
-            s.style.setProperty('--tx', Math.cos(a) * d + 'px');
-            s.style.setProperty('--ty', Math.sin(a) * d - 25 + 'px');
-            document.body.appendChild(s);
-            setTimeout(function() { s.remove(); }, 1200);
-          }
-        };
-        b(r.left + r.width / 2, r.top + r.height / 2);
-      }, 250);
     });
 
     function fireworks() {
