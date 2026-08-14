@@ -5840,6 +5840,11 @@
       if (!annivMusicPlaying) annivToggleMusic();
       startAnnivAmbience();
       setTimeout(revealAnnivSections, 400);
+      setTimeout(function() {
+        annivLetter.classList.add('revealed');
+        annivPage.scrollTo({ top: annivLetter.offsetTop - 20, behavior: 'smooth' });
+        if (annivTypewriter) annivTypewriter();
+      }, 1500);
     }
 
     function tryAnnivUnlock() {
