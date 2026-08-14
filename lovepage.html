@@ -1366,75 +1366,104 @@
       color: var(--fg-primary);
     }
 
-    .anniv-slideshow {
-      position: relative;
+    .anniv-carousel-wrap {
       width: 100%;
-      max-width: 480px;
-      margin: 0 auto 1.25rem;
-      border-radius: 24px;
+      max-width: 520px;
+      margin: 0 auto 1rem;
+      perspective: 1400px;
       overflow: hidden;
-      box-shadow: var(--shadow-hover);
-      background: var(--card-bg);
-      aspect-ratio: 4 / 3;
+      padding: 1.5rem 0 2rem;
     }
 
-    .anniv-slide {
+    .anniv-carousel {
+      position: relative;
+      width: 180px;
+      height: 240px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .anniv-card {
       position: absolute;
-      inset: 0;
-      opacity: 0;
-      transform: scale(1.04);
-      transition: opacity 0.9s ease, transform 6s ease;
+      top: 0;
+      left: 0;
+      width: 180px;
+      height: 240px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(201, 138, 143, 0.4);
+      background: #fff;
+      border: 4px solid #fff;
       cursor: pointer;
+      backface-visibility: visible;
+      -webkit-backface-visibility: visible;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
-    .anniv-slide.active {
-      opacity: 1;
-      transform: scale(1);
-      z-index: 1;
-    }
-
-    .anniv-slide img {
+    .anniv-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      border-radius: 14px;
     }
 
-    .anniv-slide-cap {
+    .anniv-card-cap {
       position: absolute;
       inset: auto 0 0 0;
-      padding: 2rem 1rem 0.8rem;
-      background: linear-gradient(to top, rgba(61, 58, 56, 0.8), transparent);
+      padding: 1.2rem 0.5rem 0.5rem;
+      background: linear-gradient(to top, rgba(61, 58, 56, 0.85), transparent);
       color: #fff;
       font-family: var(--serif);
       font-style: italic;
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       text-align: center;
+      pointer-events: none;
     }
 
-    .anniv-dots {
-      display: flex;
+    .anniv-card.front { z-index: 5; }
+
+    .anniv-carousel-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--fg-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .anniv-carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .anniv-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(201, 138, 143, 0.35);
       border: none;
-      padding: 0;
+      border-radius: 50%;
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-soft);
+      color: var(--accent-dark);
       cursor: pointer;
       transition: all 0.3s var(--spring);
     }
 
-    .anniv-dot.active {
-      width: 22px;
-      border-radius: 6px;
+    .anniv-carousel-btn:hover {
       background: var(--accent-primary);
+      color: white;
+      transform: translateY(-50%) scale(1.1);
     }
+
+    .anniv-carousel-prev { left: 0.5rem; }
+
+    .anniv-carousel-next { right: 0.5rem; }
 
     .anniv-float-heart {
       position: fixed;
@@ -3613,8 +3642,20 @@
       <div class="anniv-letter" id="annivLetter"></div>
       <div class="anniv-vow" id="annivVow"></div>
       <h3 class="anniv-photos-title">A little trip down memory lane</h3>
-      <div class="anniv-slideshow" id="annivSlideshow"></div>
-      <div class="anniv-dots" id="annivDots"></div>
+      <div class="anniv-carousel-wrap">
+        <div class="anniv-carousel" id="annivCarousel"></div>
+        <button class="anniv-carousel-btn anniv-carousel-prev" id="annivCarouselPrev" aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <button class="anniv-carousel-btn anniv-carousel-next" id="annivCarouselNext" aria-label="Next photo">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+        </button>
+      </div>
+      <p class="anniv-carousel-hint">a carousel of us — tap a photo to look closer</p>
       <h3 class="anniv-wishes-title">For the year ahead</h3>
       <div class="anniv-wishes" id="annivWishes"></div>
       <button class="anniv-back" id="annivBack">
@@ -5206,61 +5247,89 @@
     const annivVow = document.getElementById('annivVow');
     annivVow.innerHTML = '<div class="anniv-vow-text"><strong>I promise:</strong> ' + ANNIV_VOW + '</div>';
 
-    const annivSlideshow = document.getElementById('annivSlideshow');
-    const annivDots = document.getElementById('annivDots');
+    const annivCarousel = document.getElementById('annivCarousel');
+    const annivCarouselPrev = document.getElementById('annivCarouselPrev');
+    const annivCarouselNext = document.getElementById('annivCarouselNext');
     const annivModalImage = document.getElementById('modalImage');
-    let annivSlideIndex = 0;
-    let annivSlideTimer;
 
-    function buildAnnivSlideshow() {
-      annivSlideshow.innerHTML = '';
-      annivDots.innerHTML = '';
+    const ANNIV_CARD_W = 180;
+    const ANNIV_CARD_H = 240;
+    const annivCarouselRot = { angle: 0, spinning: true };
+
+    (function buildAnnivCarousel() {
+      const count = PHOTOS.length;
+      const radius = Math.round((ANNIV_CARD_W / 2) / Math.tan(Math.PI / count));
+      annivCarousel.innerHTML = '';
       PHOTOS.forEach(function(photo, i) {
-        const slide = document.createElement('div');
-        slide.className = 'anniv-slide' + (i === 0 ? ' active' : '');
-        slide.innerHTML = '<img src="' + photo.src + '" alt="Anniversary photo" loading="lazy"><div class="anniv-slide-cap">' + photo.caption + '</div>';
-        slide.addEventListener('click', function() {
+        const card = document.createElement('div');
+        card.className = 'anniv-card';
+        const angle = (360 / count) * i;
+        card.style.transform = 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)';
+        card.innerHTML = '<img src="' + photo.src + '" alt="Anniversary photo" loading="lazy"><div class="anniv-card-cap">' + photo.caption + '</div>';
+        card.addEventListener('click', function() {
           annivModalImage.src = photo.src;
           photoModal.classList.add('active');
           document.body.style.overflow = 'hidden';
-          clearInterval(annivSlideTimer);
+          annivCarouselRot.spinning = false;
         });
-        annivSlideshow.appendChild(slide);
-
-        const dot = document.createElement('button');
-        dot.className = 'anniv-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', 'Photo ' + (i + 1));
-        dot.addEventListener('click', function() {
-          annivSlideIndex = i;
-          showAnnivSlide();
-        });
-        annivDots.appendChild(dot);
+        annivCarousel.appendChild(card);
       });
-      annivSlideTimer = setInterval(function() {
-        annivSlideIndex = (annivSlideIndex + 1) % PHOTOS.length;
-        showAnnivSlide();
-      }, 4500);
-    }
+      annivCarousel.style.width = ANNIV_CARD_W + 'px';
+      annivCarousel.style.height = ANNIV_CARD_H + 'px';
 
-    function showAnnivSlide() {
-      const slides = annivSlideshow.querySelectorAll('.anniv-slide');
-      const dots = annivDots.querySelectorAll('.anniv-dot');
-      slides.forEach(function(s, i) { s.classList.toggle('active', i === annivSlideIndex); });
-      dots.forEach(function(d, i) { d.classList.toggle('active', i === annivSlideIndex); });
-    }
+      function spinTo(deg) {
+        annivCarousel.style.transform = 'rotateY(' + deg + 'deg)';
+      }
 
-    buildAnnivSlideshow();
+      annivCarouselPrev.addEventListener('click', function() {
+        annivCarouselRot.spinning = false;
+        annivCarouselRot.angle += 360 / count;
+        spinTo(annivCarouselRot.angle);
+      });
+
+      annivCarouselNext.addEventListener('click', function() {
+        annivCarouselRot.spinning = false;
+        annivCarouselRot.angle -= 360 / count;
+        spinTo(annivCarouselRot.angle);
+      });
+
+      annivCarousel.addEventListener('mouseenter', function() { annivCarouselRot.spinning = false; });
+      annivCarousel.addEventListener('mouseleave', function() { annivCarouselRot.spinning = true; });
+
+      let touchStartX = null;
+      annivCarousel.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+        annivCarouselRot.spinning = false;
+      }, { passive: true });
+      annivCarousel.addEventListener('touchend', function(e) {
+        if (touchStartX === null) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (dx < -35) {
+          annivCarouselRot.angle -= 360 / count;
+          spinTo(annivCarouselRot.angle);
+        } else if (dx > 35) {
+          annivCarouselRot.angle += 360 / count;
+          spinTo(annivCarouselRot.angle);
+        }
+        touchStartX = null;
+      }, { passive: true });
+    })();
+
+    function annivCarouselLoop() {
+      if (annivCarouselRot.spinning && !annivPage.classList.contains('hidden')) {
+        annivCarouselRot.angle -= 0.35;
+        annivCarousel.style.transform = 'rotateY(' + annivCarouselRot.angle + 'deg)';
+      }
+      requestAnimationFrame(annivCarouselLoop);
+    }
+    requestAnimationFrame(annivCarouselLoop);
 
     photoModal.addEventListener('click', function(e) {
       if (e.target === photoModal || e.target.classList.contains('photo-modal-close')) {
         photoModal.classList.remove('active');
         document.body.style.overflow = annivPage.classList.contains('hidden') ? '' : 'hidden';
         if (!annivPage.classList.contains('hidden')) {
-          clearInterval(annivSlideTimer);
-          annivSlideTimer = setInterval(function() {
-            annivSlideIndex = (annivSlideIndex + 1) % PHOTOS.length;
-            showAnnivSlide();
-          }, 4500);
+          setTimeout(function() { annivCarouselRot.spinning = true; }, 400);
         }
       }
     });
