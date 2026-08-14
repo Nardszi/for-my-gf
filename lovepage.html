@@ -1305,6 +1305,7 @@
       align-items: center;
       justify-content: flex-start;
       overflow-y: auto;
+      overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       background:
         radial-gradient(circle at 25% 15%, rgba(244, 199, 202, 0.55), transparent 50%),
@@ -1328,6 +1329,7 @@
       padding: calc(3rem + env(safe-area-inset-top, 0px)) 1.75rem calc(3rem + env(safe-area-inset-bottom, 0px));
       text-align: center;
       position: relative;
+      touch-action: pan-y;
     }
 
     .anniv-page-head {
