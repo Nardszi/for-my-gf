@@ -638,6 +638,150 @@
     .replay-btn svg { width: 16px; height: 16px; transition: transform 0.3s; }
     .replay-btn:hover svg { transform: rotate(-360deg); }
 
+    .reasons-section {
+      background: var(--gradient-romantic);
+      text-align: center;
+      border-radius: 40px 40px 0 0;
+      margin-top: -2rem;
+    }
+
+    .reasons-intro {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg-secondary);
+      margin-bottom: 1.75rem;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.8s var(--spring) 0.15s;
+    }
+
+    .reasons-intro.visible { opacity: 1; transform: translateY(0); }
+
+    .reasons-counter {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 1.4rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      box-shadow: var(--shadow-soft);
+      font-family: var(--serif);
+      color: var(--accent-dark);
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.8s var(--spring) 0.2s;
+    }
+
+    .reasons-counter.visible { opacity: 1; transform: translateY(0); }
+
+    .reasons-counter b {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+      transition: transform 0.3s var(--spring);
+      display: inline-block;
+    }
+
+    .reasons-counter.bump b { transform: scale(1.35); color: var(--accent-primary); }
+
+    .reasons-card {
+      min-height: 130px;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      padding: 1.75rem 1.5rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      line-height: 1.8;
+      color: var(--fg-primary);
+      opacity: 0;
+      transform: translateY(25px) scale(0.98);
+      transition: all 0.6s var(--spring);
+    }
+
+    .reasons-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    .reasons-card .reason-num {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .reasons-card .reason-placeholder {
+      color: var(--fg-secondary);
+      font-size: 1rem;
+      font-style: italic;
+    }
+
+    .reasons-card.pop-in {
+      animation: reasonPop 0.55s var(--spring);
+    }
+
+    @keyframes reasonPop {
+      0% { transform: scale(0.82); opacity: 0.4; }
+      60% { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 0.4rem;
+      max-width: 520px;
+      margin: 0 auto;
+      justify-items: center;
+    }
+
+    .reason-heart {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      aspect-ratio: 1;
+      background: rgba(232, 165, 169, 0.14);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--accent-primary);
+      font-size: clamp(0.7rem, 4vw, 1.05rem);
+      cursor: pointer;
+      transition: all 0.35s var(--spring);
+      opacity: 0;
+      transform: translateY(15px) scale(0.85);
+    }
+
+    .reason-heart.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    .reason-heart:hover {
+      transform: translateY(-3px) scale(1.1);
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .reason-heart.opened {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border-color: var(--accent-dark);
+      color: white;
+      box-shadow: 0 6px 18px rgba(201, 138, 143, 0.4);
+      cursor: default;
+    }
+
+    .reason-heart.opened:hover { transform: translateY(-3px) scale(1.1); }
+
     .photo-modal {
       position: fixed;
       inset: 0;
@@ -2663,6 +2807,19 @@
       </button>
     </section>
 
+    <section class="section reasons-section" id="reasonsSection">
+      <div class="section-header">
+        <p class="section-label">A Thousand Times Over</p>
+        <h2 class="section-title">100 Reasons I Love You</h2>
+      </div>
+      <p class="reasons-intro">tap a heart and find out why</p>
+      <div class="reasons-counter"><b id="reasonsCount">0</b><span>/ 100</span></div>
+      <div class="reasons-card" id="reasonsCard">
+        <span class="reason-placeholder">every heart holds a reason — tap to open one</span>
+      </div>
+      <div class="reasons-grid" id="reasonsGrid"></div>
+    </section>
+
     <div class="photo-modal" id="photoModal">
       <button class="photo-modal-close" aria-label="Close">×</button>
       <img src="" alt="Full size photo" id="modalImage">
@@ -3617,6 +3774,151 @@
       setTimeout(createSidePhoto, 800);
       setInterval(createSidePhoto, 4500);
     }
+
+    const REASONS = [
+      "Your smile lights up even my darkest days.",
+      "The way you laugh makes everything feel lighter.",
+      "You believe in me when I doubt myself.",
+      "Your eyes feel like home.",
+      "You make ordinary moments feel magical.",
+      "The way you say my name is my favorite sound.",
+      "You are my calm in every storm.",
+      "Your kindness touches everyone around you.",
+      "You make me want to be a better person.",
+      "The way you hold my hand feels like forever.",
+      "You understand me without me saying a word.",
+      "Your hugs are my safe place.",
+      "You remember the little things that matter.",
+      "The way you get excited about small joys.",
+      "You make even waiting feel special.",
+      "Your heart is the purest I have ever known.",
+      "You are my best friend and my greatest love.",
+      "The way you care for the people you love.",
+      "You turn my worries into quiet peace.",
+      "Your dreams inspire me to dream bigger.",
+      "The way you look at me across the room.",
+      "You make me feel seen and heard.",
+      "Your strength amazes me every single day.",
+      "The way you dance when you think no one is watching.",
+      "You are the reason I smile for no reason.",
+      "Your patience is a gift I cherish.",
+      "You make home feel like a place, not a space.",
+      "The way you sing along to our song.",
+      "You make me braver than I ever thought I could be.",
+      "Your voice is my favorite melody.",
+      "The way you tuck your hair behind your ear.",
+      "You accept me, flaws and all.",
+      "Your warmth reaches me even from far away.",
+      "You make the hard days worth living.",
+      "The way you protect the ones you love.",
+      "You are my first thought in the morning.",
+      "Your honesty is a treasure to me.",
+      "You make me laugh until it hurts.",
+      "The way you love is gentle and fierce at once.",
+      "You make my heart race even after all this time.",
+      "Your presence is my favorite gift.",
+      "You make the world feel softer.",
+      "The way you say 'I love you'.",
+      "You are my anchor when everything spins.",
+      "Your courage makes me proud every day.",
+      "You make ordinary walks feel like adventures.",
+      "The way you look in the morning light.",
+      "You are my favorite hello and my hardest goodbye.",
+      "Your heart beats in rhythm with mine.",
+      "You make me want a lifetime of tomorrows.",
+      "The way you cheer for me from the sidelines.",
+      "You are my peace in a loud world.",
+      "Your thoughtfulness never stops surprising me.",
+      "You make every season feel like spring.",
+      "The way you light up when you talk about us.",
+      "You are the best decision I ever made.",
+      "Your love feels like a warm blanket on cold nights.",
+      "You make me feel like the luckiest person alive.",
+      "The way you remember the details I forget.",
+      "You are my forever favorite person.",
+      "Your laugh is the soundtrack of my happiness.",
+      "You make the quiet moments feel loud with love.",
+      "The way you hold me when I am tired.",
+      "You are my sunrise after every long night.",
+      "Your heart is generous beyond measure.",
+      "You make me feel understood without explanation.",
+      "The way you say goodnight like it is a promise.",
+      "You are the reason I believe in forever.",
+      "Your grace under pressure inspires me.",
+      "You make me want to protect your dreams.",
+      "The way you love your family and friends.",
+      "You are my favorite kind of beautiful.",
+      "Your kindness is the most attractive thing about you.",
+      "You make me forget what loneliness feels like.",
+      "The way you reach for my hand in crowds.",
+      "You are my safest adventure.",
+      "Your smile is the first thing I want to see each day.",
+      "You make my worst days bearable.",
+      "The way you tease me and make me blush.",
+      "You are my partner in everything that matters.",
+      "Your dreams are woven into mine now.",
+      "You make the future feel exciting.",
+      "The way you love me without conditions.",
+      "You are my favorite chapter of my life.",
+      "Your presence calms the noise in my head.",
+      "You make me feel worthy of love.",
+      "The way you believe in us.",
+      "You are my once-in-a-lifetime.",
+      "Your love is the greatest adventure.",
+      "You make me grateful for every day we have.",
+      "The way you look at me makes everything okay.",
+      "You are the home my heart always wanted.",
+      "You make forever feel not long enough.",
+      "The way you make me feel safe to be myself.",
+      "You are my answer to every prayer.",
+      "Your love has healed parts of me I hid away.",
+      "You make life feel like a love story.",
+      "The way you choose me, every single day.",
+      "You are my greatest blessing.",
+      "Because you are you — and that is everything."
+    ];
+
+    const reasonsGrid = document.getElementById('reasonsGrid');
+    const reasonsCard = document.getElementById('reasonsCard');
+    const reasonsCountEl = document.getElementById('reasonsCount');
+    const reasonsCounter = document.querySelector('.reasons-counter');
+    let reasonsOpened = 0;
+
+    REASONS.forEach(function(reason, i) {
+      const heart = document.createElement('button');
+      heart.className = 'reason-heart';
+      heart.type = 'button';
+      heart.textContent = '♥';
+      heart.setAttribute('aria-label', 'Reveal reason ' + (i + 1));
+      heart.addEventListener('click', function() {
+        if (heart.classList.contains('opened')) return;
+        heart.classList.add('opened');
+        reasonsOpened++;
+        reasonsCountEl.textContent = reasonsOpened;
+        reasonsCounter.classList.remove('bump');
+        void reasonsCounter.offsetWidth;
+        reasonsCounter.classList.add('bump');
+        reasonsCard.classList.remove('pop-in');
+        reasonsCard.innerHTML = '<span class="reason-num">reason ' + (i + 1) + '</span>' + reason;
+        void reasonsCard.offsetWidth;
+        reasonsCard.classList.add('pop-in');
+        if (reasonsOpened === REASONS.length) {
+          setTimeout(function() {
+            reasonsCard.innerHTML = '<span class="reason-num">all 100</span>... and a million more I cannot count. I love you, always.';
+            reasonsCard.classList.remove('pop-in');
+            void reasonsCard.offsetWidth;
+            reasonsCard.classList.add('pop-in');
+          }, 1200);
+        }
+      });
+      reasonsGrid.appendChild(heart);
+    });
+
+    observer.observe(reasonsCard);
+    observer.observe(reasonsCounter);
+    document.querySelectorAll('.reasons-intro, .reason-heart').forEach(function(el) {
+      observer.observe(el);
+    });
   </script>
 </body>
 </html>
