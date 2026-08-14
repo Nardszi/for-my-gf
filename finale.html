@@ -408,6 +408,27 @@
       }
     });
 
+    function autoPlaySong() {
+      song.play().then(function() {
+        musicOn = true;
+        musicBtn.textContent = 'Pause our song';
+      }).catch(function() {});
+    }
+    var autoMusicTried = false;
+    function tryAutoMusic() {
+      if (autoMusicTried) return;
+      autoMusicTried = true;
+      autoPlaySong();
+    }
+    setTimeout(tryAutoMusic, 800);
+    var autoMusicFirstTap = function() {
+      tryAutoMusic();
+      document.removeEventListener('touchend', autoMusicFirstTap);
+      document.removeEventListener('click', autoMusicFirstTap);
+    };
+    document.addEventListener('touchend', autoMusicFirstTap, { passive: true });
+    document.addEventListener('click', autoMusicFirstTap);
+
     startFinale();
 
     window.scrollTo(0, 0);
