@@ -627,15 +627,6 @@
 
     .replay-btn.visible { opacity: 1; }
 
-    .finale-btn { margin-left: 0.6rem; }
-    .finale-btn:hover {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
-      border-color: transparent;
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(224, 86, 124, 0.45);
-    }
-
     .replay-btn:hover {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
@@ -1362,6 +1353,36 @@
       color: var(--accent-dark);
       min-height: 1.5em;
     }
+
+    .anniv-finale-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.4rem auto 0;
+      padding: 0.9rem 2.1rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border: none;
+      border-radius: 50px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(201, 138, 143, 0.45);
+      transition: transform 0.3s var(--spring), box-shadow 0.3s ease;
+    }
+    .anniv-finale-btn.visible {
+      display: inline-flex;
+      animation: heartbeat 2.2s ease-in-out infinite;
+    }
+    .anniv-finale-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 34px rgba(224, 86, 124, 0.5);
+    }
+    .anniv-finale-btn svg { width: 16px; height: 16px; }
 
     .anniv-postcard-btn {
       display: inline-flex;
@@ -4317,6 +4338,12 @@
         <p class="anniv-hunt-sub">tap every square — 5 hearts are hiding among them</p>
         <div class="anniv-hunt-grid" id="annivHuntGrid"></div>
         <p class="anniv-hunt-progress" id="annivHuntProgress"></p>
+        <button class="anniv-finale-btn" id="finaleBtn" type="button">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"></path>
+          </svg>
+          The Finale
+        </button>
       </div>
       <button class="anniv-postcard-btn" id="annivPostcardBtn">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -4516,12 +4543,6 @@
           <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
         </svg>
         Start Over
-      </button>
-      <button class="replay-btn finale-btn" id="finaleBtn" type="button">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"></path>
-        </svg>
-        The Finale
       </button>
     </section>
 
