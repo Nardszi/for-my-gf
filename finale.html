@@ -272,7 +272,11 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
-</style>
+    @media (max-width: 400px) {
+      .finale-actions { gap: 0.5rem; }
+      .mini-btn { padding: 0.5rem 0.85rem; font-size: 0.78rem; }
+    }
+  </style>
 </head>
 <body>
   <div class="finale-bg" aria-hidden="true"></div>
