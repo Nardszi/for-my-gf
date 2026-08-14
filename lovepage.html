@@ -1263,6 +1263,195 @@
 
     .anniv-page .anniv-photos { margin-bottom: 1rem; }
 
+    .anniv-years {
+      max-width: 420px;
+      margin: 0 auto 1.75rem;
+      padding: 1.25rem 1rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border-radius: 24px;
+      color: white;
+      box-shadow: 0 16px 36px rgba(201, 138, 143, 0.45);
+    }
+
+    .anniv-years-num {
+      font-family: var(--serif);
+      font-size: 2.6rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .anniv-years-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.9;
+      margin-top: 0.4rem;
+    }
+
+    .anniv-years-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      opacity: 0.95;
+      margin-top: 0.6rem;
+    }
+
+    .anniv-vow {
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border-radius: 24px;
+      padding: 1.75rem 1.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 16px 36px rgba(201, 138, 143, 0.4);
+    }
+
+    .anniv-vow-text {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-style: italic;
+      line-height: 1.8;
+      color: white;
+    }
+
+    .anniv-vow-text strong { font-weight: 500; }
+
+    .anniv-wishes-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--fg-primary);
+      margin-bottom: 1.25rem;
+    }
+
+    .anniv-wishes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .anniv-wish {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.1rem 1.25rem;
+      text-align: left;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .anniv-wish-num {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      color: white;
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      box-shadow: 0 6px 14px rgba(201, 138, 143, 0.35);
+    }
+
+    .anniv-wish-text {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--fg-primary);
+    }
+
+    .anniv-slideshow {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 1.25rem;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-hover);
+      background: var(--card-bg);
+      aspect-ratio: 4 / 3;
+    }
+
+    .anniv-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity 0.9s ease, transform 6s ease;
+      cursor: pointer;
+    }
+
+    .anniv-slide.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 1;
+    }
+
+    .anniv-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .anniv-slide-cap {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 2rem 1rem 0.8rem;
+      background: linear-gradient(to top, rgba(61, 58, 56, 0.8), transparent);
+      color: #fff;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .anniv-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .anniv-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(201, 138, 143, 0.35);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s var(--spring);
+    }
+
+    .anniv-dot.active {
+      width: 22px;
+      border-radius: 6px;
+      background: var(--accent-primary);
+    }
+
+    .anniv-float-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 3005;
+      color: var(--accent-primary);
+      animation: annivFloatUp linear forwards;
+    }
+
+    @keyframes annivFloatUp {
+      0% { transform: translateY(0) rotate(0deg) scale(0.6); opacity: 0; }
+      12% { opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(var(--rot, 30deg)) scale(1.1); opacity: 0; }
+    }
+
+    .anniv-count-num.pop { animation: numPop 0.45s var(--spring); display: inline-block; }
+
     .anniv-orb {
       position: absolute;
       border-radius: 50%;
@@ -3419,10 +3608,15 @@
         <h1 class="anniv-page-title">Happy <em>Anniversary</em></h1>
         <p class="anniv-page-sub">to the one who makes every day worth celebrating</p>
       </div>
+      <div class="anniv-years" id="annivYears"></div>
       <div class="anniv-countdown" id="annivCountdown"></div>
       <div class="anniv-letter" id="annivLetter"></div>
+      <div class="anniv-vow" id="annivVow"></div>
       <h3 class="anniv-photos-title">A little trip down memory lane</h3>
-      <div class="anniv-photos" id="annivPhotos"></div>
+      <div class="anniv-slideshow" id="annivSlideshow"></div>
+      <div class="anniv-dots" id="annivDots"></div>
+      <h3 class="anniv-wishes-title">For the year ahead</h3>
+      <div class="anniv-wishes" id="annivWishes"></div>
       <button class="anniv-back" id="annivBack">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 12H5"></path>
@@ -4866,6 +5060,14 @@
       "Happy anniversary, my love. Here's to us — today, tomorrow, and every day after."
     ];
 
+    const ANNIV_STORAGE_KEY = 'forMyGf_annivUnlocked';
+    const ANNIV_VOW = "I promise to keep choosing you, keep laughing with you, and keep falling in love with you — today, tomorrow, and always.";
+    const ANNIV_WISHES = [
+      "More sleepy mornings and slow, lazy coffee with you.",
+      "A trip somewhere we've never been, just us two.",
+      "A whole new year of your laugh, your hand, your love."
+    ];
+
     const annivLock = document.getElementById('annivLock');
     const annivPage = document.getElementById('annivPage');
     const annivInput = document.getElementById('annivInput');
@@ -4875,17 +5077,42 @@
     const annivEyeOpen = document.getElementById('annivEyeOpen');
     const annivEyeClosed = document.getElementById('annivEyeClosed');
 
+    function annivConfetti() {
+      const hearts = ['♥', '♥', '♥', '✦', '✿'];
+      for (let i = 0; i < 30; i++) {
+        const h = document.createElement('span');
+        h.className = 'anniv-float-heart';
+        h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        h.style.left = (Math.random() * 100) + 'vw';
+        h.style.top = '110vh';
+        h.style.fontSize = (Math.random() * 26 + 14) + 'px';
+        h.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+        h.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        h.style.animationDelay = (Math.random() * 3) + 's';
+        document.body.appendChild(h);
+        setTimeout(function() { h.remove(); }, 10000);
+      }
+    }
+
+    function openAnnivPage() {
+      annivPage.classList.remove('hidden');
+      void annivPage.offsetWidth;
+      annivPage.classList.add('visible');
+      annivPage.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+      spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 22);
+      setTimeout(function() { spawnBurst(window.innerWidth / 2, window.innerHeight / 3, 18); }, 250);
+      setTimeout(annivConfetti, 150);
+      vibrate([60, 30, 60, 30, 120]);
+      if (!isPlaying && musicToggle) musicToggle.click();
+    }
+
     function tryAnnivUnlock() {
       const value = annivInput.value.trim().toLowerCase();
       if (value === ANNIV_PASSWORD) {
         annivLockError.classList.remove('show');
-        annivPage.classList.remove('hidden');
-        void annivPage.offsetWidth;
-        annivPage.classList.add('visible');
-        annivPage.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
-        spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 18);
-        vibrate([60, 30, 60, 30, 120]);
+        localStorage.setItem(ANNIV_STORAGE_KEY, '1');
+        openAnnivPage();
       } else {
         annivInput.value = '';
         annivInput.classList.remove('wrong');
@@ -4910,6 +5137,7 @@
     });
 
     const annivCountdown = document.getElementById('annivCountdown');
+    const annivCountNums = {};
 
     function buildAnnivCountdown() {
       const now = new Date();
@@ -4923,22 +5151,50 @@
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = totalSeconds % 60;
       const boxes = [
-        { num: days, label: 'Days' },
-        { num: hours, label: 'Hours' },
-        { num: minutes, label: 'Minutes' },
-        { num: seconds, label: 'Seconds' }
+        { key: 'd', num: days, label: 'Days' },
+        { key: 'h', num: hours, label: 'Hours' },
+        { key: 'm', num: minutes, label: 'Minutes' },
+        { key: 's', num: seconds, label: 'Seconds' }
       ];
-      annivCountdown.innerHTML = '';
-      boxes.forEach(function(box) {
-        const el = document.createElement('div');
-        el.className = 'anniv-count-box';
-        el.innerHTML = '<div class="anniv-count-num">' + box.num + '</div><div class="anniv-count-label">' + box.label + '</div>';
-        annivCountdown.appendChild(el);
-      });
+      if (!annivCountdown.childElementCount) {
+        boxes.forEach(function(box) {
+          const el = document.createElement('div');
+          el.className = 'anniv-count-box';
+          el.innerHTML = '<div class="anniv-count-num" id="annivNum' + box.key + '">' + box.num + '</div><div class="anniv-count-label">' + box.label + '</div>';
+          annivCountdown.appendChild(el);
+        });
+      } else {
+        boxes.forEach(function(box) {
+          const el = document.getElementById('annivNum' + box.key);
+          if (el && el.textContent !== String(box.num)) {
+            el.textContent = box.num;
+            el.classList.remove('pop');
+            void el.offsetWidth;
+            el.classList.add('pop');
+          }
+        });
+      }
     }
 
     buildAnnivCountdown();
     setInterval(buildAnnivCountdown, 1000);
+
+    const annivYears = document.getElementById('annivYears');
+    (function buildAnnivYears() {
+      const now = new Date();
+      const start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
+      const diff = now - start;
+      const totalDays = Math.floor(diff / 86400000);
+      const years = Math.floor(totalDays / 365);
+      const months = Math.floor((totalDays % 365) / 30);
+      const days = totalDays % 30;
+      const yearWord = years === 1 ? 'Year' : 'Years';
+      const monthWord = months === 1 ? 'Month' : 'Months';
+      const dayWord = days === 1 ? 'Day' : 'Days';
+      annivYears.innerHTML =
+        '<div class="anniv-years-num">' + years + ' ' + yearWord + '</div>' +
+        '<div class="anniv-years-sub">' + months + ' ' + monthWord + ' \u00b7 ' + days + ' ' + dayWord + ' of loving you</div>';
+    })();
 
     const annivLetter = document.getElementById('annivLetter');
     ANNIV_LETTER.forEach(function(para) {
@@ -4947,18 +5203,74 @@
       annivLetter.appendChild(p);
     });
 
-    const annivPhotos = document.getElementById('annivPhotos');
+    const annivVow = document.getElementById('annivVow');
+    annivVow.innerHTML = '<div class="anniv-vow-text"><strong>I promise:</strong> ' + ANNIV_VOW + '</div>';
+
+    const annivSlideshow = document.getElementById('annivSlideshow');
+    const annivDots = document.getElementById('annivDots');
     const annivModalImage = document.getElementById('modalImage');
-    PHOTOS.forEach(function(photo) {
-      const el = document.createElement('div');
-      el.className = 'anniv-photo';
-      el.innerHTML = '<img src="' + photo.src + '" alt="Anniversary photo" loading="lazy"><div class="anniv-photo-cap">' + photo.caption + '</div>';
-      el.addEventListener('click', function() {
-        annivModalImage.src = photo.src;
-        photoModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    let annivSlideIndex = 0;
+    let annivSlideTimer;
+
+    function buildAnnivSlideshow() {
+      annivSlideshow.innerHTML = '';
+      annivDots.innerHTML = '';
+      PHOTOS.forEach(function(photo, i) {
+        const slide = document.createElement('div');
+        slide.className = 'anniv-slide' + (i === 0 ? ' active' : '');
+        slide.innerHTML = '<img src="' + photo.src + '" alt="Anniversary photo" loading="lazy"><div class="anniv-slide-cap">' + photo.caption + '</div>';
+        slide.addEventListener('click', function() {
+          annivModalImage.src = photo.src;
+          photoModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          clearInterval(annivSlideTimer);
+        });
+        annivSlideshow.appendChild(slide);
+
+        const dot = document.createElement('button');
+        dot.className = 'anniv-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Photo ' + (i + 1));
+        dot.addEventListener('click', function() {
+          annivSlideIndex = i;
+          showAnnivSlide();
+        });
+        annivDots.appendChild(dot);
       });
-      annivPhotos.appendChild(el);
+      annivSlideTimer = setInterval(function() {
+        annivSlideIndex = (annivSlideIndex + 1) % PHOTOS.length;
+        showAnnivSlide();
+      }, 4500);
+    }
+
+    function showAnnivSlide() {
+      const slides = annivSlideshow.querySelectorAll('.anniv-slide');
+      const dots = annivDots.querySelectorAll('.anniv-dot');
+      slides.forEach(function(s, i) { s.classList.toggle('active', i === annivSlideIndex); });
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === annivSlideIndex); });
+    }
+
+    buildAnnivSlideshow();
+
+    photoModal.addEventListener('click', function(e) {
+      if (e.target === photoModal || e.target.classList.contains('photo-modal-close')) {
+        photoModal.classList.remove('active');
+        document.body.style.overflow = annivPage.classList.contains('hidden') ? '' : 'hidden';
+        if (!annivPage.classList.contains('hidden')) {
+          clearInterval(annivSlideTimer);
+          annivSlideTimer = setInterval(function() {
+            annivSlideIndex = (annivSlideIndex + 1) % PHOTOS.length;
+            showAnnivSlide();
+          }, 4500);
+        }
+      }
+    });
+
+    const annivWishes = document.getElementById('annivWishes');
+    ANNIV_WISHES.forEach(function(wish, i) {
+      const el = document.createElement('div');
+      el.className = 'anniv-wish';
+      el.innerHTML = '<span class="anniv-wish-num">' + (i + 1) + '</span><span class="anniv-wish-text">' + wish + '</span>';
+      annivWishes.appendChild(el);
     });
 
     const annivBack = document.getElementById('annivBack');
@@ -4967,6 +5279,16 @@
         annivPage.classList.add('hidden');
         document.body.style.overflow = '';
       });
+    }
+
+    if (localStorage.getItem(ANNIV_STORAGE_KEY)) {
+      annivLock.style.display = 'none';
+      const revisit = document.createElement('button');
+      revisit.className = 'anniv-unlock';
+      revisit.textContent = 'Revisit our anniversary';
+      revisit.style.marginTop = '0';
+      annivLock.parentNode.insertBefore(revisit, annivLock.nextSibling);
+      revisit.addEventListener('click', openAnnivPage);
     }
 
     observer.observe(annivLock);
