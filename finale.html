@@ -177,13 +177,6 @@
       color: var(--rose);
       text-shadow: 0 0 10px rgba(255, 143, 171, 0.7);
     }
-    .milestone-date {
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.25rem;
-    }
     .milestone-text {
       font-size: 0.95rem;
       line-height: 1.5;
@@ -373,10 +366,10 @@
     var showEnding = false;
 
     var MILESTONES = [
-      { date: "September 10, 2024", text: "The day we became us — where every story has to begin." },
-      { date: "every day since", text: "The small moments: the laughs, the talks, the quiet silences that say everything." },
-      { date: "today", text: "Looking back at all we've built and feeling like I won something no one can take away." },
-      { date: "forever", text: "And it goes on — because you and I are the best kind of never-ending." }
+      "The day we became us — where every story has to begin.",
+      "The small moments: the laughs, the talks, the quiet silences that say everything.",
+      "Looking back at all we've built and feeling like I won something no one can take away.",
+      "And it goes on — because you and I are the best kind of never-ending."
     ];
 
     function typeLetter(el, text, speed) {
@@ -407,25 +400,14 @@
         if (idx >= items.length) return;
         var m = items[idx];
         m.classList.add('revealed');
-        var dateEl = m.querySelector('.milestone-date');
         var textEl = m.querySelector('.milestone-text');
-        var date = dateEl.textContent;
         var text = textEl.textContent;
-        dateEl.textContent = '';
         textEl.textContent = '';
         var i = 0;
-        var big = date + '  \u2022  ' + text;
         var timer = setInterval(function() {
           i++;
-          var sliced = big.slice(0, i);
-          var sep = sliced.indexOf('  \u2022  ');
-          if (sep !== -1) {
-            dateEl.textContent = sliced.slice(0, sep);
-            textEl.textContent = sliced.slice(sep + 5);
-          } else {
-            dateEl.textContent = sliced;
-          }
-          if (i >= big.length) {
+          textEl.textContent = text.slice(0, i);
+          if (i >= text.length) {
             clearInterval(timer);
             idx++;
             var caret = document.createElement('span');
@@ -443,9 +425,8 @@
       MILESTONES.forEach(function(m) {
         var el = document.createElement('div');
         el.className = 'milestone';
-        el.innerHTML = '<div class="milestone-date"></div><div class="milestone-text"></div>';
-        el.querySelector('.milestone-date').textContent = m.date;
-        el.querySelector('.milestone-text').textContent = m.text;
+        el.innerHTML = '<div class="milestone-text"></div>';
+        el.querySelector('.milestone-text').textContent = m;
         milestonesEl.appendChild(el);
       });
     }
