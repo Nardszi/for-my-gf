@@ -54,88 +54,6 @@
     }
     .screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-    /* ---------- lock ---------- */
-    .lock-card {
-      max-width: 340px;
-      width: 100%;
-      background: rgba(30, 17, 24, 0.72);
-      border: 1px solid rgba(255, 143, 171, 0.35);
-      border-radius: 22px;
-      padding: 2.4rem 1.6rem 2rem;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-    .lock-heart {
-      font-size: 2.6rem;
-      color: var(--rose);
-      animation: softBeat 2.2s ease-in-out infinite;
-      text-shadow: 0 0 24px rgba(255, 143, 171, 0.7);
-    }
-    .lock-title {
-      font-size: 1.7rem;
-      letter-spacing: 0.18em;
-      margin: 0.6rem 0 0.3rem;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #ffd3e0, var(--gold), #ffd3e0);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: shimmerText 4s linear infinite;
-    }
-    .lock-sub {
-      font-size: 0.85rem;
-      color: rgba(255, 247, 238, 0.7);
-      margin-bottom: 1.6rem;
-      letter-spacing: 0.06em;
-    }
-    .lock-input-wrap { display: flex; gap: 0.5rem; }
-    .lock-input {
-      flex: 1;
-      min-width: 0;
-      padding: 0.8rem 1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 143, 171, 0.4);
-      background: rgba(255, 247, 238, 0.08);
-      color: var(--cream);
-      font-size: 1rem;
-      outline: none;
-      text-align: center;
-      letter-spacing: 0.12em;
-      transition: border-color 0.3s ease;
-    }
-    .lock-input:focus { border-color: var(--rose); }
-    .lock-input::placeholder { color: rgba(255, 247, 238, 0.4); letter-spacing: 0.05em; }
-    .lock-btn {
-      padding: 0.8rem 1.2rem;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--rose), var(--rose-deep));
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.15s var(--spring), box-shadow 0.3s ease;
-      box-shadow: 0 6px 18px rgba(224, 86, 124, 0.4);
-    }
-    .lock-btn:active { transform: scale(0.94); }
-    .lock-error {
-      margin-top: 0.9rem;
-      font-size: 0.8rem;
-      color: #ffb3b3;
-      height: 1.1rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .lock-error.show { opacity: 1; }
-    .lock-hint {
-      margin-top: 0.9rem;
-      font-size: 0.72rem;
-      color: rgba(255, 247, 238, 0.4);
-      letter-spacing: 0.05em;
-    }
-
     /* ---------- finale scene ---------- */
     .finale-inner {
       max-width: 640px;
@@ -282,21 +200,7 @@
 <body>
   <div class="finale-bg" aria-hidden="true"></div>
 
-  <div class="screen" id="lockScreen">
-    <div class="lock-card fade-up">
-      <div class="lock-heart">♥</div>
-      <h1 class="lock-title">The Finale</h1>
-      <p class="lock-sub">one last door, unlocked only for us</p>
-      <div class="lock-input-wrap">
-        <input class="lock-input" id="lockInput" type="password" placeholder="password" autocomplete="off">
-        <button class="lock-btn" id="lockBtn">Unlock</button>
-      </div>
-      <p class="lock-error" id="lockError">hmm, that&rsquo;s not it &mdash; try again</p>
-      <p class="lock-hint">ask your favorite person for the key</p>
-    </div>
-  </div>
-
-  <div class="screen hidden" id="finaleScreen">
+  <div class="screen" id="finaleScreen">
     <div class="finale-inner">
       <p class="finale-eyebrow fade-up d1">and so, it comes to this</p>
       <h1 class="finale-title fade-up d2">The Finale</h1>
@@ -316,14 +220,9 @@
   </div>
 
 <script>
-    var FINALE_PASSWORD = "forever91024";
     var RELATIONSHIP_START_DATE = "2024-09-10";
 
-    var lockScreen = document.getElementById('lockScreen');
     var finaleScreen = document.getElementById('finaleScreen');
-    var lockInput = document.getElementById('lockInput');
-    var lockBtn = document.getElementById('lockBtn');
-    var lockError = document.getElementById('lockError');
     var finaleLetter = document.getElementById('finaleLetter');
     var foreverFill = document.getElementById('foreverFill');
     var foreverHeart = document.getElementById('foreverHeart');
@@ -349,10 +248,7 @@
       }, speed);
     }
 
-    function unlock() {
-      lockScreen.classList.add('hidden');
-      finaleScreen.classList.remove('hidden');
-      document.getElementById('lockInput').blur();
+    function startFinale() {
       var letter = 'This is where our story slows down, not to end, but to be savored. Every laugh, every fight, every quiet moment in between has brought me here, to you. I still choose you, today and in every tomorrow this page can hold. Thank you for being my favorite chapter. \u2014 Nard';
       setTimeout(function() { typeLetter(finaleLetter, letter, 26); }, 900);
       setTimeout(function() {
@@ -374,22 +270,6 @@
         burst(window.innerWidth / 2, window.innerHeight * 0.4);
       }, 600);
     }
-
-    function tryUnlock() {
-      if (lockInput.value.trim().toLowerCase() === FINALE_PASSWORD) {
-        unlock();
-      } else {
-        lockError.classList.add('show');
-        lockInput.classList.add('wrong');
-        setTimeout(function() { lockInput.classList.remove('wrong'); }, 500);
-      }
-    }
-
-    lockBtn.addEventListener('click', tryUnlock);
-    lockInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') tryUnlock();
-      lockError.classList.remove('show');
-    });
 
     function addForever() {
       if (fill >= 100) return;
@@ -442,6 +322,8 @@
         musicOn = true;
       }
     });
+
+    startFinale();
 </script>
 </body>
 </html>
