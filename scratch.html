@@ -77,6 +77,9 @@
     position: absolute; inset: 0; z-index: 1;
     border-radius: 22px;
     cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .scratch-cover.revealed { pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
 
@@ -210,13 +213,24 @@
   var scratching = false;
   var scratchRadius = 22;
   var checkedAt = 0;
+  var lastPoint = null;
 
   function scratch(x, y) {
     ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = scratchRadius * 2;
+    ctx.beginPath();
+    if (lastPoint) {
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
     ctx.beginPath();
     ctx.arc(x, y, scratchRadius, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalCompositeOperation = 'source-over';
+    lastPoint = { x: x, y: y };
     var now = Date.now();
     if (now - checkedAt > 250) {
       checkedAt = now;
@@ -235,8 +249,9 @@
   function checkProgress() {
     var w = canvas.width, h = canvas.height;
     var data = ctx.getImageData(0, 0, w, h).data;
-    var cleared = 0, total = data.length / 4;
-    for (var i = 3; i < data.length; i += 4) {
+    var cleared = 0, total = 0;
+    for (var i = 3; i < data.length; i += 32) {
+      total++;
       if (data[i] < 60) cleared++;
     }
     var pct = cleared / total;
@@ -256,6 +271,7 @@
 
   canvas.addEventListener('pointerdown', function(e) {
     scratching = true;
+    lastPoint = null;
     canvas.setPointerCapture(e.pointerId);
     var p = getPos(e);
     scratch(p.x, p.y);
@@ -265,12 +281,13 @@
     var p = getPos(e);
     scratch(p.x, p.y);
   });
-  canvas.addEventListener('pointerup', function() { scratching = false; });
-  canvas.addEventListener('pointercancel', function() { scratching = false; });
+  canvas.addEventListener('pointerup', function() { scratching = false; lastPoint = null; });
+  canvas.addEventListener('pointercancel', function() { scratching = false; lastPoint = null; });
 
   newCard.addEventListener('click', function() {
     pickPromise();
     ctx = setupCanvas();
+    lastPoint = null;
     cover.classList.remove('revealed');
     toast.textContent = 'rub your finger (or mouse) across the foil';
     newCard.classList.add('hidden');
@@ -279,6 +296,7 @@
   window.addEventListener('resize', function() {
     var wasRevealed = cover.classList.contains('revealed');
     ctx = setupCanvas();
+    lastPoint = null;
     if (!wasRevealed) cover.classList.remove('revealed');
   });
 

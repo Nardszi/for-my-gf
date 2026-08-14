@@ -220,7 +220,7 @@
       var tappable = !solved && !isBlank && isAdjacent(p, blankIdx);
       html += '<div class="tile' + (isBlank ? ' blank' : '') + (tappable ? ' tappable' : '') +
         '" data-p="' + p + '" style="' +
-        (isBlank ? '' : 'background-position:' + (-c * 50) + '% ' + (-r * 50) + '%;') +
+        (isBlank ? '' : 'background-position:' + (c * 50) + '% ' + (r * 50) + '%;') +
         '"></div>';
     }
     board.innerHTML = html;

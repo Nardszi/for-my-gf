@@ -4788,8 +4788,34 @@
 
   <script>
     const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const SESSION_KEY = 'forMyGf_unlocked';
+    const SCROLL_KEY = 'forMyGf_scroll';
+    let unlockedInSession = false;
+    try { unlockedInSession = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
+
+    function saveScrollPos() {
+      try { sessionStorage.setItem(SCROLL_KEY, String(window.scrollY || 0)); } catch (e) {}
+    }
+    window.addEventListener('scroll', function() {
+      if (window.scrollSaveTimer) return;
+      window.scrollSaveTimer = setTimeout(function() { window.scrollSaveTimer = null; saveScrollPos(); }, 200);
+    }, { passive: true });
+    window.addEventListener('pagehide', saveScrollPos);
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') saveScrollPos();
+    });
+
     window.scrollTo(0, 0);
-    window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+    window.addEventListener('pageshow', function() {
+      if (unlockedInSession) {
+        const y = parseInt(sessionStorage.getItem(SCROLL_KEY) || '0', 10) || 0;
+        window.scrollTo(0, y);
+      } else {
+        const introEl = document.getElementById('introScreen');
+        const mainShown = introEl && (introEl.style.display === 'none' || introEl.classList.contains('hidden'));
+        if (!mainShown) window.scrollTo(0, 0);
+      }
+    });
 
     const introScreen = document.getElementById('introScreen');
     const loveScreen = document.getElementById('loveScreen');
@@ -5237,6 +5263,7 @@
         setTimeout(function() {
           lockScreen.classList.add('unlocked');
           document.body.style.overflow = '';
+          try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
           window.scrollTo({ top: 0, behavior: 'instant' });
           startSidePhotos();
           document.getElementById('musicToggle').click();
@@ -6898,6 +6925,27 @@
 
     /* ---- scroll-triggered fireflies ---- */
     setTimeout(function() { if (window.initFireflies) window.initFireflies(); }, 900);
+
+    /* ---- skip intro flow when returning from a sub-page in the same tab ---- */
+    if (unlockedInSession) {
+      const overlays = ['introScreen', 'loveScreen', 'quizScreen', 'lockScreen'];
+      overlays.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.style.display = 'none';
+        }
+      });
+      document.body.style.overflow = '';
+      startSidePhotos();
+      const savedY = parseInt(sessionStorage.getItem(SCROLL_KEY) || '0', 10) || 0;
+      if (savedY > 0) {
+        const go = function() { window.scrollTo(0, savedY); };
+        setTimeout(go, 60);
+        setTimeout(go, 260);
+        window.addEventListener('load', function() { setTimeout(go, 50); });
+      }
+    }
   </script>
   <script src="app.js"></script>
 </body>
