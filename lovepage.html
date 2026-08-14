@@ -72,6 +72,15 @@
     }
     .theme-toggle:hover { transform: scale(1.1) rotate(10deg); box-shadow: var(--shadow-hover); }
 
+    @media (max-width: 768px) {
+      .theme-toggle {
+        top: 1rem; left: 1rem;
+        width: 56px; height: 56px;
+        font-size: 1.3rem;
+        touch-action: manipulation;
+      }
+    }
+
     html { scroll-behavior: smooth; }
     html { color-scheme: light; }
     html[data-theme="dark"] { color-scheme: dark; }
