@@ -2322,6 +2322,81 @@
 
     .photo-modal-close:hover { transform: scale(1.1) rotate(90deg); }
 
+    .finale-modal-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: 330px;
+      width: 90%;
+      background: rgba(30, 17, 24, 0.85);
+      border: 1px solid rgba(232, 161, 169, 0.4);
+      border-radius: 22px;
+      padding: 2.2rem 1.6rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    .finale-modal-heart {
+      font-size: 2.4rem;
+      color: var(--accent-primary);
+      animation: heartbeat 2.2s ease-in-out infinite;
+      text-shadow: 0 0 24px rgba(232, 161, 169, 0.7);
+    }
+    .finale-modal-title {
+      font-size: 1.5rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-dark), var(--accent-primary));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: lineShimmer 3s linear infinite;
+      margin: 0;
+    }
+    .finale-modal-sub {
+      font-size: 0.82rem;
+      color: var(--fg-secondary);
+      letter-spacing: 0.06em;
+      margin: -0.4rem 0 0.4rem;
+    }
+    .finale-modal-inner .lock-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(232, 161, 169, 0.4);
+      background: rgba(255, 247, 238, 0.08);
+      color: var(--fg-primary);
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+      letter-spacing: 0.12em;
+    }
+    .finale-modal-inner .lock-input:focus { border-color: var(--accent-primary); }
+    .finale-modal-inner .lock-btn {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(201, 138, 143, 0.4);
+      transition: transform 0.15s var(--spring);
+    }
+    .finale-modal-inner .lock-btn:active { transform: scale(0.95); }
+    .finale-modal-inner .lock-error {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #ffb3b3;
+      height: 1.1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .finale-modal-inner .lock-error.show { opacity: 1; }
+
     .sparkle {
       position: absolute;
       width: 6px; height: 6px;
@@ -4442,12 +4517,12 @@
         </svg>
         Start Over
       </button>
-      <a class="replay-btn finale-btn" id="finaleBtn" href="finale.html" style="text-decoration: none;">
+      <button class="replay-btn finale-btn" id="finaleBtn" type="button">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z"></path>
         </svg>
         The Finale
-      </a>
+      </button>
     </section>
 
     <section class="section reasons-section" id="reasonsSection">
@@ -4498,6 +4573,18 @@
       <button class="photo-modal-close" aria-label="Close">×</button>
       <img src="" alt="Full size photo" id="modalImage">
       <div class="anniv-lightbox-cap" id="annivLightboxCap"></div>
+    </div>
+
+    <div class="photo-modal" id="finaleModal">
+      <button class="photo-modal-close" id="finaleModalClose" aria-label="Close">×</button>
+      <div class="finale-modal-inner">
+        <div class="finale-modal-heart">♥</div>
+        <h3 class="finale-modal-title">The Finale</h3>
+        <p class="finale-modal-sub">one last door before our forever</p>
+        <input class="lock-input" id="finalePassInput" type="password" placeholder="password" autocomplete="off">
+        <button class="lock-btn" id="finalePassBtn" type="button">Unlock</button>
+        <p class="lock-error" id="finalePassError">hmm, that&rsquo;s not it &mdash; try again</p>
+      </div>
     </div>
   </div>
 
@@ -5381,7 +5468,7 @@
       });
     }, { threshold: 0.2 });
 
-    document.querySelectorAll('.section-label, .section-title, .time-card, .gallery-item, .timeline-entry, .letter-content p, .closing-text, .closing-signature, .heart-container, .replay-btn').forEach(function(el) {
+    document.querySelectorAll('.section-label, .section-title, .time-card, .gallery-item, .timeline-entry, .letter-content p, .closing-text, .closing-signature, .heart-container, .replay-btn:not(#finaleBtn)').forEach(function(el) {
       observer.observe(el);
     });
 
@@ -6253,6 +6340,7 @@
                 }, f * 250);
               }
               setTimeout(annivConfetti, 300);
+              revealFinaleButton();
             }
           } else {
             cell.classList.add('empty');
@@ -6486,6 +6574,62 @@
     });
 
     observer.observe(annivLock);
+
+    const finaleBtn = document.getElementById('finaleBtn');
+    const finaleModal = document.getElementById('finaleModal');
+    const finaleModalClose = document.getElementById('finaleModalClose');
+    const finalePassInput = document.getElementById('finalePassInput');
+    const finalePassBtn = document.getElementById('finalePassBtn');
+    const finalePassError = document.getElementById('finalePassError');
+
+    let finaleUnlocked = false;
+
+    function revealFinaleButton() {
+      if (finaleUnlocked) return;
+      finaleUnlocked = true;
+      finaleBtn.classList.add('visible');
+      if (localStorage) localStorage.setItem('forMyGf_finaleUnlocked', '1');
+      setTimeout(function() {
+        finaleBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 900);
+    }
+
+    if (localStorage && localStorage.getItem('forMyGf_finaleUnlocked') === '1') {
+      finaleUnlocked = true;
+      finaleBtn.classList.add('visible');
+    }
+
+    function openFinaleModal() {
+      finaleModal.classList.add('active');
+      finalePassInput.value = '';
+      finalePassError.classList.remove('show');
+      setTimeout(function() { finalePassInput.focus(); }, 100);
+    }
+
+    function closeFinaleModal() {
+      finaleModal.classList.remove('active');
+    }
+
+    function tryFinalePass() {
+      if (finalePassInput.value.trim().toLowerCase() === 'forever91024') {
+        window.location.href = 'finale.html';
+      } else {
+        finalePassError.classList.add('show');
+        finalePassInput.classList.add('wrong');
+        setTimeout(function() { finalePassInput.classList.remove('wrong'); }, 500);
+      }
+    }
+
+    finaleBtn.addEventListener('click', openFinaleModal);
+    finaleModalClose.addEventListener('click', closeFinaleModal);
+    finalePassBtn.addEventListener('click', tryFinalePass);
+    finalePassInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') tryFinalePass();
+      finalePassError.classList.remove('show');
+    });
+    finaleModal.addEventListener('click', function(e) {
+      if (e.target === finaleModal) closeFinaleModal();
+    });
   </script>
 </body>
 </html>
