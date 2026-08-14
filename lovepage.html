@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Our Love Story</title>
+  <meta name="theme-color" content="#fff9f5">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Every love story is beautiful, but ours is my favorite">
+  <meta property="og:description" content="Rezil &amp; Nard — every moment with you is a gift. Made with all my love, Nard.">
+  <meta property="og:image" content="og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -28,7 +37,44 @@
       --spring: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    :root[data-theme="dark"] {
+      --bg-primary: #1a0f14;
+      --bg-secondary: #241218;
+      --fg-primary: #fff7ee;
+      --fg-secondary: #d8c4ca;
+      --accent-primary: #ff8fab;
+      --accent-secondary: #e0567c;
+      --accent-dark: #ff5d8f;
+      --card-bg: rgba(42, 20, 32, 0.82);
+      --card-border: rgba(255, 143, 171, 0.28);
+      --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.35);
+      --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --gradient-romantic: linear-gradient(135deg, #2a1420 0%, #1a0f14 50%, #241218 100%);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1.5rem; left: 1.5rem;
+      z-index: 100;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s var(--spring);
+      font-size: 1.15rem;
+      color: var(--fg-secondary);
+    }
+    .theme-toggle:hover { transform: scale(1.1) rotate(10deg); box-shadow: var(--shadow-hover); }
+
     html { scroll-behavior: smooth; }
+    html { color-scheme: light; }
+    html[data-theme="dark"] { color-scheme: dark; }
 
     body {
       font-family: var(--sans);
@@ -337,6 +383,19 @@
     }
 
     .time-card:hover .time-number { transform: scale(1.1); }
+
+    .forever-note {
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--fg-secondary);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.8s ease, transform 0.8s var(--spring);
+    }
+    .forever-note.visible { opacity: 1; transform: translateY(0); }
+    .forever-note b { color: var(--accent-dark); }
 
     .time-label {
       font-size: 0.6rem;
@@ -1141,6 +1200,91 @@
       margin-top: 0.8rem;
       opacity: 0.75;
     }
+
+    .extras-section { background: var(--bg-secondary); }
+    .extras-sub {
+      text-align: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--fg-secondary);
+      margin-bottom: 1.4rem;
+    }
+    .extras-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+    .extras-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.4rem 1rem;
+      border-radius: 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.4s var(--spring);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .extras-card.visible { opacity: 1; transform: translateY(0); }
+    .extras-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-hover); }
+    .extras-card .extras-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 4px 10px rgba(201, 138, 143, 0.35));
+    }
+    .extras-card .extras-name {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--fg-primary);
+    }
+    .extras-card .extras-desc {
+      font-size: 0.74rem;
+      color: var(--fg-secondary);
+      line-height: 1.5;
+    }
+    .extras-share { text-align: center; margin-top: 1.4rem; }
+    .extras-share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent-primary);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.4s var(--spring);
+    }
+    .extras-share-btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: var(--shadow-hover); }
+
+    .visitors-gate {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-secondary);
+      opacity: 0.12;
+      text-decoration: none;
+      font-size: 1.2rem;
+      z-index: 60;
+      transition: opacity 0.3s ease;
+    }
+    .visitors-gate:hover { opacity: 0.4; }
+    :root[data-theme="dark"] .visitors-gate { color: var(--fg-secondary); }
 
     .anniv-content {
       max-width: 520px;
@@ -4433,6 +4577,10 @@
   </div>
 
   <div class="page-container">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light theme" title="Theme">
+      <span id="themeIcon">🌙</span>
+    </button>
+
     <button class="music-toggle" id="musicToggle" aria-label="Toggle music">
       <svg id="playIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -4473,6 +4621,7 @@
         <div class="time-card"><div class="time-number" id="minutes">0</div><div class="time-label">Minutes</div></div>
         <div class="time-card"><div class="time-number" id="seconds">0</div><div class="time-label">Seconds</div></div>
       </div>
+      <p class="forever-note" id="foreverCountdown"></p>
     </section>
 
     <section class="section gallery-section" id="gallerySection">
@@ -4593,6 +4742,27 @@
       </div>
     </section>
 
+    <section class="section extras-section" id="extrasSection">
+      <div class="section-header">
+        <p class="section-label">Little Surprises</p>
+        <h2 class="section-title">More of Us</h2>
+      </div>
+      <p class="extras-sub">little worlds I made for you — each one is a piece of my heart</p>
+      <div class="extras-grid" id="extrasGrid"></div>
+      <div class="extras-share">
+        <button class="extras-share-btn" id="shareStoryBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          Share our story
+        </button>
+      </div>
+    </section>
+
     <div class="photo-modal" id="photoModal">
       <button class="photo-modal-close" aria-label="Close">×</button>
       <img src="" alt="Full size photo" id="modalImage">
@@ -4610,6 +4780,8 @@
         <p class="lock-error" id="finalePassError">hmm, that&rsquo;s not it &mdash; try again</p>
       </div>
     </div>
+
+    <a class="visitors-gate" href="visitors.html" id="visitorsGate" aria-label="...">.</a>
   </div>
 
   <div class="float-photos-layer" id="floatPhotosLayer"></div>
@@ -6655,6 +6827,78 @@
     finaleModal.addEventListener('click', function(e) {
       if (e.target === finaleModal) closeFinaleModal();
     });
+
+    /* ---- theme toggle ---- */
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const savedTheme = (localStorage && localStorage.getItem('forMyGf_theme')) || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    themeToggle.addEventListener('click', function() {
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', current);
+      themeIcon.textContent = current === 'dark' ? '☀️' : '🌙';
+      if (localStorage) localStorage.setItem('forMyGf_theme', current);
+    });
+
+    /* ---- little surprises hub ---- */
+    const EXTRAS = [
+      { href: 'story.html', icon: '🎬', name: 'Our Story', desc: 'our months, binge-worthy — a season of us' },
+      { href: 'puzzle.html', icon: '🧩', name: 'Love Puzzle', desc: 'put us back together, find the secret' },
+      { href: 'diary.html', icon: '📖', name: 'Our Diary', desc: 'pages we both write in' },
+      { href: 'scratch.html', icon: '🎟️', name: 'Scratch Card', desc: 'scratch a promise from me to you' },
+      { href: 'portrait.html', icon: '✨', name: 'Our Portraits', desc: 'turn us into Pixar / Ghibli art' }
+    ];
+    const extrasGrid = document.getElementById('extrasGrid');
+    EXTRAS.forEach(function(item) {
+      const a = document.createElement('a');
+      a.className = 'extras-card';
+      a.href = item.href;
+      a.innerHTML = '<span class="extras-icon">' + item.icon + '</span><span class="extras-name">' + item.name + '</span><span class="extras-desc">' + item.desc + '</span>';
+      extrasGrid.appendChild(a);
+    });
+    const extrasObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry, i) {
+        if (entry.isIntersecting) {
+          setTimeout(function() { entry.target.classList.add('visible'); }, i * 90);
+          extrasObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    extrasGrid.querySelectorAll('.extras-card').forEach(function(card) { extrasObserver.observe(card); });
+
+    document.getElementById('shareStoryBtn').addEventListener('click', function() {
+      if (window.openShareCard) window.openShareCard();
+    });
+
+    /* ---- days until forever ---- */
+    const foreverNote = document.getElementById('foreverCountdown');
+    function updateForeverNote() {
+      if (typeof window.daysUntilForever === 'function') {
+        const left = window.daysUntilForever();
+        const since = Math.max(1, Math.floor((new Date() - new Date(RELATIONSHIP_START_DATE + 'T00:00:00')) / 86400000));
+        if (left > 0) {
+          foreverNote.innerHTML = 'only <b>' + left.toLocaleString() + '</b> more days until forever begins &mdash; we\'ve already done <b>' + since.toLocaleString() + '</b>';
+        }
+        foreverNote.classList.add('visible');
+      }
+    }
+    const foreverObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { updateForeverNote(); foreverObserver.unobserve(entry.target); }
+      });
+    }, { threshold: 0.3 });
+    foreverObserver.observe(foreverNote);
+
+    /* ---- hold to feel a heartbeat ---- */
+    if (window.attachHeartbeat) {
+      window.attachHeartbeat(document.getElementById('animatedHeart'));
+      window.attachHeartbeat(document.getElementById('annivPageHeart'));
+    }
+
+    /* ---- scroll-triggered fireflies ---- */
+    setTimeout(function() { if (window.initFireflies) window.initFireflies(); }, 900);
   </script>
+  <script src="app.js"></script>
 </body>
 </html>

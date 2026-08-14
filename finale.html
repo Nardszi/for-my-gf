@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>The Finale</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Finale — this is us, forever">
+<meta property="og:description" content="Every love story is beautiful, but ours is my favorite. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -28,7 +37,7 @@
     .finale-bg {
       position: fixed;
       inset: 0;
-      background-image: url("finale-bg.png");
+      background-image: url("finale-bg.webp");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -210,6 +219,17 @@
     }
     .hidden-gate:hover { color: rgba(255, 247, 238, 0.4); }
 
+    .forever-count {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: rgba(255, 247, 238, 0.6);
+      text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+    }
+    .forever-count b { color: var(--gold); }
+
+    .karaoke-live { color: #ffd3e0; text-shadow: 0 0 14px rgba(255, 143, 171, 0.9); transition: color 0.3s ease, text-shadow 0.3s ease; }
+    .karaoke-dim { color: rgba(255, 247, 238, 0.45); transition: color 0.3s ease; }
+
     .burst {
       position: fixed;
       pointer-events: none;
@@ -262,6 +282,7 @@
       <p class="finale-eyebrow fade-up d1">and so, it comes to this</p>
       <h1 class="finale-title fade-up d2">The Finale</h1>
       <div class="day-badge fade-up d2" id="dayBadge"></div>
+      <p class="forever-count fade-up d2" id="foreverCount"></p>
       <div class="finale-letter fade-up d2" id="finaleLetter"></div>
       <div class="forever-meter fade-up d3">
         <p class="forever-label">hold my heart &mdash; fill forever</p>
@@ -278,8 +299,10 @@
       </div>
       <div class="finale-actions fade-up d4">
         <button class="mini-btn" id="musicBtn">Play our song</button>
+        <button class="mini-btn" id="shareBtn">Share us</button>
         <a class="mini-btn" href="lovepage.html">Back to our story</a>
       </div>
+      <a class="mini-btn" href="lovepage.html#extrasSection" style="margin-top:0.4rem;">More surprises &rarr;</a>
     </div>
   </div>
 
@@ -304,6 +327,7 @@
     var musicOn = false;
     var fill = 0;
     var showEnding = false;
+    var finaleLetterText = 'This is where our story slows down, not to end, but to be savored. Every laugh, every fight, every quiet moment in between has brought me here, to you. I still choose you, today and in every tomorrow this page can hold. Thank you for being my favorite chapter. \u2014 Nard';
 
     function typeLetter(el, text, speed) {
       var i = 0;
@@ -316,6 +340,9 @@
           var caret = document.createElement('span');
           caret.className = 'caret';
           el.appendChild(caret);
+          if (window.attachKaraoke) {
+            window.attachKaraoke(el, text, function() { return musicOn; });
+          }
         }
       }, speed);
     }
@@ -328,12 +355,22 @@
 
     function buildFinalePanels() {
       dayBadge.textContent = 'We\u2019ve loved for ' + daysTogether() + ' days';
+      setTimeout(function() {
+        var foreverCount = document.getElementById('foreverCount');
+        if (window.daysUntilForever) {
+          var left = window.daysUntilForever();
+          if (left > 0) {
+            foreverCount.innerHTML = 'only <b>' + left.toLocaleString() + '</b> more days until forever begins';
+          } else {
+            foreverCount.textContent = 'forever has begun';
+          }
+        }
+      }, 900);
     }
 
     function startFinale() {
       buildFinalePanels();
-      var letter = 'This is where our story slows down, not to end, but to be savored. Every laugh, every fight, every quiet moment in between has brought me here, to you. I still choose you, today and in every tomorrow this page can hold. Thank you for being my favorite chapter. \u2014 Nard';
-      setTimeout(function() { typeLetter(finaleLetter, letter, 26); }, 1300);
+      setTimeout(function() { typeLetter(finaleLetter, finaleLetterText, 26); }, 1300);
       setTimeout(function() {
         var burst = function(cx, cy) {
           for (var i = 0; i < 14; i++) {
@@ -401,10 +438,12 @@
         song.pause();
         musicBtn.textContent = 'Play our song';
         musicOn = false;
+        window.dispatchEvent(new Event('karaokeStop'));
       } else {
         song.play().catch(function() {});
         musicBtn.textContent = 'Pause our song';
         musicOn = true;
+        window.dispatchEvent(new Event('karaokeStart'));
       }
     });
 
@@ -412,6 +451,7 @@
       song.play().then(function() {
         musicOn = true;
         musicBtn.textContent = 'Pause our song';
+        window.dispatchEvent(new Event('karaokeStart'));
       }).catch(function() {});
     }
     var autoMusicTried = false;
@@ -431,8 +471,17 @@
 
     startFinale();
 
+    if (window.attachHeartbeat) {
+      window.attachHeartbeat(document.getElementById('foreverHeart'));
+    }
+    setTimeout(function() { if (window.initFireflies) window.initFireflies(); }, 1000);
+    document.getElementById('shareBtn').addEventListener('click', function() {
+      if (window.openShareCard) window.openShareCard();
+    });
+
     window.scrollTo(0, 0);
     window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
+<script src="app.js"></script>
 </body>
 </html>

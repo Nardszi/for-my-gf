@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>A Scratch For You</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="A Scratch For You — a promise inside">
+<meta property="og:description" content="Scratch off the foil and a promise appears. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --rose: #ff8fab;
+    --rose-deep: #e0567c;
+    --cream: #fff7ee;
+    --gold: #e8c17e;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #120a10;
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .bg-fade {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.28), transparent 60%),
+                radial-gradient(900px 500px at 100% 110%, rgba(232,193,126,0.12), transparent 55%),
+                linear-gradient(180deg, #1a0f14, #120a10);
+  }
+  .page { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 0 1.2rem 3rem; text-align: center; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; text-align: left; }
+  .topbar a { color: var(--cream); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.06em; border: 1px solid rgba(255,143,171,0.35); padding: 0.45rem 0.9rem; border-radius: 999px; transition: background 0.3s ease; }
+  .topbar a:hover { background: rgba(224,86,124,0.25); }
+  .topbar .brand { font-family: Georgia, serif; letter-spacing: 0.14em; color: var(--gold); font-size: 0.95rem; }
+
+  header h1 {
+    font-family: Georgia, serif; font-weight: 500;
+    font-size: clamp(2rem, 8vw, 3rem);
+    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+    background-size: 250% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+  header p { font-size: 0.86rem; font-style: italic; color: rgba(255,247,238,0.62); margin-top: 0.4rem; }
+  .counter { display: inline-block; margin-top: 0.7rem; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rose); border: 1px solid rgba(255,143,171,0.4); padding: 0.4rem 1rem; border-radius: 999px; }
+
+  .card-wrap { position: relative; margin: 2rem auto 0; max-width: 360px; }
+  .under-card {
+    position: relative; z-index: 0;
+    aspect-ratio: 4/5;
+    border-radius: 22px;
+    padding: 1.6rem 1.4rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;
+    background: linear-gradient(150deg, #2a1420, #1a0f14 60%, #241220);
+    border: 2px solid rgba(232,193,126,0.45);
+    box-shadow: inset 0 0 60px rgba(255,143,171,0.12), 0 20px 50px rgba(0,0,0,0.55);
+  }
+  .under-card .kind {
+    font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);
+  }
+  .under-card .promise {
+    font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.65; color: var(--cream);
+  }
+  .under-card .sign {
+    font-size: 0.82rem; font-style: italic; color: rgba(255,247,238,0.55);
+  }
+  .scratch-cover {
+    position: absolute; inset: 0; z-index: 1;
+    border-radius: 22px;
+    cursor: grab;
+  }
+  .scratch-cover.revealed { pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
+
+  .toast {
+    margin-top: 1.6rem;
+    font-size: 0.84rem; color: rgba(255,247,238,0.7);
+    min-height: 1.4rem;
+  }
+  .btn {
+    margin-top: 1rem;
+    border: 1px solid rgba(255,143,171,0.45);
+    background: rgba(30,17,24,0.6);
+    color: var(--cream); font-family: inherit;
+    font-size: 0.85rem; letter-spacing: 0.08em;
+    padding: 0.7rem 1.6rem; border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s var(--spring);
+  }
+  .btn:hover { background: rgba(224,86,124,0.25); }
+  .btn:active { transform: scale(0.95); }
+  .btn.hidden { display: none; }
+
+  @keyframes shimmer { to { background-position: 250% center; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="topbar">
+    <span class="brand">SCRATCH CARD</span>
+    <a href="lovepage.html">&#8592; back</a>
+  </div>
+
+  <header>
+    <h1>Scratch for a Promise</h1>
+    <p>every time you visit, there's a new one hiding underneath</p>
+    <div class="counter" id="scratchCounter">0 promises revealed</div>
+  </header>
+
+  <div class="card-wrap">
+    <div class="under-card" id="underCard">
+      <span class="kind">one promise, from me to you</span>
+      <p class="promise" id="promiseText"></p>
+      <span class="sign">&mdash; always, Nard</span>
+    </div>
+    <canvas class="scratch-cover" id="scratchCanvas"></canvas>
+  </div>
+
+  <p class="toast" id="toast">rub your finger (or mouse) across the foil</p>
+  <button class="btn hidden" id="newCard">&#8634; scratch another</button>
+</div>
+
+<script>
+  var PROMISES = [
+    'I promise to always choose you, even on the days choosing is hard.',
+    'I promise to make you laugh at least once a day \u2014 or die trying.',
+    'I promise to hold your hand through every storm and every quiet sunset.',
+    'I promise to never stop dating you, even when we\u2019re old and gray.',
+    'I promise to listen first, understand always, and love without conditions.',
+    'I promise to say "I love you" until it feels like the most natural words in the world \u2014 because they are.',
+    'I promise a lifetime of forehead kisses and midnight snacks with you.',
+    'I promise to grow old with you, but never grow tired of you.',
+    'I promise to be your calm, your chaos, and your best friend \u2014 forever.',
+    'I promise to choose us, every single time.'
+  ];
+
+  var canvas = document.getElementById('scratchCanvas');
+  var cover = canvas.parentElement.querySelector('.scratch-cover');
+  var promiseText = document.getElementById('promiseText');
+  var toast = document.getElementById('toast');
+  var newCard = document.getElementById('newCard');
+  var counterEl = document.getElementById('scratchCounter');
+
+  var revealed = 0;
+  try { revealed = Number(localStorage.getItem('forMyGf_scratchCount')) || 0; } catch (e) {}
+  counterEl.textContent = revealed + (revealed === 1 ? ' promise revealed' : ' promises revealed');
+
+  function pickPromise() {
+    var idx = Math.floor(Math.random() * PROMISES.length);
+    var used = 0;
+    try { used = Number(localStorage.getItem('forMyGf_scratchLast')) || -1; } catch (e) {}
+    if (idx === used) idx = (idx + 1) % PROMISES.length;
+    try { localStorage.setItem('forMyGf_scratchLast', String(idx)); } catch (e) {}
+    promiseText.textContent = PROMISES[idx];
+  }
+
+  function setupCanvas() {
+    var rect = canvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    var g = ctx.createLinearGradient(0, 0, rect.width, rect.height);
+    g.addColorStop(0, '#ffb3c6');
+    g.addColorStop(0.5, '#ff8fab');
+    g.addColorStop(1, '#e0567c');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = 'bold 26px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('\u2665', rect.width / 2, rect.height / 2 - 46);
+    ctx.font = '11px "Segoe UI", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillText('SCRATCH HERE', rect.width / 2, rect.height / 2 + 2);
+    ctx.font = 'italic 10px "Segoe UI", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillText('a promise is hiding underneath', rect.width / 2, rect.height / 2 + 22);
+
+    for (var i = 0; i < 34; i++) {
+      var x = Math.random() * rect.width;
+      var y = Math.random() * rect.height;
+      ctx.fillStyle = 'rgba(255,255,255,0.14)';
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return ctx;
+  }
+
+  var ctx = setupCanvas();
+  var scratching = false;
+  var scratchRadius = 22;
+  var checkedAt = 0;
+
+  function scratch(x, y) {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, scratchRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    var now = Date.now();
+    if (now - checkedAt > 250) {
+      checkedAt = now;
+      checkProgress();
+    }
+  }
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var t = e.touches && e.touches[0];
+    var cx = t ? t.clientX : e.clientX;
+    var cy = t ? t.clientY : e.clientY;
+    return { x: cx - rect.left, y: cy - rect.top };
+  }
+
+  function checkProgress() {
+    var w = canvas.width, h = canvas.height;
+    var data = ctx.getImageData(0, 0, w, h).data;
+    var cleared = 0, total = data.length / 4;
+    for (var i = 3; i < data.length; i += 4) {
+      if (data[i] < 60) cleared++;
+    }
+    var pct = cleared / total;
+    if (pct > 0.42) reveal();
+  }
+
+  function reveal() {
+    if (cover.classList.contains('revealed')) return;
+    cover.classList.add('revealed');
+    toast.textContent = 'there it is \u2014 keep this one safe';
+    newCard.classList.remove('hidden');
+    revealed++;
+    counterEl.textContent = revealed + (revealed === 1 ? ' promise revealed' : ' promises revealed');
+    try { localStorage.setItem('forMyGf_scratchCount', String(revealed)); } catch (e) {}
+    if (navigator.vibrate) { try { navigator.vibrate([80, 50, 120]); } catch (e) {} }
+  }
+
+  canvas.addEventListener('pointerdown', function(e) {
+    scratching = true;
+    canvas.setPointerCapture(e.pointerId);
+    var p = getPos(e);
+    scratch(p.x, p.y);
+  });
+  canvas.addEventListener('pointermove', function(e) {
+    if (!scratching) return;
+    var p = getPos(e);
+    scratch(p.x, p.y);
+  });
+  canvas.addEventListener('pointerup', function() { scratching = false; });
+  canvas.addEventListener('pointercancel', function() { scratching = false; });
+
+  newCard.addEventListener('click', function() {
+    pickPromise();
+    ctx = setupCanvas();
+    cover.classList.remove('revealed');
+    toast.textContent = 'rub your finger (or mouse) across the foil';
+    newCard.classList.add('hidden');
+  });
+
+  window.addEventListener('resize', function() {
+    var wasRevealed = cover.classList.contains('revealed');
+    ctx = setupCanvas();
+    if (!wasRevealed) cover.classList.remove('revealed');
+  });
+
+  pickPromise();
+
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+</script>
+<script src="app.js"></script>
+</body>
+</html>

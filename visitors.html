@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Our visitor log</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our visitor log">
+<meta property="og:description" content="Wholesome stalking, for your eyes only.">
+<meta property="og:image" content="og-preview.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root { --rose: #ff8fab; --rose-deep: #e0567c; --cream: #fff7ee; --gold: #e8c17e; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #120a10; color: var(--cream); min-height: 100vh; overflow-x: hidden;
+  }
+  .bg-fade {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.22), transparent 60%),
+                linear-gradient(180deg, #1a0f14, #120a10);
+  }
+  .page { position: relative; z-index: 1; max-width: 540px; margin: 0 auto; padding: 1rem 1.2rem 3rem; }
+
+  .lock { text-align: center; margin-top: 30vh; }
+  .lock .heart { font-size: 2.4rem; animation: beat 1.6s ease-in-out infinite; }
+  .lock h1 { font-family: Georgia, serif; font-weight: 500; font-size: 1.6rem; margin-top: 0.8rem; }
+  .lock p { font-size: 0.84rem; font-style: italic; color: rgba(255,247,238,0.6); margin-top: 0.4rem; }
+  .lock input {
+    margin-top: 1.4rem; width: 200px;
+    background: rgba(18,10,16,0.9); border: 1px solid rgba(255,143,171,0.4);
+    color: var(--cream); font-family: inherit; font-size: 0.95rem;
+    padding: 0.7rem 0.9rem; border-radius: 999px; text-align: center; outline: none;
+  }
+  .lock input:focus { border-color: var(--rose); }
+  .lock .err { font-size: 0.78rem; color: var(--rose-deep); margin-top: 0.6rem; min-height: 1.1rem; }
+  .lock button {
+    display: block; margin: 0.8rem auto 0;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border: none; color: #fff; font-family: inherit;
+    padding: 0.65rem 1.6rem; border-radius: 999px; cursor: pointer; font-size: 0.85rem;
+  }
+
+  .log { display: none; }
+  .log.show { display: block; }
+  .log h1 { font-family: Georgia, serif; font-weight: 500; font-size: 1.5rem; }
+  .log .sub { font-size: 0.82rem; font-style: italic; color: rgba(255,247,238,0.55); margin: 0.3rem 0 1.4rem; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .card {
+    background: rgba(30,17,24,0.7); border: 1px solid rgba(255,143,171,0.25);
+    border-radius: 14px; padding: 0.9rem 0.6rem; text-align: center;
+  }
+  .card .num { font-family: Georgia, serif; font-size: 1.4rem; color: var(--gold); }
+  .card .lab { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,247,238,0.5); margin-top: 0.25rem; }
+
+  .fun { margin-top: 1.4rem; font-size: 0.9rem; line-height: 1.9; color: rgba(255,247,238,0.85); padding: 1rem 1.1rem; background: rgba(30,17,24,0.55); border-radius: 14px; border: 1px solid rgba(232,193,126,0.3); }
+  .fun b { color: var(--rose); }
+
+  .recent { margin-top: 1.6rem; }
+  .recent h2 { font-size: 0.7rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; }
+  .visit {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.7rem 0.9rem; border-radius: 12px;
+    background: rgba(30,17,24,0.55); border: 1px solid rgba(255,143,171,0.18);
+    margin-bottom: 0.5rem; font-size: 0.82rem;
+  }
+  .visit .when { color: var(--cream); }
+  .visit .page { color: rgba(255,247,238,0.5); font-size: 0.72rem; }
+  .visit .heart { color: var(--rose); }
+
+  .back { display: inline-block; margin-top: 1.6rem; color: rgba(255,247,238,0.55); text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,247,238,0.3); padding-bottom: 2px; }
+
+  @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="lock" id="lockView">
+    <div class="heart">&#10084;</div>
+    <h1>just for you</h1>
+    <p>a word only we would know</p>
+    <input type="password" id="logPass" placeholder="the magic word" autocomplete="off">
+    <p class="err" id="logErr"></p>
+    <button id="logBtn">open</button>
+  </div>
+
+  <div class="log" id="logView">
+    <h1>Our Visitor Log</h1>
+    <p class="sub">wholesome stalking &mdash; she never knew</p>
+
+    <div class="cards">
+      <div class="card"><div class="num" id="vCount">&mdash;</div><div class="lab">visits</div></div>
+      <div class="card"><div class="num" id="vTime">&mdash;</div><div class="lab">time here</div></div>
+      <div class="card"><div class="num" id="vPages">&mdash;</div><div class="lab">pages</div></div>
+    </div>
+
+    <div class="fun" id="funText"></div>
+
+    <div class="recent">
+      <h2>recent visits</h2>
+      <div id="visitList"></div>
+    </div>
+
+    <a class="back" href="lovepage.html">back to our story</a>
+  </div>
+</div>
+
+<script>
+  var PASS = 'amaezingnard';
+  var lockView = document.getElementById('lockView');
+  var logView = document.getElementById('logView');
+  var logPass = document.getElementById('logPass');
+  var logErr = document.getElementById('logErr');
+
+  var unlocked = false;
+  try { unlocked = localStorage.getItem('forMyGf_visitorLog') === '1'; } catch (e) {}
+
+  function openLog() {
+    lockView.style.display = 'none';
+    logView.classList.add('show');
+    try { localStorage.setItem('forMyGf_visitorLog', '1'); } catch (e) {}
+    render();
+  }
+
+  function tryOpen() {
+    if (logPass.value.trim().toLowerCase() === PASS) {
+      openLog();
+    } else {
+      logErr.textContent = 'hmm, that\u2019s not it.';
+      logPass.value = '';
+      logPass.focus();
+    }
+  }
+
+  document.getElementById('logBtn').addEventListener('click', tryOpen);
+  logPass.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') tryOpen();
+  });
+
+  function readVisits() {
+    try { return JSON.parse(localStorage.getItem('forMyGf_visits')) || {}; } catch (e) { return {}; }
+  }
+
+  function fmtTime(ms) {
+    ms = ms || 0;
+    var s = Math.floor(ms / 1000);
+    if (s < 60) return s + 's';
+    var m = Math.floor(s / 60);
+    if (m < 60) return m + 'm';
+    var h = Math.floor(m / 60);
+    return h + 'h ' + (m % 60) + 'm';
+  }
+
+  function fmtFull(iso) {
+    try { return new Date(iso).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }); }
+    catch (e) { return iso; }
+  }
+
+  function render() {
+    var v = readVisits();
+    var count = v.count || 0;
+    var list = (v.list || []).slice().reverse().slice(0, 60);
+    var pages = {};
+    list.forEach(function(x) { pages[x.p] = (pages[x.p] || 0) + 1; });
+
+    document.getElementById('vCount').textContent = count;
+    document.getElementById('vTime').textContent = fmtTime(v.totalMs || 0);
+    document.getElementById('vPages').textContent = Object.keys(pages).length;
+
+    var fun = document.getElementById('funText');
+    var last = v.last ? fmtFull(v.last) : 'never';
+    var first = v.first ? fmtFull(v.first) : 'never';
+    var most = Object.keys(pages).sort(function(a, b) { return pages[b] - pages[a]; })[0];
+    var funHtml =
+      'she has visited <b>' + count + '</b> time' + (count === 1 ? '' : 's') + ' so far.<br>' +
+      'her very first visit was <b>' + first + '</b>.<br>' +
+      'she was last here <b>' + last + '</b>.' +
+      (most ? '<br>she loves <b>' + most + '</b> the most (' + pages[most] + ' visits).' : '') +
+      '<br>every single visit, she was thinking of me \u2014 even if she didn\u2019t say it.';
+    fun.innerHTML = funHtml;
+
+    var listEl = document.getElementById('visitList');
+    if (!list.length) {
+      listEl.innerHTML = '<div class="visit"><span class="when">no visits recorded yet</span></div>';
+      return;
+    }
+    var html = '';
+    list.forEach(function(x) {
+      html += '<div class="visit">' +
+        '<span class="heart">\u2665</span>' +
+        '<span class="when">' + fmtFull(x.t) + '</span>' +
+        '<span class="page">' + (x.p || '?') + '</span>' +
+      '</div>';
+    });
+    listEl.innerHTML = html;
+  }
+
+  if (unlocked) openLog();
+
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+</script>
+<script src="app.js"></script>
+</body>
+</html>

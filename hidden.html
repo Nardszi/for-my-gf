@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Just for you</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="For your eyes only">
+<meta property="og:description" content="Some things are just for us. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -26,7 +35,7 @@
     .finale-bg {
       position: fixed;
       inset: 0;
-      background-image: url("finale-bg.png");
+      background-image: url("finale-bg.webp");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -250,8 +259,11 @@
     var letter = 'If you are reading this, you found the one thing I kept hidden even from the rest of the page. This is the part I don\u2019t say out loud. You are my favorite hello and my hardest goodbye, my calm in every storm and my chaos in the quiet. When the world is loud, you are the only voice I want to hear. I don\u2019t just love you \u2014 I love the way you make me brave enough to say it. Keep this page close. It was always meant for you and no one else.';
     setTimeout(function() { typeLetter(hiddenLetterEl, letter, 22); }, 900);
 
+    setTimeout(function() { if (window.initFireflies) window.initFireflies(); }, 1100);
+
     window.scrollTo(0, 0);
     window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
+<script src="app.js"></script>
 </body>
 </html>

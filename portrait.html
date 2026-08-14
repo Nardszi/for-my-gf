@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Our Portraits — us, reimagined</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Portraits — us, reimagined">
+<meta property="og:description" content="Turn us into a Pixar or Studio Ghibli couple — one magical prompt away. Made with love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --rose: #ff8fab;
+    --rose-deep: #e0567c;
+    --cream: #fff7ee;
+    --gold: #e8c17e;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #120a10;
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .bg-fade {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.28), transparent 60%),
+                radial-gradient(900px 500px at 100% 110%, rgba(232,193,126,0.12), transparent 55%),
+                linear-gradient(180deg, #1a0f14, #120a10);
+  }
+  .page { position: relative; z-index: 1; max-width: 540px; margin: 0 auto; padding: 0 1.2rem 3.5rem; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+  .topbar a { color: var(--cream); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.06em; border: 1px solid rgba(255,143,171,0.35); padding: 0.45rem 0.9rem; border-radius: 999px; transition: background 0.3s ease; }
+  .topbar a:hover { background: rgba(224,86,124,0.25); }
+  .topbar .brand { font-family: Georgia, serif; letter-spacing: 0.14em; color: var(--gold); font-size: 0.95rem; }
+
+  header { text-align: center; padding: 1.4rem 0 1rem; }
+  header h1 {
+    font-family: Georgia, serif; font-weight: 500;
+    font-size: clamp(2rem, 8vw, 3rem);
+    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+    background-size: 250% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+  header p { font-size: 0.86rem; font-style: italic; color: rgba(255,247,238,0.62); margin-top: 0.4rem; line-height: 1.6; }
+
+  .panel {
+    margin-top: 1.6rem;
+    background: rgba(30,17,24,0.7);
+    border: 1px solid rgba(255,143,171,0.3);
+    border-radius: 18px;
+    padding: 1.3rem;
+    backdrop-filter: blur(6px);
+  }
+  .panel h2 { font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem; }
+
+  .uploads { display: flex; gap: 0.8rem; }
+  .upload {
+    flex: 1;
+    border: 2px dashed rgba(255,143,171,0.35);
+    border-radius: 14px;
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+  .upload:hover { border-color: var(--rose); background: rgba(224,86,124,0.08); }
+  .upload .pic { width: 74px; height: 74px; border-radius: 50%; object-fit: cover; margin: 0 auto 0.5rem; display: block; background: rgba(255,247,238,0.08); }
+  .upload .lbl { font-size: 0.74rem; color: rgba(255,247,238,0.6); }
+  .upload input { display: none; }
+
+  .styles { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .style-pick {
+    flex: 1; min-width: 96px;
+    border: 1px solid rgba(255,143,171,0.35); background: rgba(18,10,16,0.8);
+    color: rgba(255,247,238,0.75); font-family: inherit; font-size: 0.8rem;
+    padding: 0.6rem 0.5rem; border-radius: 12px; cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .style-pick.active { background: linear-gradient(135deg, var(--rose), var(--rose-deep)); color: #fff; border-color: transparent; }
+
+  .theme-input {
+    width: 100%; margin-top: 0.8rem;
+    background: rgba(18,10,16,0.8); border: 1px solid rgba(255,143,171,0.3);
+    color: var(--cream); font-family: inherit; font-size: 0.88rem;
+    padding: 0.7rem 0.8rem; border-radius: 12px; outline: none;
+  }
+  .theme-input::placeholder { color: rgba(255,247,238,0.35); }
+  .theme-input:focus { border-color: var(--rose); }
+
+  .gen {
+    width: 100%; margin-top: 1rem;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border: none; color: #fff; font-family: inherit;
+    font-size: 0.9rem; letter-spacing: 0.05em;
+    padding: 0.85rem; border-radius: 999px; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(224,86,124,0.35);
+    transition: transform 0.15s var(--spring);
+  }
+  .gen:active { transform: scale(0.97); }
+  .gen:disabled { opacity: 0.6; cursor: default; }
+
+  .prompt-box {
+    display: none;
+    margin-top: 1rem;
+    background: rgba(18,10,16,0.9);
+    border: 1px solid rgba(232,193,126,0.4);
+    border-radius: 14px;
+    padding: 1rem;
+    font-size: 0.86rem; line-height: 1.7;
+    color: rgba(255,247,238,0.9);
+    text-align: left;
+    max-height: 180px; overflow-y: auto;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .prompt-box.show { display: block; animation: fadeUp 0.5s var(--spring); }
+
+  .actions { display: flex; gap: 0.6rem; margin-top: 0.8rem; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    border: 1px solid rgba(255,143,171,0.45);
+    background: rgba(30,17,24,0.6);
+    color: var(--cream); font-family: inherit;
+    font-size: 0.82rem; letter-spacing: 0.05em;
+    padding: 0.65rem 1.1rem; border-radius: 999px;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.3s ease, transform 0.15s var(--spring);
+  }
+  .btn:hover { background: rgba(224,86,124,0.25); }
+  .btn:active { transform: scale(0.95); }
+  .btn.primary { background: linear-gradient(135deg, var(--rose), var(--rose-deep)); border-color: transparent; }
+
+  .gallery { margin-top: 2rem; }
+  .gallery h2 { font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(255,247,238,0.55); margin-bottom: 0.8rem; text-align: center; }
+  .gal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+  .gal-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,143,171,0.25); opacity: 0.92; }
+
+  .foot { text-align: center; margin-top: 2.2rem; font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.45); }
+
+  @keyframes shimmer { to { background-position: 250% center; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="topbar">
+    <span class="brand">OUR PORTRAITS</span>
+    <a href="lovepage.html">&#8592; back</a>
+  </div>
+
+  <header>
+    <h1>Us, Reimagined</h1>
+    <p>turn us into a Pixar or Studio Ghibli couple. Pick our photos, pick a style, and get a magic prompt to paste into your favorite AI art app.</p>
+  </header>
+
+  <div class="panel">
+    <h2>Step 1 &mdash; our faces</h2>
+    <div class="uploads">
+      <label class="upload">
+        <img class="pic" id="picA" src="float-photos/5.jpg" alt="her photo">
+        <span class="lbl" id="lblA">Rezil's photo</span>
+        <input type="file" accept="image/*" id="fileA">
+      </label>
+      <label class="upload">
+        <img class="pic" id="picB" src="float-photos/13.jpg" alt="his photo">
+        <span class="lbl" id="lblB">Nard's photo</span>
+        <input type="file" accept="image/*" id="fileB">
+      </label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 2 &mdash; pick our look</h2>
+    <div class="styles" id="styleRow"></div>
+    <input class="theme-input" id="themeInput" placeholder="extra magic (optional): e.g. 'sunset in Paris', 'cozy autumn cafe'">
+  </div>
+
+  <button class="gen" id="genBtn">&#10024; Make our magic prompt</button>
+
+  <div class="prompt-box" id="promptBox"></div>
+  <div class="actions" id="actions" style="display:none;">
+    <button class="btn primary" id="copyBtn">&#128203; Copy prompt</button>
+    <a class="btn" href="https://www.bing.com/images/create" target="_blank" rel="noopener">Open Bing Image Creator</a>
+    <a class="btn" href="https://leonardo.ai" target="_blank" rel="noopener">Leonardo</a>
+  </div>
+
+  <div class="gallery">
+    <h2>a few of us, already real</h2>
+    <div class="gal-grid" id="galGrid"></div>
+  </div>
+
+  <p class="foot">one day I'll frame the portrait that looks exactly like us</p>
+</div>
+
+<script>
+  var HER_NAME = 'Rezil';
+  var YOUR_NAME = 'Nard';
+
+  var STYLES = [
+    { id: 'pixar', label: 'Pixar 3D', style: 'in the style of a Pixar animated film, 3D computer animation, big expressive eyes, soft cinematic lighting, high quality render' },
+    { id: 'ghibli', label: 'Ghibli', style: 'in the style of a Studio Ghibli anime film, hand-drawn watercolor backgrounds, warm nostalgic colors, gentle linework' },
+    { id: 'disney', label: 'Disney', style: 'in the style of a classic Disney animated film, hand-drawn cel animation, vibrant colors, fairytale charm' },
+    { id: 'water', label: 'Watercolor', style: 'in the style of a soft watercolor illustration, dreamy washes of color, delicate details, romantic mood' }
+  ];
+
+  var activeStyle = 'pixar';
+  var herPic = null, hisPic = null;
+
+  var styleRow = document.getElementById('styleRow');
+  STYLES.forEach(function(s) {
+    var b = document.createElement('button');
+    b.className = 'style-pick' + (s.id === activeStyle ? ' active' : '');
+    b.textContent = s.label;
+    b.dataset.id = s.id;
+    b.addEventListener('click', function() {
+      activeStyle = s.id;
+      document.querySelectorAll('.style-pick').forEach(function(x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      hidePrompt();
+    });
+    styleRow.appendChild(b);
+  });
+
+  function readFile(input, side) {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function() {
+      var img = document.getElementById(side === 'A' ? 'picA' : 'picB');
+      img.src = r.result;
+      if (side === 'A') herPic = r.result; else hisPic = r.result;
+    };
+    r.readAsDataURL(f);
+  }
+  document.getElementById('fileA').addEventListener('change', function() { readFile(this, 'A'); });
+  document.getElementById('fileB').addEventListener('change', function() { readFile(this, 'B'); });
+
+  function hidePrompt() {
+    document.getElementById('promptBox').classList.remove('show');
+    document.getElementById('actions').style.display = 'none';
+  }
+
+  var genBtn = document.getElementById('genBtn');
+  genBtn.addEventListener('click', function() {
+    var style = STYLES.filter(function(s) { return s.id === activeStyle; })[0];
+    var theme = document.getElementById('themeInput').value.trim();
+    var prompt =
+      'A romantic couple portrait of two people, in love, ' + style.style + '. ' +
+      'The girl is ' + HER_NAME + ' \u2014 a beautiful young woman with a radiant smile. ' +
+      'The man is ' + YOUR_NAME + ' \u2014 kind, warm, and deeply in love with her. ' +
+      'They are smiling at each other, gentle and happy together, their hands intertwined. ' +
+      (theme ? 'Setting: ' + theme + '. ' : 'A dreamy romantic background. ') +
+      'Soft warm colors, hearts floating subtly in the air, cinematic composition, adorable and heartwarming, masterpiece, 4k.';
+    var box = document.getElementById('promptBox');
+    box.textContent = prompt;
+    box.classList.add('show');
+    document.getElementById('actions').style.display = 'flex';
+    genBtn.textContent = '\u2728 Make another';
+    if (navigator.vibrate) { try { navigator.vibrate(30); } catch (e) {} }
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    var text = document.getElementById('promptBox').textContent;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function() {
+        var b = document.getElementById('copyBtn');
+        b.textContent = 'Copied!';
+        setTimeout(function() { b.textContent = '\uD83D\uDCCB Copy prompt'; }, 1800);
+      }).catch(function() { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    ta.remove();
+    var b = document.getElementById('copyBtn');
+    b.textContent = 'Copied!';
+    setTimeout(function() { b.textContent = '\uD83D\uDCCB Copy prompt'; }, 1800);
+  }
+
+  var gal = document.getElementById('galGrid');
+  ['float-photos/2.jpg', 'float-photos/5.jpg', 'float-photos/7.jpg', 'float-photos/11.jpg', 'float-photos/13.jpg'].forEach(function(src) {
+    var img = document.createElement('img');
+    img.src = src;
+    img.alt = 'us';
+    img.loading = 'lazy';
+    gal.appendChild(img);
+  });
+
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+</script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Our Story — a season of us</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Story — a season of us">
+<meta property="og:description" content="Every love story is beautiful, but ours is my favorite. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --rose: #ff8fab;
+    --rose-deep: #e0567c;
+    --cream: #fff7ee;
+    --gold: #e8c17e;
+    --ink: #2a1420;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #120a10;
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .bg-fade {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.28), transparent 60%),
+                radial-gradient(900px 500px at 100% 110%, rgba(232,193,126,0.12), transparent 55%),
+                linear-gradient(180deg, #1a0f14, #120a10);
+  }
+  .page { position: relative; z-index: 1; padding: 0 0 3rem; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.2rem;
+    background: linear-gradient(180deg, rgba(18,10,16,0.9), rgba(18,10,16,0));
+    backdrop-filter: blur(6px);
+  }
+  .topbar a {
+    color: var(--cream); text-decoration: none;
+    font-size: 0.82rem; letter-spacing: 0.06em;
+    border: 1px solid rgba(255,143,171,0.35);
+    padding: 0.45rem 0.9rem; border-radius: 999px;
+    transition: background 0.3s ease;
+  }
+  .topbar a:hover { background: rgba(224,86,124,0.25); }
+  .topbar .brand { font-family: Georgia, serif; font-size: 1.05rem; letter-spacing: 0.14em; color: var(--gold); }
+
+  .hero {
+    text-align: center; padding: 2.2rem 1.5rem 2rem;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem; letter-spacing: 0.34em; text-transform: uppercase;
+    color: rgba(255,247,238,0.55);
+  }
+  .hero h1 {
+    font-family: Georgia, serif; font-weight: 500;
+    font-size: clamp(2.4rem, 9vw, 4rem);
+    margin: 0.7rem 0 0.3rem;
+    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+    background-size: 250% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+  .hero-sub { font-size: 0.9rem; font-style: italic; color: rgba(255,247,238,0.65); }
+  .hero-chip {
+    display: inline-block; margin-top: 1rem;
+    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--rose); border: 1px solid rgba(255,143,171,0.4);
+    border-radius: 999px; padding: 0.45rem 1.1rem;
+  }
+
+  .row {
+    margin-top: 2.2rem;
+  }
+  .row-head {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    padding: 0 1.2rem;
+  }
+  .row-head .tag {
+    font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .row-head h2 {
+    font-family: Georgia, serif; font-weight: 500;
+    font-size: 1.35rem; letter-spacing: 0.02em;
+  }
+  .row-head .count { font-size: 0.75rem; color: rgba(255,247,238,0.45); }
+  .row-scroll {
+    display: flex; gap: 0.9rem; overflow-x: auto;
+    padding: 1.2rem 1.2rem 1rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .row-scroll::-webkit-scrollbar { display: none; }
+
+  .card {
+    flex: 0 0 150px; scroll-snap-align: start;
+    border-radius: 14px; overflow: hidden;
+    background: rgba(30,17,24,0.7);
+    border: 1px solid rgba(255,143,171,0.2);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+    transition: transform 0.3s var(--spring), border-color 0.3s ease;
+    cursor: pointer;
+    text-decoration: none; color: var(--cream);
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255,143,171,0.6); }
+  .card.episode .art {
+    position: relative; width: 100%; aspect-ratio: 2/3;
+    background-size: cover; background-position: center;
+  }
+  .card.episode .art::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(18,10,16,0.1) 40%, rgba(18,10,16,0.85) 100%);
+  }
+  .card .ep-badge {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    font-size: 0.62rem; letter-spacing: 0.12em;
+    color: #1a0f14; background: var(--gold);
+    padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600;
+  }
+  .card .ep-milestone {
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    font-size: 0.62rem; letter-spacing: 0.1em;
+    color: #fff; background: var(--rose-deep);
+    padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600;
+  }
+  .card .meta { padding: 0.7rem 0.7rem 0.8rem; }
+  .card .meta .d { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,247,238,0.5); }
+  .card .meta .t { font-size: 0.86rem; font-weight: 600; margin-top: 0.15rem; line-height: 1.3; }
+  .card .meta .s { font-size: 0.72rem; color: rgba(255,247,238,0.55); margin-top: 0.2rem; line-height: 1.35; }
+
+  .big-card {
+    flex: 0 0 230px; scroll-snap-align: start;
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(232,193,126,0.35);
+    background: rgba(30,17,24,0.75);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.5);
+    text-decoration: none; color: var(--cream);
+  }
+  .big-card .art { position: relative; width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; }
+  .big-card .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(18,10,16,0.85)); }
+  .big-card .meta { padding: 0.8rem 0.9rem 0.95rem; }
+  .big-card .meta .d { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+  .big-card .meta .t { font-family: Georgia, serif; font-size: 1.05rem; margin-top: 0.2rem; }
+  .big-card .meta .s { font-size: 0.76rem; color: rgba(255,247,238,0.6); margin-top: 0.25rem; line-height: 1.4; }
+
+  .season-banner {
+    margin: 2.4rem 1.2rem 0;
+    border-radius: 18px; padding: 1.4rem 1.3rem;
+    background: linear-gradient(135deg, rgba(224,86,124,0.22), rgba(30,17,24,0.7));
+    border: 1px solid rgba(255,143,171,0.35);
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .season-banner .play {
+    flex: 0 0 54px; height: 54px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: #fff;
+    box-shadow: 0 8px 22px rgba(224,86,124,0.5);
+    animation: pulse 2s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .season-banner .info h3 { font-family: Georgia, serif; font-weight: 500; font-size: 1.15rem; letter-spacing: 0.06em; }
+  .season-banner .info p { font-size: 0.78rem; color: rgba(255,247,238,0.65); margin-top: 0.25rem; line-height: 1.45; }
+  .season-banner .info .eps { color: var(--gold); }
+
+  .footer {
+    text-align: center; margin-top: 3rem; padding: 0 1.2rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+  }
+  .footer .note { font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.5); }
+  .footer .share {
+    border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color: #fff; font-family: inherit;
+    padding: 0.65rem 1.5rem; border-radius: 999px; font-size: 0.85rem;
+    box-shadow: 0 8px 20px rgba(224,86,124,0.4);
+  }
+  .footer .back {
+    color: rgba(255,247,238,0.65); text-decoration: none; font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,247,238,0.3); padding-bottom: 2px;
+  }
+
+  @keyframes shimmer { to { background-position: 250% center; } }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { opacity: 0; animation: fadeUp 0.9s var(--spring) forwards; }
+  .d1 { animation-delay: 0.25s; }
+  .d2 { animation-delay: 0.45s; }
+  .d3 { animation-delay: 0.65s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="topbar">
+    <span class="brand">OUR STORY</span>
+    <a href="lovepage.html">&#8592; our story</a>
+  </div>
+
+  <div class="hero">
+    <p class="hero-eyebrow fade-up d1">you + me, every month</p>
+    <h1 class="fade-up d1">A Season of Us</h1>
+    <p class="hero-sub fade-up d2">Netflix-style binge of the best show I've ever watched &mdash; us.</p>
+    <div class="hero-chip fade-up d3" id="episodeCount">S1 &middot; 0 episodes so far</div>
+  </div>
+
+  <div class="season-banner fade-up d2">
+    <div class="play" id="seasonPlay">&#9654;</div>
+    <div class="info">
+      <h3>SEASON 1 &mdash; the beginning</h3>
+      <p><span class="eps">All episodes are ours.</span><br>Since we started, every single month has been worth watching.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="tag">Season 1</span>
+      <h2>Episodes</h2>
+      <span class="count" id="episodeCountSmall"></span>
+    </div>
+    <div class="row-scroll" id="episodeRow"></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="tag">Chapter marks</span>
+      <h2>Milestones</h2>
+    </div>
+    <div class="row-scroll" id="milestoneRow"></div>
+  </div>
+
+  <div class="footer">
+    <p class="note">no binge-warning needed &mdash; this one never ends</p>
+    <button class="share" id="storyShare">Share our story</button>
+    <a class="back" href="lovepage.html">back to our story</a>
+  </div>
+</div>
+
+<script>
+  var RELATIONSHIP_START_DATE = "2024-09-10";
+  var PHOTOS = [
+    'float-photos/1.jpg','float-photos/2.jpg','float-photos/3.jpg','float-photos/4.jpg',
+    'float-photos/5.jpg','float-photos/6.jpg','float-photos/7.jpg','float-photos/8.jpg',
+    'float-photos/9.jpg','float-photos/10.jpg','float-photos/11.jpg','float-photos/12.jpg',
+    'float-photos/13.jpg','float-photos/14.jpg','float-photos/15.jpg','float-photos/16.jpg',
+    'float-photos/17.jpg','float-photos/18.jpg','float-photos/19.jpg','float-photos/20.jpg'
+  ];
+
+  var MILESTONES = {
+    '2024-09': { title: 'The Day We Met', text: 'Our souls found each other. Everything changed.' },
+    '2024-10': { title: 'Our First Date', text: 'Nervous laughs, shy smiles, the start of it all.' },
+    '2024-12': { title: 'Said "I Love You"', text: 'Three words that changed everything.' },
+    '2025-05': { title: 'Our 2nd Meet', text: 'A day of love, laughter, and celebration.' }
+  };
+
+  var GENERIC_TITLES = [
+    'the little things', 'your laugh', 'hand in hand', 'quiet moments',
+    'my favorite hello', 'under the same moon', 'the way you smile', 'growing together',
+    'everyday magic', 'our song', 'counting stars with you', 'warm mornings',
+    'laughing till we cry', 'your hand in mine', 'home', 'the good stuff',
+    'soft moments', 'you, always', 'a perfect ordinary day', 'falling again'
+  ];
+
+  function monthsBetween(start, n) {
+    var out = [];
+    var d = new Date(start.getFullYear(), start.getMonth(), 1);
+    for (var i = 0; i < n; i++) {
+      out.push(new Date(d.getFullYear(), d.getMonth() + i, 1));
+    }
+    return out;
+  }
+
+  function fmtMonth(d) {
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  function keyOf(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  function buildEpisodes() {
+    var start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
+    var now = new Date();
+    var n = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth()) + 1;
+    var months = monthsBetween(start, n);
+    var row = document.getElementById('episodeRow');
+    var gi = 0;
+    months.forEach(function(m, i) {
+      var mkey = keyOf(m);
+      var isMilestone = MILESTONES[mkey];
+      var title = isMilestone ? isMilestone.title : GENERIC_TITLES[gi % GENERIC_TITLES.length];
+      var text = isMilestone ? isMilestone.text : 'another beautiful month of being yours.';
+      gi++;
+
+      var a = document.createElement('a');
+      a.className = 'card episode';
+      a.href = 'lovepage.html';
+      var art = PHOTOS[i % PHOTOS.length];
+      var ep = 'S1E' + String(i + 1).padStart(2, '0');
+      a.innerHTML =
+        '<div class="art" style="background-image:url(' + art + ')">' +
+          '<span class="ep-badge">' + ep + '</span>' +
+          (isMilestone ? '<span class="ep-milestone">&#10022;</span>' : '') +
+        '</div>' +
+        '<div class="meta">' +
+          '<div class="d">' + fmtMonth(m) + '</div>' +
+          '<div class="t">' + title + '</div>' +
+          '<div class="s">' + text + '</div>' +
+        '</div>';
+      row.appendChild(a);
+    });
+
+    document.getElementById('episodeCount').textContent = 'S1 \u00b7 ' + n + ' episode' + (n > 1 ? 's' : '') + ' so far';
+    document.getElementById('episodeCountSmall').textContent = n + ' episodes';
+  }
+
+  function buildMilestones() {
+    var row = document.getElementById('milestoneRow');
+    var keys = Object.keys(MILESTONES);
+    keys.forEach(function(k, i) {
+      var m = MILESTONES[k];
+      var d = new Date(k + '-01T00:00:00');
+      var a = document.createElement('a');
+      a.className = 'big-card';
+      a.href = 'lovepage.html';
+      var art = PHOTOS[(i + 3) * 2 % PHOTOS.length];
+      a.innerHTML =
+        '<div class="art" style="background-image:url(' + art + ')"></div>' +
+        '<div class="meta">' +
+          '<div class="d">' + fmtMonth(d) + '</div>' +
+          '<div class="t">' + m.title + '</div>' +
+          '<div class="s">' + m.text + '</div>' +
+        '</div>';
+      row.appendChild(a);
+    });
+  }
+
+  buildEpisodes();
+  buildMilestones();
+
+  var seasonPlay = document.getElementById('seasonPlay');
+  seasonPlay.addEventListener('click', function() {
+    seasonPlay.textContent = '\u2665';
+    seasonPlay.style.animation = 'none';
+    setTimeout(function() {
+      document.getElementById('episodeRow').scrollTo({ left: 0, behavior: 'smooth' });
+      setTimeout(function() {
+        seasonPlay.textContent = '\u25B6';
+        seasonPlay.style.animation = 'pulse 2s ease-in-out infinite';
+      }, 900);
+    }, 250);
+  });
+
+  document.getElementById('storyShare').addEventListener('click', function() {
+    if (window.openShareCard) window.openShareCard();
+  });
+
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+</script>
+<script src="app.js"></script>
+</body>
+</html>
