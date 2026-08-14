@@ -131,6 +131,126 @@
     .forever-heart-btn:active { transform: scale(0.8); }
     .forever-heart-btn.tapped { animation: heartPop 0.5s var(--spring); }
 
+    .day-badge {
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 0.5rem 1.2rem;
+      border: 1px solid rgba(232, 193, 126, 0.4);
+      border-radius: 999px;
+      background: rgba(26, 15, 20, 0.35);
+      backdrop-filter: blur(4px);
+    }
+
+    .milestones {
+      width: 100%;
+      max-width: 480px;
+      text-align: left;
+      margin: 0.5rem 0;
+    }
+    .milestones-title {
+      text-align: center;
+      font-size: 0.78rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255, 247, 238, 0.7);
+      margin-bottom: 1.2rem;
+    }
+    .milestone {
+      position: relative;
+      padding-left: 1.6rem;
+      padding-bottom: 1.5rem;
+      border-left: 1px solid rgba(255, 143, 171, 0.35);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s var(--spring);
+    }
+    .milestone.revealed { opacity: 1; transform: translateY(0); }
+    .milestone:last-child { border-left-color: transparent; padding-bottom: 0; }
+    .milestone::before {
+      content: "♥";
+      position: absolute;
+      left: -0.62rem;
+      top: 0;
+      font-size: 0.85rem;
+      color: var(--rose);
+      text-shadow: 0 0 10px rgba(255, 143, 171, 0.7);
+    }
+    .milestone-date {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.25rem;
+    }
+    .milestone-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--cream);
+    }
+    .milestones-caret { color: var(--rose); }
+
+    .hidden-heart-wrap {
+      margin-top: 0.4rem;
+      font-size: 0.78rem;
+      color: rgba(255, 247, 238, 0.5);
+    }
+    .hidden-heart-btn {
+      font-size: 1.3rem;
+      background: none;
+      border: 1px solid rgba(255, 143, 171, 0.35);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      color: rgba(255, 247, 238, 0.55);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s var(--spring);
+      filter: grayscale(0.4);
+    }
+    .hidden-heart-btn:hover { border-color: var(--rose); color: var(--rose); filter: none; }
+    .hidden-heart-btn.found { animation: heartPop 0.5s var(--spring); border-color: var(--rose); color: var(--rose); }
+    .hidden-heart-secret {
+      max-width: 460px;
+      margin: 0.8rem auto 0;
+      font-size: 0.95rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--gold);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .hidden-heart-secret.show { opacity: 1; }
+
+    .ending {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s var(--spring);
+    }
+    .ending.show { opacity: 1; transform: translateY(0); }
+    .ending-heart { font-size: 2.6rem; color: var(--rose); animation: softBeat 2s ease-in-out infinite; text-shadow: 0 0 22px rgba(255, 143, 171, 0.7); }
+    .ending-title {
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      color: var(--cream);
+      margin: 0.5rem 0 0.6rem;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffd3e0, var(--gold), #ffd3e0);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmerText 4s linear infinite;
+    }
+    .ending-text { font-size: 1rem; line-height: 1.7; color: var(--cream); text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
+    .ending-note { font-size: 0.8rem; color: rgba(255, 247, 238, 0.5); margin: 1rem 0 0.2rem; }
+
     .finale-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
     .mini-btn {
       padding: 0.6rem 1.1rem;
@@ -204,13 +324,25 @@
     <div class="finale-inner">
       <p class="finale-eyebrow fade-up d1">and so, it comes to this</p>
       <h1 class="finale-title fade-up d2">The Finale</h1>
+      <div class="day-badge fade-up d2" id="dayBadge"></div>
       <div class="finale-letter fade-up d2" id="finaleLetter"></div>
+      <div class="milestones fade-up d3" id="milestones"></div>
+      <div class="hidden-heart-wrap fade-up d3">
+        <button class="hidden-heart-btn" id="hiddenHeart" type="button" aria-label="tap me">♥</button>
+        <div class="hidden-heart-secret" id="hiddenSecret"></div>
+      </div>
       <div class="forever-meter fade-up d3">
         <p class="forever-label">hold my heart &mdash; fill forever</p>
         <div class="forever-track">
           <div class="forever-fill" id="foreverFill"></div>
         </div>
         <span class="forever-heart-btn" id="foreverHeart" role="button" tabindex="0" aria-label="tap the heart">♥</span>
+      </div>
+      <div class="ending" id="ending">
+        <div class="ending-heart">♥</div>
+        <h2 class="ending-title">This is us. Forever.</h2>
+        <p class="ending-text">You held every piece of my heart and filled the rest with yours. No ending here &mdash; just the two of us, choosing each other again and again, for all the days this page can count and all the ones beyond it.</p>
+        <p class="ending-note">— always yours, Nard</p>
       </div>
       <div class="finale-actions fade-up d4">
         <button class="mini-btn" id="musicBtn">Play our song</button>
@@ -221,17 +353,31 @@
 
 <script>
     var RELATIONSHIP_START_DATE = "2024-09-10";
+    var YOUR_NAME = "Nard";
 
     var finaleScreen = document.getElementById('finaleScreen');
     var finaleLetter = document.getElementById('finaleLetter');
     var foreverFill = document.getElementById('foreverFill');
     var foreverHeart = document.getElementById('foreverHeart');
     var musicBtn = document.getElementById('musicBtn');
+    var dayBadge = document.getElementById('dayBadge');
+    var milestonesEl = document.getElementById('milestones');
+    var hiddenHeart = document.getElementById('hiddenHeart');
+    var hiddenSecret = document.getElementById('hiddenSecret');
+    var endingEl = document.getElementById('ending');
 
     var song = new Audio('music/song2.mp3');
     song.loop = true;
     var musicOn = false;
     var fill = 0;
+    var showEnding = false;
+
+    var MILESTONES = [
+      { date: "September 10, 2024", text: "The day we became us — where every story has to begin." },
+      { date: "every day since", text: "The small moments: the laughs, the talks, the quiet silences that say everything." },
+      { date: "today", text: "Looking back at all we've built and feeling like I won something no one can take away." },
+      { date: "forever", text: "And it goes on — because you and I are the best kind of never-ending." }
+    ];
 
     function typeLetter(el, text, speed) {
       var i = 0;
@@ -248,9 +394,67 @@
       }, speed);
     }
 
+    function daysTogether() {
+      var start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
+      var now = new Date();
+      return Math.max(1, Math.floor((now - start) / 86400000));
+    }
+
+    function typeMilestones() {
+      var idx = 0;
+      var items = milestonesEl.querySelectorAll('.milestone');
+      function next() {
+        if (idx >= items.length) return;
+        var m = items[idx];
+        m.classList.add('revealed');
+        var dateEl = m.querySelector('.milestone-date');
+        var textEl = m.querySelector('.milestone-text');
+        var date = dateEl.textContent;
+        var text = textEl.textContent;
+        dateEl.textContent = '';
+        textEl.textContent = '';
+        var i = 0;
+        var big = date + '  \u2022  ' + text;
+        var timer = setInterval(function() {
+          i++;
+          var sliced = big.slice(0, i);
+          var sep = sliced.indexOf('  \u2022  ');
+          if (sep !== -1) {
+            dateEl.textContent = sliced.slice(0, sep);
+            textEl.textContent = sliced.slice(sep + 5);
+          } else {
+            dateEl.textContent = sliced;
+          }
+          if (i >= big.length) {
+            clearInterval(timer);
+            idx++;
+            var caret = document.createElement('span');
+            caret.className = 'milestones-caret';
+            textEl.appendChild(caret);
+            setTimeout(next, 700);
+          }
+        }, 22);
+      }
+      setTimeout(next, 500);
+    }
+
+    function buildFinalePanels() {
+      dayBadge.textContent = 'We\u2019ve loved for ' + daysTogether() + ' days';
+      MILESTONES.forEach(function(m) {
+        var el = document.createElement('div');
+        el.className = 'milestone';
+        el.innerHTML = '<div class="milestone-date"></div><div class="milestone-text"></div>';
+        el.querySelector('.milestone-date').textContent = m.date;
+        el.querySelector('.milestone-text').textContent = m.text;
+        milestonesEl.appendChild(el);
+      });
+    }
+
     function startFinale() {
+      buildFinalePanels();
       var letter = 'This is where our story slows down, not to end, but to be savored. Every laugh, every fight, every quiet moment in between has brought me here, to you. I still choose you, today and in every tomorrow this page can hold. Thank you for being my favorite chapter. \u2014 Nard';
-      setTimeout(function() { typeLetter(finaleLetter, letter, 26); }, 900);
+      setTimeout(function() { typeLetter(finaleLetter, letter, 26); }, 1300);
+      setTimeout(typeMilestones, 5200);
       setTimeout(function() {
         var burst = function(cx, cy) {
           for (var i = 0; i < 14; i++) {
@@ -281,11 +485,40 @@
       if (fill >= 100) {
         foreverHeart.textContent = '\u2665';
         fireworks();
+        showEnding = true;
+        endingEl.classList.add('show');
       }
     }
     foreverHeart.addEventListener('click', addForever);
     foreverHeart.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); addForever(); }
+    });
+
+    hiddenHeart.addEventListener('click', function() {
+      hiddenHeart.classList.remove('found');
+      void hiddenHeart.offsetWidth;
+      hiddenHeart.classList.add('found');
+      hiddenSecret.textContent = 'You found me. You always do. \u2014 but the real secret is that every time you say my name, I still smile like it\u2019s the first time.';
+      hiddenSecret.classList.add('show');
+      setTimeout(function() {
+        var r = hiddenHeart.getBoundingClientRect();
+        var b = function(cx, cy) {
+          for (var i = 0; i < 10; i++) {
+            var s = document.createElement('span');
+            s.className = 'burst';
+            s.textContent = '\u2665';
+            var a = Math.random() * Math.PI * 2;
+            var d = Math.random() * 70 + 30;
+            s.style.left = (cx + Math.cos(a) * 10) + 'px';
+            s.style.top = (cy + Math.sin(a) * 10) + 'px';
+            s.style.setProperty('--tx', Math.cos(a) * d + 'px');
+            s.style.setProperty('--ty', Math.sin(a) * d - 25 + 'px');
+            document.body.appendChild(s);
+            setTimeout(function() { s.remove(); }, 1200);
+          }
+        };
+        b(r.left + r.width / 2, r.top + r.height / 2);
+      }, 250);
     });
 
     function fireworks() {
