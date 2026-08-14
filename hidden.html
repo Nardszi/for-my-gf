@@ -249,6 +249,9 @@
 
     var letter = 'If you are reading this, you found the one thing I kept hidden even from the rest of the page. This is the part I don\u2019t say out loud. You are my favorite hello and my hardest goodbye, my calm in every storm and my chaos in the quiet. When the world is loud, you are the only voice I want to hear. I don\u2019t just love you \u2014 I love the way you make me brave enough to say it. Keep this page close. It was always meant for you and no one else.';
     setTimeout(function() { typeLetter(hiddenLetterEl, letter, 22); }, 900);
+
+    window.scrollTo(0, 0);
+    window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
 </body>
 </html>
