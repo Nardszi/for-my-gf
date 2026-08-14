@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Just for you</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --rose: #ff8fab;
+      --rose-deep: #e0567c;
+      --cream: #fff7ee;
+      --gold: #e8c17e;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--cream);
+      background: #1a0f14;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .finale-bg {
+      position: fixed;
+      inset: 0;
+      background-image: url("finale-bg.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+    .finale-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(26,15,20,0.5) 0%, rgba(26,15,20,0.75) 55%, rgba(26,15,20,0.92) 100%);
+    }
+
+    .hidden-screen {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: clamp(1rem, 4vw, 2.5rem) 1rem;
+    }
+    .hidden-card {
+      width: 100%;
+      max-width: 560px;
+      align-self: flex-start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.6rem;
+      text-align: center;
+    }
+
+    .hidden-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: rgba(255, 247, 238, 0.55);
+    }
+    .hidden-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 500;
+      font-size: clamp(2rem, 7vw, 3rem);
+      line-height: 1.1;
+      background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmerText 5s linear infinite;
+      filter: drop-shadow(0 2px 18px rgba(255, 143, 171, 0.3));
+    }
+    .hidden-sub {
+      font-size: 0.86rem;
+      font-style: italic;
+      color: rgba(255, 247, 238, 0.65);
+      margin-top: -1rem;
+    }
+
+    .hidden-letter {
+      width: 100%;
+      font-size: 1rem;
+      line-height: 1.9;
+      color: rgba(255, 247, 238, 0.95);
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+      white-space: pre-wrap;
+      text-align: left;
+      padding: 1.6rem 1.4rem;
+      background: rgba(30, 17, 24, 0.55);
+      border: 1px solid rgba(255, 143, 171, 0.28);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .hidden-letter .caret { display: inline-block; width: 2px; height: 1.1em; background: var(--rose); vertical-align: -0.15em; animation: caretBlink 0.8s steps(1) infinite; }
+
+    .hidden-memories-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255, 247, 238, 0.6);
+      margin-top: 0.4rem;
+    }
+    .hidden-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+    .hidden-photo {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 143, 171, 0.35);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(14px) scale(0.95);
+      transition: opacity 0.6s ease, transform 0.6s var(--spring), box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .hidden-photo.revealed { opacity: 1; transform: translateY(0) scale(1); }
+    .hidden-photo:hover { box-shadow: 0 12px 28px rgba(224, 86, 124, 0.4); transform: translateY(-3px) scale(1.02); }
+
+    .hidden-music {
+      padding: 0.65rem 1.3rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 143, 171, 0.4);
+      background: rgba(30, 17, 24, 0.5);
+      color: var(--cream);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.15s var(--spring);
+    }
+    .hidden-music:hover { background: rgba(224, 86, 124, 0.25); }
+    .hidden-music:active { transform: scale(0.95); }
+
+    .hidden-signature {
+      font-size: 0.84rem;
+      font-style: italic;
+      color: var(--gold);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .hidden-signature.show { opacity: 1; }
+
+    @keyframes shimmerText { to { background-position: 250% center; } }
+    @keyframes caretBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+    @keyframes fadeUpIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { opacity: 0; animation: fadeUpIn 1s var(--spring) forwards; }
+    .d1 { animation-delay: 0.3s; }
+    .d2 { animation-delay: 0.55s; }
+    .d3 { animation-delay: 0.8s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+</style>
+</head>
+<body>
+  <div class="finale-bg" aria-hidden="true"></div>
+
+  <div class="hidden-screen">
+    <div class="hidden-card">
+      <p class="hidden-eyebrow fade-up d1">you found it</p>
+      <h1 class="hidden-title fade-up d2">For your eyes only</h1>
+      <p class="hidden-sub fade-up d2">some things are just for us</p>
+      <div class="hidden-letter fade-up d2" id="hiddenLetter"></div>
+      <p class="hidden-memories-title fade-up d3">our favorite little moments</p>
+      <div class="hidden-grid fade-up d3" id="hiddenGrid"></div>
+      <button class="hidden-music" id="hiddenMusic">Play our song</button>
+      <p class="hidden-signature" id="hiddenSignature">&mdash; always, Nard</p>
+    </div>
+  </div>
+
+<script>
+    var YOUR_NAME = "Nard";
+    var PHOTOS = ['float-photos/2.jpg', 'float-photos/5.jpg', 'float-photos/7.jpg', 'float-photos/11.jpg', 'float-photos/13.jpg', 'float-photos/16.jpg'];
+
+    var hiddenLetterEl = document.getElementById('hiddenLetter');
+    var hiddenGrid = document.getElementById('hiddenGrid');
+    var hiddenMusic = document.getElementById('hiddenMusic');
+    var hiddenSignature = document.getElementById('hiddenSignature');
+
+    var song = new Audio('music/song2.mp3');
+    song.loop = true;
+    var musicOn = false;
+
+    function typeLetter(el, text, speed) {
+      var i = 0;
+      el.innerHTML = '';
+      var timer = setInterval(function() {
+        i++;
+        el.textContent = text.slice(0, i);
+        if (i >= text.length) {
+          clearInterval(timer);
+          var caret = document.createElement('span');
+          caret.className = 'caret';
+          el.appendChild(caret);
+          hiddenSignature.classList.add('show');
+        }
+      }, speed);
+    }
+
+    PHOTOS.forEach(function(src, i) {
+      var img = document.createElement('img');
+      img.className = 'hidden-photo';
+      img.src = src;
+      img.alt = 'a memory of us';
+      img.loading = 'lazy';
+      img.style.transitionDelay = (i * 0.12) + 's';
+      img.addEventListener('click', function() {
+        img.style.transform = 'scale(1.06)';
+        setTimeout(function() { img.style.transform = ''; }, 300);
+      });
+      hiddenGrid.appendChild(img);
+      var revealed = false;
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            img.classList.add('revealed');
+            io.unobserve(img);
+            revealed = true;
+          }
+        });
+      }, { threshold: 0.3 });
+      io.observe(img);
+    });
+
+    hiddenMusic.addEventListener('click', function() {
+      if (musicOn) {
+        song.pause();
+        hiddenMusic.textContent = 'Play our song';
+        musicOn = false;
+      } else {
+        song.play().catch(function() {});
+        hiddenMusic.textContent = 'Pause our song';
+        musicOn = true;
+      }
+    });
+
+    var letter = 'If you are reading this, you found the one thing I kept hidden even from the rest of the page. This is the part I don\u2019t say out loud. You are my favorite hello and my hardest goodbye, my calm in every storm and my chaos in the quiet. When the world is loud, you are the only voice I want to hear. I don\u2019t just love you \u2014 I love the way you make me brave enough to say it. Keep this page close. It was always meant for you and no one else.';
+    setTimeout(function() { typeLetter(hiddenLetterEl, letter, 22); }, 900);
+</script>
+</body>
+</html>

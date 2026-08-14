@@ -191,6 +191,24 @@
       box-shadow: 0 6px 18px rgba(224, 86, 124, 0.4);
     }
 
+    .hidden-gate {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 247, 238, 0.12);
+      text-decoration: none;
+      font-size: 1.2rem;
+      z-index: 10;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .hidden-gate:hover { color: rgba(255, 247, 238, 0.4); }
+
     .burst {
       position: fixed;
       pointer-events: none;
@@ -263,6 +281,10 @@
       </div>
     </div>
   </div>
+
+  <a class="hidden-gate" href="hidden.html" id="hiddenGate" aria-label="...">
+    <span>.</span>
+  </a>
 
 <script>
     var RELATIONSHIP_START_DATE = "2024-09-10";
