@@ -1257,6 +1257,43 @@
       box-shadow: var(--shadow-hover);
     }
 
+    .anniv-music-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 1200;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s var(--spring);
+      opacity: 0;
+      transform: scale(0.6);
+      pointer-events: none;
+    }
+
+    .anniv-music-toggle.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .anniv-music-toggle:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .anniv-music-toggle.playing { background: var(--accent-primary); border-color: var(--accent-primary); }
+    .anniv-music-toggle.playing svg { color: white; }
+    .anniv-music-toggle svg { width: 22px; height: 22px; color: var(--fg-secondary); transition: color 0.3s; }
+
     .anniv-page .anniv-countdown { margin-bottom: 2.5rem; }
 
     .anniv-page .anniv-letter { margin-bottom: 2.5rem; }
@@ -3631,6 +3668,18 @@
     <div class="anniv-orb"></div>
     <div class="anniv-orb"></div>
     <div class="anniv-orb"></div>
+    <button class="anniv-music-toggle" id="annivMusicToggle" aria-label="Toggle anniversary music">
+      <svg id="annivPlayIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+      </svg>
+      <svg id="annivPauseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+        <rect x="6" y="4" width="4" height="16"></rect>
+        <rect x="14" y="4" width="4" height="16"></rect>
+      </svg>
+    </button>
+    <audio id="annivMusic" loop preload="auto">
+      <source src="music/song1.mp3" type="audio/mpeg">
+    </audio>
     <div class="anniv-page-inner">
       <div class="anniv-page-head">
         <div class="anniv-page-heart">♥</div>
@@ -5135,6 +5184,32 @@
       }
     }
 
+    const annivMusicToggle = document.getElementById('annivMusicToggle');
+    const annivMusic = document.getElementById('annivMusic');
+    const annivPlayIcon = document.getElementById('annivPlayIcon');
+    const annivPauseIcon = document.getElementById('annivPauseIcon');
+    let annivMusicPlaying = false;
+    let mainMusicWasPlaying = false;
+
+    function annivToggleMusic() {
+      if (annivMusicPlaying) {
+        annivMusic.pause();
+        annivPlayIcon.style.display = 'block';
+        annivPauseIcon.style.display = 'none';
+        annivMusicToggle.classList.remove('playing');
+      } else {
+        annivMusic.play().catch(function() {});
+        annivPlayIcon.style.display = 'none';
+        annivPauseIcon.style.display = 'block';
+        annivMusicToggle.classList.add('playing');
+      }
+      annivMusicPlaying = !annivMusicPlaying;
+    }
+
+    if (annivMusicToggle) {
+      annivMusicToggle.addEventListener('click', annivToggleMusic);
+    }
+
     function openAnnivPage() {
       annivPage.classList.remove('hidden');
       void annivPage.offsetWidth;
@@ -5145,7 +5220,10 @@
       setTimeout(function() { spawnBurst(window.innerWidth / 2, window.innerHeight / 3, 18); }, 250);
       setTimeout(annivConfetti, 150);
       vibrate([60, 30, 60, 30, 120]);
-      if (!isPlaying && musicToggle) musicToggle.click();
+      if (isPlaying && musicToggle) musicToggle.click();
+      mainMusicWasPlaying = isPlaying;
+      if (annivMusicToggle) annivMusicToggle.classList.add('visible');
+      if (!annivMusicPlaying) annivToggleMusic();
     }
 
     function tryAnnivUnlock() {
@@ -5252,15 +5330,45 @@
     const annivCarouselNext = document.getElementById('annivCarouselNext');
     const annivModalImage = document.getElementById('modalImage');
 
-    const ANNIV_CARD_W = 180;
-    const ANNIV_CARD_H = 240;
+    const ANNIV_CARD_W = 140;
+    const ANNIV_CARD_H = 190;
     const annivCarouselRot = { angle: 0, spinning: true };
 
+    const ANNIV_CAROUSEL_PHOTOS = (function() {
+      const caps = [
+        "the first hello",
+        "two hearts, one beat",
+        "your favorite smile",
+        "a night to remember",
+        "caught in the moment",
+        "you + me",
+        "laughing like nothing else matters",
+        "a glimpse of forever",
+        "the little things",
+        "home is wherever you are",
+        "our kind of magic",
+        "sunshine in your eyes",
+        "hand in hand",
+        "making memories",
+        "your glow, always",
+        "a story worth keeping",
+        "the best kind of days",
+        "us, always",
+        "my favorite view",
+        "the beginning of everything"
+      ];
+      const list = [];
+      for (let n = 1; n <= 20; n++) {
+        list.push({ src: 'float-photos/' + n + '.jpg', caption: caps[n - 1] || 'a moment of us' });
+      }
+      return list;
+    })();
+
     (function buildAnnivCarousel() {
-      const count = PHOTOS.length;
+      const count = ANNIV_CAROUSEL_PHOTOS.length;
       const radius = Math.round((ANNIV_CARD_W / 2) / Math.tan(Math.PI / count));
       annivCarousel.innerHTML = '';
-      PHOTOS.forEach(function(photo, i) {
+      ANNIV_CAROUSEL_PHOTOS.forEach(function(photo, i) {
         const card = document.createElement('div');
         card.className = 'anniv-card';
         const angle = (360 / count) * i;
@@ -5347,6 +5455,10 @@
       annivBack.addEventListener('click', function() {
         annivPage.classList.add('hidden');
         document.body.style.overflow = '';
+        if (annivMusicToggle) annivMusicToggle.classList.remove('visible');
+        if (annivMusicPlaying) annivToggleMusic();
+        if (mainMusicWasPlaying && !isPlaying && musicToggle) musicToggle.click();
+        mainMusicWasPlaying = false;
       });
     }
 
