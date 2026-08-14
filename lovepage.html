@@ -55,8 +55,8 @@
     .theme-toggle {
       position: fixed;
       top: 1.5rem; left: 1.5rem;
-      z-index: 100;
-      width: 48px; height: 48px;
+      z-index: 100000;
+      width: 56px; height: 56px;
       border-radius: 50%;
       background: var(--card-bg);
       backdrop-filter: blur(10px);
@@ -67,16 +67,19 @@
       align-items: center;
       justify-content: center;
       transition: all 0.4s var(--spring);
-      font-size: 1.15rem;
+      font-size: 1.3rem;
       color: var(--fg-secondary);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      pointer-events: all !important;
     }
     .theme-toggle:hover { transform: scale(1.1) rotate(10deg); box-shadow: var(--shadow-hover); }
 
     @media (max-width: 768px) {
       .theme-toggle {
         top: 1rem; left: 1rem;
-        width: 56px; height: 56px;
-        font-size: 1.3rem;
+        width: 60px; height: 60px;
+        font-size: 1.35rem;
         touch-action: manipulation;
       }
     }

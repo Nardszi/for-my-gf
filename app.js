@@ -45,8 +45,8 @@
       btn = document.createElement('button');
       btn.id = 'globalThemeToggle';
       btn.setAttribute('aria-label', 'Toggle dark and light theme');
-      btn.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:99999;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,143,171,0.4);background:rgba(26,15,20,0.85);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
-      btn.innerHTML = '<span id="globalThemeIcon">☀️</span>';
+      btn.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:100000;width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,143,171,0.4);background:rgba(26,15,20,0.85);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3);touch-action:manipulation;-webkit-tap-highlight-color:transparent;pointer-events:all;';
+      btn.innerHTML = '<span id="globalThemeIcon">\u2600\uFE0F</span>';
       btn.addEventListener('mouseenter', function() { btn.style.transform = 'scale(1.1) rotate(10deg)'; });
       btn.addEventListener('mouseleave', function() { btn.style.transform = 'scale(1) rotate(0deg)'; });
       document.body.appendChild(btn);
@@ -336,7 +336,7 @@
     if (document.getElementById('scrollRibbon')) return;
     var ribbon = document.createElement('div');
     ribbon.id = 'scrollRibbon';
-    ribbon.style.cssText = 'position:fixed;top:0;left:0;height:3px;width:0%;z-index:99998;background:linear-gradient(90deg,#e0567c,#ff8fab,#e8c17e);box-shadow:0 0 8px rgba(255,143,171,0.6);transition:width 0.1s linear;pointer-events:none;border-radius:0 2px 2px 0;';
+    ribbon.style.cssText = 'position:fixed;top:0;left:0;height:3px;width:0%;z-index:99998;background:linear-gradient(90deg,#e0567c,#ff8fab,#e8c17e);box-shadow:0 0 8px rgba(255,143,171,0.6);transition:width 0.1s linear;pointer-events:none;touch-action:none;border-radius:0 2px 2px 0;';
     document.body.appendChild(ribbon);
     window.addEventListener('scroll', function() {
       var doc = document.documentElement;
@@ -463,7 +463,7 @@
     if (document.getElementById('ambientParticles')) return;
     var layer = document.createElement('div');
     layer.id = 'ambientParticles';
-    layer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;';
+    layer.style.cssText = 'position:fixed;inset:0;pointer-events:none !important;z-index:1;overflow:hidden;touch-action:none;';
     document.body.appendChild(layer);
     var colors = ['rgba(255,143,171,0.45)', 'rgba(232,193,126,0.35)', 'rgba(255,211,224,0.4)', 'rgba(255,93,143,0.3)'];
     var particles = [];
