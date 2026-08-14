@@ -1483,6 +1483,229 @@
 
     .anniv-postcard-close:hover { border-color: var(--accent-primary); color: var(--accent-dark); }
 
+    .anniv-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s var(--spring);
+    }
+
+    .anniv-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .anniv-door {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      pointer-events: none;
+    }
+
+    .anniv-door.hidden { display: none; }
+
+    .anniv-door-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50.5%;
+      background: linear-gradient(160deg, #f6c8cb, #e59aa0);
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .anniv-door-left { left: 0; }
+
+    .anniv-door-right { right: 0; }
+
+    .anniv-door.open .anniv-door-left { transform: scaleY(1) translateX(-100%); }
+    .anniv-door.open .anniv-door-right { transform: scaleY(1) translateX(100%); }
+
+    .anniv-door.closed .anniv-door-panel { transform: scaleY(1); }
+
+    .anniv-page-title.shimmering em {
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent-primary), #f6d8d9, var(--accent-dark));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerMove 3.5s linear infinite;
+    }
+
+    @keyframes shimmerMove {
+      0% { background-position: 0% 0; }
+      100% { background-position: 300% 0; }
+    }
+
+    .anniv-card.front {
+      z-index: 6;
+      box-shadow: 0 0 0 3px #fff, 0 0 30px rgba(244, 199, 202, 0.9), 0 24px 50px rgba(201, 138, 143, 0.5);
+      transform: translateZ(20px);
+    }
+
+    .anniv-card.front:hover .anniv-card-cap { opacity: 1; transform: translateY(0); }
+
+    .anniv-lightbox-cap {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 2.5rem 1rem 1.2rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      color: #fff;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+
+    .photo-modal.active .anniv-lightbox-cap { opacity: 1; transform: translateY(0); }
+
+    .anniv-petal {
+      position: fixed;
+      top: -6vh;
+      z-index: 3000;
+      pointer-events: none;
+      color: #f3b7bb;
+      font-size: 16px;
+      animation: petalFall linear infinite;
+      filter: drop-shadow(0 2px 6px rgba(201, 138, 143, 0.4));
+    }
+
+    @keyframes petalFall {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+      8% { opacity: 0.85; }
+      100% { transform: translateY(112vh) translateX(var(--drift, 40px)) rotate(var(--spin, 200deg)); opacity: 0.1; }
+    }
+
+    .anniv-sparkle {
+      position: fixed;
+      z-index: 2999;
+      pointer-events: none;
+      color: #ffd9c8;
+      animation: sparkleTwinkle ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes sparkleTwinkle {
+      0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+      50% { opacity: 0.9; transform: scale(1.15) rotate(45deg); }
+    }
+
+    .anniv-page.playing::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2998;
+      background: radial-gradient(circle at 50% 50%, rgba(244, 199, 202, 0.18), transparent 70%);
+      animation: auraPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes auraPulse {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 1; }
+    }
+
+    .anniv-count-num.flip { animation: digitFlip 0.6s var(--spring); display: inline-block; }
+
+    @keyframes digitFlip {
+      0% { transform: perspective(300px) rotateX(90deg); opacity: 0.4; }
+      100% { transform: perspective(300px) rotateX(0deg); opacity: 1; }
+    }
+
+    .anniv-wish.flipped {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      color: white;
+    }
+
+    .anniv-wish.flipped .anniv-wish-num {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .anniv-wish.flipped .anniv-wish-text { color: white; }
+
+    .anniv-progress {
+      margin-bottom: 2.5rem;
+      padding: 1.4rem 1.25rem;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .anniv-progress-label {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--fg-primary);
+      margin-bottom: 0.9rem;
+    }
+
+    .anniv-progress-track {
+      position: relative;
+      height: 14px;
+      border-radius: 10px;
+      background: rgba(201, 138, 143, 0.18);
+      overflow: hidden;
+    }
+
+    .anniv-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-dark));
+      transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .anniv-progress-heart {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      color: var(--accent-dark);
+      font-size: 20px;
+      transition: left 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+      text-shadow: 0 2px 8px rgba(201, 138, 143, 0.5);
+    }
+
+    .anniv-easter-egg {
+      max-width: 0;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      margin: 0 auto;
+      transition: all 0.8s var(--spring);
+    }
+
+    .anniv-easter-egg.visible {
+      max-width: 420px;
+      height: auto;
+      opacity: 1;
+      padding: 1.4rem 1.25rem;
+      margin-bottom: 2.5rem;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .anniv-easter-egg h4 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--accent-dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .anniv-easter-egg p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--fg-secondary);
+      line-height: 1.7;
+    }
+
     .anniv-back {
       display: inline-flex;
       align-items: center;
@@ -1726,8 +1949,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-
-    .anniv-card.front { z-index: 5; }
 
     .anniv-carousel-hint {
       font-family: var(--serif);
@@ -3932,6 +4153,10 @@
   </div>
 
   <div class="anniv-page hidden" id="annivPage">
+    <div class="anniv-door" id="annivDoor">
+      <div class="anniv-door-panel anniv-door-left"></div>
+      <div class="anniv-door-panel anniv-door-right"></div>
+    </div>
     <div class="anniv-orb"></div>
     <div class="anniv-orb"></div>
     <div class="anniv-orb"></div>
@@ -3948,22 +4173,33 @@
       <source src="music/song1.mp3" type="audio/mpeg">
     </audio>
     <div class="anniv-page-inner">
-      <div class="anniv-page-head">
+      <div class="anniv-page-head anniv-reveal">
         <div class="anniv-page-heart" id="annivPageHeart">♥</div>
-        <h1 class="anniv-page-title">Happy <em>Anniversary</em></h1>
+        <h1 class="anniv-page-title shimmering">Happy <em>Anniversary</em></h1>
         <p class="anniv-page-sub">to the one who makes every day worth celebrating</p>
         <div class="anniv-stamp">
           <span class="anniv-stamp-date" id="annivStampDate"></span>
           <span class="anniv-stamp-days" id="annivStampDays"></span>
         </div>
       </div>
-      <div class="anniv-years" id="annivYears"></div>
-      <div class="anniv-countdown" id="annivCountdown"></div>
-      <div class="anniv-letter" id="annivLetter"></div>
-      <div class="anniv-vow" id="annivVow"></div>
-      <p class="anniv-signature" id="annivSignature"></p>
-      <h3 class="anniv-photos-title">A little trip down memory lane</h3>
-      <div class="anniv-carousel-wrap">
+      <div class="anniv-years anniv-reveal" id="annivYears"></div>
+      <div class="anniv-countdown anniv-reveal" id="annivCountdown"></div>
+      <div class="anniv-progress anniv-reveal" id="annivProgress">
+        <div class="anniv-progress-label" id="annivProgressLabel"></div>
+        <div class="anniv-progress-track">
+          <div class="anniv-progress-fill" id="annivProgressFill"></div>
+          <span class="anniv-progress-heart" id="annivProgressHeart">♥</span>
+        </div>
+      </div>
+      <div class="anniv-letter anniv-reveal" id="annivLetter"></div>
+      <div class="anniv-vow anniv-reveal" id="annivVow"></div>
+      <p class="anniv-signature anniv-reveal" id="annivSignature"></p>
+      <div class="anniv-easter-egg" id="annivEasterEgg">
+        <h4>You found the secret</h4>
+        <p id="annivEasterEggText">You've loved me five times over and I still love you more each day. Here's to forever, one tap at a time. — Nard</p>
+      </div>
+      <h3 class="anniv-photos-title anniv-reveal">A little trip down memory lane</h3>
+      <div class="anniv-carousel-wrap anniv-reveal">
         <div class="anniv-carousel" id="annivCarousel"></div>
         <button class="anniv-carousel-btn anniv-carousel-prev" id="annivCarouselPrev" aria-label="Previous photo">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -3976,11 +4212,11 @@
           </svg>
         </button>
       </div>
-      <p class="anniv-carousel-hint">a carousel of us — tap a photo to look closer</p>
-      <h3 class="anniv-wishes-title">For the year ahead</h3>
-      <div class="anniv-wishes" id="annivWishes"></div>
-      <div class="anniv-teaser" id="annivTeaser"></div>
-      <div class="anniv-hunt" id="annivHunt">
+      <p class="anniv-carousel-hint anniv-reveal">a carousel of us — tap a photo to look closer</p>
+      <h3 class="anniv-wishes-title anniv-reveal">For the year ahead</h3>
+      <div class="anniv-wishes anniv-reveal" id="annivWishes"></div>
+      <div class="anniv-teaser anniv-reveal" id="annivTeaser"></div>
+      <div class="anniv-hunt anniv-reveal" id="annivHunt">
         <h3 class="anniv-hunt-title">Find the hidden hearts</h3>
         <p class="anniv-hunt-sub">tap every square — 5 hearts are hiding among them</p>
         <div class="anniv-hunt-grid" id="annivHuntGrid"></div>
@@ -4234,6 +4470,7 @@
     <div class="photo-modal" id="photoModal">
       <button class="photo-modal-close" aria-label="Close">×</button>
       <img src="" alt="Full size photo" id="modalImage">
+      <div class="anniv-lightbox-cap" id="annivLightboxCap"></div>
     </div>
   </div>
 
@@ -5526,6 +5763,7 @@
         annivPlayIcon.style.display = 'block';
         annivPauseIcon.style.display = 'none';
         annivMusicToggle.classList.remove('playing');
+        annivPage.classList.remove('playing');
       } else {
         if (!annivAudioCtx) initAnnivAudioAnalyser();
         if (annivAudioCtx && annivAudioCtx.state === 'suspended') {
@@ -5535,6 +5773,7 @@
         annivPlayIcon.style.display = 'none';
         annivPauseIcon.style.display = 'block';
         annivMusicToggle.classList.add('playing');
+        annivPage.classList.add('playing');
       }
       annivMusicPlaying = !annivMusicPlaying;
     }
@@ -5549,14 +5788,26 @@
       annivPage.classList.add('visible');
       annivPage.scrollTop = 0;
       document.body.style.overflow = 'hidden';
+
+      const door = document.getElementById('annivDoor');
+      if (door) {
+        door.classList.add('closed');
+        void door.offsetWidth;
+        door.classList.remove('closed');
+        door.classList.add('open');
+        setTimeout(function() { door.classList.add('hidden'); }, 900);
+      }
+
       spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 22);
       setTimeout(function() { spawnBurst(window.innerWidth / 2, window.innerHeight / 3, 18); }, 250);
-      setTimeout(annivConfetti, 150);
+      setTimeout(annivConfetti, 300);
       vibrate([60, 30, 60, 30, 120]);
       if (isPlaying && musicToggle) musicToggle.click();
       mainMusicWasPlaying = isPlaying;
       if (annivMusicToggle) annivMusicToggle.classList.add('visible');
       if (!annivMusicPlaying) annivToggleMusic();
+      startAnnivAmbience();
+      setTimeout(revealAnnivSections, 400);
     }
 
     function tryAnnivUnlock() {
@@ -5620,9 +5871,9 @@
           const el = document.getElementById('annivNum' + box.key);
           if (el && el.textContent !== String(box.num)) {
             el.textContent = box.num;
-            el.classList.remove('pop');
+            el.classList.remove('flip');
             void el.offsetWidth;
-            el.classList.add('pop');
+            el.classList.add('flip');
           }
         });
       }
@@ -5709,6 +5960,8 @@
         card.innerHTML = '<img src="' + photo.src + '" alt="Anniversary photo" loading="lazy"><div class="anniv-card-cap">' + photo.caption + '</div>';
         card.addEventListener('click', function() {
           annivModalImage.src = photo.src;
+          const cap = document.getElementById('annivLightboxCap');
+          if (cap) cap.textContent = photo.caption;
           photoModal.classList.add('active');
           document.body.style.overflow = 'hidden';
           annivCarouselRot.spinning = false;
@@ -5737,22 +5990,90 @@
       annivCarousel.addEventListener('mouseenter', function() { annivCarouselRot.spinning = false; });
       annivCarousel.addEventListener('mouseleave', function() { annivCarouselRot.spinning = true; });
 
-      let touchStartX = null;
+      let dragStartX = null;
+      let dragStartAngle = 0;
+      let dragLastX = null;
+      let dragLastT = 0;
+      let dragVelocity = 0;
+
+      annivCarousel.addEventListener('mousedown', function(e) {
+        dragStartX = e.clientX;
+        dragStartAngle = annivDisplayedAngle;
+        dragLastX = e.clientX;
+        dragLastT = Date.now();
+        dragVelocity = 0;
+        annivCarouselRot.spinning = false;
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', function(e) {
+        if (dragStartX === null) return;
+        const now = Date.now();
+        const dx = e.clientX - dragLastX;
+        const dt = Math.max(1, now - dragLastT);
+        dragVelocity = (dx / dt) * 16;
+        annivDisplayedAngle = dragStartAngle + (e.clientX - dragStartX) * 0.35;
+        spinTo(annivDisplayedAngle);
+        dragLastX = e.clientX;
+        dragLastT = now;
+      });
+
+      window.addEventListener('mouseup', function() {
+        if (dragStartX === null) return;
+        dragStartX = null;
+        if (Math.abs(dragVelocity) > 4) {
+          annivCarouselRot.spinning = false;
+          const kick = function() {
+            if (!dragVelocity) return;
+            annivDisplayedAngle += dragVelocity;
+            spinTo(annivDisplayedAngle);
+            dragVelocity *= 0.92;
+            if (Math.abs(dragVelocity) > 0.3) requestAnimationFrame(kick);
+          };
+          requestAnimationFrame(kick);
+        } else {
+          annivCarouselRot.spinning = false;
+        }
+      });
+
       annivCarousel.addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
+        dragStartX = e.touches[0].clientX;
+        dragStartAngle = annivDisplayedAngle;
+        dragLastX = e.touches[0].clientX;
+        dragLastT = Date.now();
+        dragVelocity = 0;
         annivCarouselRot.spinning = false;
       }, { passive: true });
+
+      annivCarousel.addEventListener('touchmove', function(e) {
+        if (dragStartX === null) return;
+        const touch = e.touches[0];
+        const now = Date.now();
+        const dx = touch.clientX - dragLastX;
+        const dt = Math.max(1, now - dragLastT);
+        dragVelocity = (dx / dt) * 16;
+        annivDisplayedAngle = dragStartAngle + (touch.clientX - dragStartX) * 0.35;
+        spinTo(annivDisplayedAngle);
+        dragLastX = touch.clientX;
+        dragLastT = now;
+      }, { passive: true });
+
       annivCarousel.addEventListener('touchend', function(e) {
-        if (touchStartX === null) return;
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (dx < -35) {
-          annivDisplayedAngle -= annivPhotoStep;
-          spinTo(annivDisplayedAngle);
-        } else if (dx > 35) {
-          annivDisplayedAngle += annivPhotoStep;
-          spinTo(annivDisplayedAngle);
+        if (dragStartX === null) return;
+        dragStartX = null;
+        if (Math.abs(dragVelocity) > 4) {
+          annivCarouselRot.spinning = false;
+          const kick = function() {
+            if (!dragVelocity) return;
+            annivDisplayedAngle += dragVelocity;
+            spinTo(annivDisplayedAngle);
+            dragVelocity *= 0.92;
+            if (Math.abs(dragVelocity) > 0.3) requestAnimationFrame(kick);
+          };
+          requestAnimationFrame(kick);
+        } else {
+          annivCarouselRot.spinning = false;
         }
-        touchStartX = null;
       }, { passive: true });
     })();
 
@@ -5851,6 +6172,12 @@
             if (found === heartCount) {
               annivHuntProgress.textContent = 'You found them all \u2014 just like I found you. \u2764';
               vibrate([60, 30, 60, 30, 120]);
+              for (let f = 0; f < 3; f++) {
+                setTimeout(function() {
+                  spawnBurst(window.innerWidth / 2, window.innerHeight / 2 + f * 60, 26);
+                }, f * 250);
+              }
+              setTimeout(annivConfetti, 300);
             }
           } else {
             cell.classList.add('empty');
@@ -5922,6 +6249,165 @@
       annivLock.parentNode.insertBefore(revisit, annivLock.nextSibling);
       revisit.addEventListener('click', openAnnivPage);
     }
+
+    const annivRevealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          if (entry.target === annivLetter && entry.target.dataset && !entry.target.dataset.typed) {
+            entry.target.dataset.typed = '1';
+          }
+          annivRevealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    function revealAnnivSections() {
+      document.querySelectorAll('#annivPage .anniv-reveal').forEach(function(el) {
+        annivRevealObserver.observe(el);
+      });
+    }
+
+    let annivAmbienceStarted = false;
+    function startAnnivAmbience() {
+      if (annivAmbienceStarted) return;
+      annivAmbienceStarted = true;
+
+      const petals = ['🌸', '❤', '❀'];
+      setInterval(function() {
+        if (annivPage.classList.contains('hidden')) return;
+        const p = document.createElement('span');
+        p.className = 'anniv-petal';
+        p.textContent = petals[Math.floor(Math.random() * petals.length)];
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.fontSize = (Math.random() * 12 + 12) + 'px';
+        p.style.animationDuration = (Math.random() * 7 + 8) + 's';
+        p.style.animationDelay = (Math.random() * 4) + 's';
+        p.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+        p.style.setProperty('--spin', (Math.random() * 400 - 200) + 'deg');
+        document.body.appendChild(p);
+        setTimeout(function() { p.remove(); }, 16000);
+      }, 900);
+
+      for (let i = 0; i < 22; i++) {
+        const s = document.createElement('span');
+        s.className = 'anniv-sparkle';
+        s.textContent = '✦';
+        s.style.left = (Math.random() * 100) + 'vw';
+        s.style.top = (Math.random() * 100) + 'vh';
+        s.style.fontSize = (Math.random() * 8 + 6) + 'px';
+        s.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        s.style.animationDelay = (Math.random() * 3) + 's';
+        document.body.appendChild(s);
+      }
+    }
+
+    enableCursorTrail(annivPage);
+
+    function annivTapHearts(e) {
+      if (e.target.closest('#annivPostcard')) return;
+      for (let i = 0; i < 3; i++) {
+        const h = document.createElement('span');
+        h.className = 'mini-heart';
+        h.textContent = '♥';
+        h.style.left = (e.clientX + (Math.random() * 30 - 15)) + 'px';
+        h.style.top = (e.clientY + (Math.random() * 30 - 15)) + 'px';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 40 + 12;
+        h.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        h.style.setProperty('--ty', Math.sin(angle) * dist - 20 + 'px');
+        document.body.appendChild(h);
+        setTimeout(function() { h.remove(); }, 1000);
+      }
+    }
+    annivPage.addEventListener('click', function(e) {
+      if (annivMusicToggle.contains(e.target)) return;
+      if (e.target.closest('.photo-modal')) return;
+      annivTapHearts(e);
+    });
+
+    ANNIV_WISHES.forEach(function(wish, i) {
+      const el = annivWishes.children[i];
+      if (!el) return;
+      el.addEventListener('click', function() {
+        el.classList.toggle('flipped');
+        const num = el.querySelector('.anniv-wish-num');
+        if (num) num.textContent = el.classList.contains('flipped') ? '✓' : (i + 1);
+      });
+    });
+
+    const annivTypewriter = (function() {
+      let active = false;
+      return function() {
+        if (active) return;
+        active = true;
+        const paras = annivLetter.querySelectorAll('p');
+        let idx = 0;
+        function typePara() {
+          if (idx >= paras.length) { active = false; return; }
+          const p = paras[idx];
+          const full = p.textContent;
+          p.textContent = '';
+          let i = 0;
+          const timer = setInterval(function() {
+            p.textContent = full.slice(0, i + 1);
+            i++;
+            if (i >= full.length) {
+              clearInterval(timer);
+              idx++;
+              setTimeout(typePara, 350);
+            }
+          }, 8);
+        }
+        typePara();
+      };
+    })();
+
+    const annivLetterObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          annivTypewriter();
+          annivLetterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    annivLetterObserver.observe(annivLetter);
+
+    const annivProgressFill = document.getElementById('annivProgressFill');
+    const annivProgressHeart = document.getElementById('annivProgressHeart');
+    const annivProgressLabel = document.getElementById('annivProgressLabel');
+    (function buildAnnivProgress() {
+      const start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
+      const now = new Date();
+      const days = Math.max(1, Math.floor((now - start) / 86400000));
+      const targetDays = 365 * 50;
+      const pct = Math.min(100, (days / targetDays) * 100);
+      annivProgressLabel.textContent = 'Of our forever: ' + days + ' days together';
+      setTimeout(function() {
+        annivProgressFill.style.width = pct + '%';
+        annivProgressHeart.style.left = pct + '%';
+      }, 250);
+    })();
+
+    const annivProgressObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          document.getElementById('annivProgressLabel');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    let annivHeartTaps = 0;
+    annivPageHeartEl.addEventListener('click', function(e) {
+      e.stopPropagation();
+      annivHeartTaps++;
+      spawnBurst(e.clientX, e.clientY, 8);
+      if (annivHeartTaps >= 5) {
+        const egg = document.getElementById('annivEasterEgg');
+        if (egg) egg.classList.add('visible');
+        annivHeartTaps = 0;
+      }
+    });
 
     observer.observe(annivLock);
   </script>
