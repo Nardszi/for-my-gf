@@ -54,6 +54,17 @@
   }
   .topbar a:hover { background: rgba(224,86,124,0.25); }
   .topbar .brand { font-family: Georgia, serif; font-size: 1.05rem; letter-spacing: 0.14em; color: var(--gold); }
+  .topbar .theme-toggle {
+    background: none;
+    border: 1px solid rgba(255,143,171,0.35);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font-size: 1.1rem;
+    color: var(--cream);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .topbar .theme-toggle:hover { background: rgba(224,86,124,0.25); }
 
   .hero {
     text-align: center; padding: 2.2rem 1.5rem 2rem;
@@ -210,7 +221,7 @@
 <div class="page">
   <div class="topbar">
     <span class="brand">OUR STORY</span>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light theme" title="Theme">🌙</button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light theme" title="Theme"><span id="themeIcon">🌙</span></button>
     <a href="lovepage.html">&#8592; our story</a>
   </div>
 
