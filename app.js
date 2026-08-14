@@ -188,35 +188,7 @@
   });
   document.addEventListener('touchstart', function() { if (heartSeq) heartSeq = ''; }, { passive: true });
 
-  /* ---------------- tiny pet cat ---------------- */
-  var pet = document.createElement('div');
-  pet.id = 'tinyPet';
-  pet.textContent = '\uD83D\uDC31';
-  pet.setAttribute('aria-hidden', 'true');
-  pet.style.cssText = 'position:fixed;z-index:80000;pointer-events:none;font-size:26px;left:-60px;top:-60px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4));transition:none;';
-  document.body.appendChild(pet);
-  var petX = -60, petY = -60;
-  document.addEventListener('mousemove', function(e) { petX = e.clientX; petY = e.clientY; });
-  document.addEventListener('touchmove', function(e) {
-    var t = e.touches && e.touches[0];
-    if (t) { petX = t.clientX; petY = t.clientY; }
-  }, { passive: true });
-  (function petLoop() {
-    var curX = parseFloat(pet.style.left) || -60;
-    var curY = parseFloat(pet.style.top) || -60;
-    var nx = curX + (petX - curX) * 0.16;
-    var ny = curY + (petY - curY) * 0.16 + Math.sin(Date.now() / 260) * 1.4;
-    pet.style.left = nx + 'px';
-    pet.style.top = ny + 'px';
-    var flip = petX < curX ? -1 : 1;
-    pet.style.transform = 'scaleX(' + flip + ') scaleY(1) rotate(' + Math.sin(Date.now() / 380) * 4 + 'deg)';
-    requestAnimationFrame(petLoop);
-  })();
-  document.addEventListener('click', function() {
-    pet.style.transition = 'transform 0.15s cubic-bezier(0.34,1.56,0.64,1)';
-    pet.style.transform = 'scaleX(1) scale(1.35) rotate(12deg)';
-    setTimeout(function() { pet.style.transform = 'scaleX(1) scale(1) rotate(0deg)'; pet.style.transition = 'none'; }, 220);
-  });
+  
 
   /* ---------------- share card ---------------- */
   window.openShareCard = function() {

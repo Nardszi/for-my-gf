@@ -758,16 +758,7 @@
 
     .dream-card.locked:hover .dream-text { filter: blur(3px); opacity: 0.55; }
 
-    .dream-cat {
-      font-size: 0.6rem;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent-dark);
-      opacity: 0.8;
-    }
-
-    .dream-text {
+    
       font-family: var(--serif);
       font-size: 1.02rem;
       line-height: 1.5;
@@ -5938,10 +5929,8 @@
       const card = document.createElement('div');
       card.className = 'dream-card locked';
       card.innerHTML =
-        '<span class="dream-cat"></span>' +
         '<span class="dream-text"></span>' +
         '<span class="dream-lock">♥</span>';
-      card.querySelector('.dream-cat').textContent = dream.cat;
       card.querySelector('.dream-text').textContent = dream.dream;
       card.addEventListener('click', function() {
         if (card.classList.contains('revealed')) return;
