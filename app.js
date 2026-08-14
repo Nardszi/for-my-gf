@@ -331,6 +331,181 @@
     el.addEventListener('mouseleave', clear);
   };
 
+  /* ---------------- scroll progress ribbon ---------------- */
+  function initScrollRibbon() {
+    if (document.getElementById('scrollRibbon')) return;
+    var ribbon = document.createElement('div');
+    ribbon.id = 'scrollRibbon';
+    ribbon.style.cssText = 'position:fixed;top:0;left:0;height:3px;width:0%;z-index:99998;background:linear-gradient(90deg,#e0567c,#ff8fab,#e8c17e);box-shadow:0 0 8px rgba(255,143,171,0.6);transition:width 0.1s linear;pointer-events:none;border-radius:0 2px 2px 0;';
+    document.body.appendChild(ribbon);
+    window.addEventListener('scroll', function() {
+      var doc = document.documentElement;
+      var total = doc.scrollHeight - doc.clientHeight;
+      if (total <= 0) { ribbon.style.width = '0%'; return; }
+      var pct = (window.scrollY / total) * 100;
+      ribbon.style.width = pct + '%';
+    }, { passive: true });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollRibbon);
+  } else {
+    initScrollRibbon();
+  }
+
+  /* ---------------- 3D tilt on hover for cards ---------------- */
+  window.initTilt = function(selector) {
+    var els = document.querySelectorAll(selector || '.time-card,.dream-card,.note-card,.extras-card,.card,.big-card,.timeline-entry,.game-card');
+    els.forEach(function(el) {
+      if (el.getAttribute('data-tilt')) return;
+      el.setAttribute('data-tilt', '1');
+      el.style.transformStyle = 'preserve-3d';
+      el.style.willChange = 'transform';
+      el.style.transition = 'transform 0.12s ease, box-shadow 0.12s ease';
+      function onMove(cx, cy) {
+        var rect = el.getBoundingClientRect();
+        var x = (cx - rect.left) / rect.width - 0.5;
+        var y = (cy - rect.top) / rect.height - 0.5;
+        el.style.transform = 'perspective(600px) rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 14) + 'deg) scale3d(1.03,1.03,1.03)';
+        el.style.boxShadow = '0 ' + (12 + Math.abs(y) * 14) + 'px ' + (30 + Math.abs(x) * 20) + 'px rgba(201,138,143,0.28)';
+      }
+      function onLeave() {
+        el.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
+        el.style.boxShadow = '';
+        el.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease';
+        setTimeout(function() { el.style.transition = 'transform 0.12s ease, box-shadow 0.12s ease'; }, 400);
+      }
+      el.addEventListener('mousemove', function(e) { onMove(e.clientX, e.clientY); });
+      el.addEventListener('mouseleave', onLeave);
+      el.addEventListener('touchmove', function(e) {
+        var t = e.touches[0];
+        if (t) onMove(t.clientX, t.clientY);
+      }, { passive: true });
+      el.addEventListener('touchend', onLeave);
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { window.initTilt(); });
+  } else {
+    setTimeout(function() { window.initTilt(); }, 400);
+  }
+
+  /* ---------------- magnetic buttons ---------------- */
+  window.initMagneticBtns = function(selector) {
+    var btns = document.querySelectorAll(selector || 'button.extras-share-btn,.replay-btn,.mini-btn,.add,.btn,button.share');
+    btns.forEach(function(btn) {
+      if (btn.getAttribute('data-magnet')) return;
+      btn.setAttribute('data-magnet', '1');
+      var rect, ox = 0, oy = 0;
+      btn.addEventListener('mouseenter', function() {
+        rect = btn.getBoundingClientRect();
+        btn.style.transition = 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)';
+      });
+      btn.addEventListener('mousemove', function(e) {
+        if (!rect) return;
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = (e.clientX - cx) * 0.32;
+        var dy = (e.clientY - cy) * 0.32;
+        btn.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      });
+      btn.addEventListener('mouseleave', function() {
+        btn.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+        btn.style.transform = 'translate(0,0)';
+        rect = null;
+      });
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { window.initMagneticBtns(); });
+  } else {
+    setTimeout(function() { window.initMagneticBtns(); }, 500);
+  }
+
+  /* ---------------- typewriter for hero tagline ---------------- */
+  window.initHeroTypewriter = function(selector, delay) {
+    var el = document.querySelector(selector || '.hero-tagline');
+    if (!el || el.getAttribute('data-typed')) return;
+    el.setAttribute('data-typed', '1');
+    var text = el.textContent.trim();
+    el.textContent = '';
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+    var i = 0;
+    var cursor = document.createElement('span');
+    cursor.style.cssText = 'display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:-0.1em;margin-left:1px;animation:twCaret 0.7s steps(1) infinite;opacity:0.7;';
+    var styleId = 'twCaretStyle';
+    if (!document.getElementById(styleId)) {
+      var s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = '@keyframes twCaret{0%,49%{opacity:1}50%,100%{opacity:0}}';
+      document.head.appendChild(s);
+    }
+    function type() {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i);
+        el.appendChild(cursor);
+        i++;
+        setTimeout(type, 38 + Math.random() * 22);
+      } else {
+        setTimeout(function() { try { cursor.remove(); } catch(e){} }, 1800);
+      }
+    }
+    setTimeout(type, delay || 800);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { window.initHeroTypewriter(); });
+  } else {
+    setTimeout(function() { window.initHeroTypewriter(); }, 300);
+  }
+
+  /* ---------------- ambient always-on particles ---------------- */
+  window.initAmbientParticles = function() {
+    if (document.getElementById('ambientParticles')) return;
+    var layer = document.createElement('div');
+    layer.id = 'ambientParticles';
+    layer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;';
+    document.body.appendChild(layer);
+    var colors = ['rgba(255,143,171,0.45)', 'rgba(232,193,126,0.35)', 'rgba(255,211,224,0.4)', 'rgba(255,93,143,0.3)'];
+    var particles = [];
+    var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; }, { passive: true });
+    for (var i = 0; i < 22; i++) {
+      var p = document.createElement('div');
+      var size = 3 + Math.random() * 5;
+      p.style.cssText = 'position:absolute;border-radius:50%;width:' + size + 'px;height:' + size + 'px;background:' + colors[i % colors.length] + ';box-shadow:0 0 ' + (size * 3) + 'px ' + size + 'px ' + colors[i % colors.length] + ';will-change:transform;';
+      layer.appendChild(p);
+      particles.push({
+        el: p,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.008 + Math.random() * 0.012
+      });
+    }
+    (function tick() {
+      particles.forEach(function(p) {
+        p.phase += p.speed;
+        var pull = 0.00006;
+        p.vx += (mx - p.x) * pull + Math.sin(p.phase) * 0.08;
+        p.vy += (my - p.y) * pull + Math.cos(p.phase * 0.7) * 0.08;
+        p.vx *= 0.97; p.vy *= 0.97;
+        p.x += p.vx; p.y += p.vy;
+        var W = window.innerWidth, H = window.innerHeight;
+        if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20; if (p.y > H + 20) p.y = -20;
+        p.el.style.transform = 'translate(' + p.x + 'px,' + p.y + 'px) scale(' + (0.7 + Math.sin(p.phase * 2) * 0.3) + ')';
+      });
+      requestAnimationFrame(tick);
+    })();
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { window.initAmbientParticles(); });
+  } else {
+    window.initAmbientParticles();
+  }
+
   /* ---------------- karaoke-style word highlight ---------------- */
   window.attachKaraoke = function(el, text, getPlaying) {
     if (!el) return;

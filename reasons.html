@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>100 Reasons I Love You</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="100 Reasons I Love You">
+<meta property="og:description" content="One hundred little reasons, made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --rose: #ff8fab;
+    --rose-deep: #e0567c;
+    --cream: #fff7ee;
+    --gold: #e8c17e;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #120a10;
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .bg-fade {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.3), transparent 60%),
+      radial-gradient(800px 500px at 100% 110%, rgba(232,193,126,0.14), transparent 55%),
+      linear-gradient(180deg, #1a0f14, #120a10);
+  }
+  .page {
+    position: relative; z-index: 1;
+    max-width: 540px; margin: 0 auto;
+    padding: 0 1.2rem 4rem;
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0;
+  }
+  .topbar a {
+    color: var(--cream); text-decoration: none; font-size: 0.82rem;
+    letter-spacing: 0.06em; border: 1px solid rgba(255,143,171,0.35);
+    padding: 0.45rem 0.9rem; border-radius: 999px;
+    transition: background 0.3s ease;
+  }
+  .topbar a:hover { background: rgba(224,86,124,0.25); }
+  .topbar .brand { font-family: Georgia, serif; letter-spacing: 0.14em; color: var(--gold); font-size: 0.95rem; }
+
+  header { text-align: center; padding: 1.4rem 0 1.8rem; }
+  header h1 {
+    font-family: Georgia, serif; font-weight: 500;
+    font-size: clamp(2rem, 8vw, 3rem);
+    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+    background-size: 250% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+  header p { font-size: 0.86rem; font-style: italic; color: rgba(255,247,238,0.6); margin-top: 0.5rem; }
+
+  .progress-wrap {
+    display: flex; align-items: center; gap: 0.9rem;
+    margin-top: 1rem; justify-content: center;
+  }
+  .progress-track {
+    flex: 1; max-width: 280px; height: 6px; border-radius: 999px;
+    background: rgba(255,247,238,0.12);
+    border: 1px solid rgba(255,143,171,0.3);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--rose-deep), var(--rose), var(--gold));
+    box-shadow: 0 0 10px rgba(255,143,171,0.6);
+    transition: width 0.5s var(--spring);
+  }
+  .progress-label {
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,247,238,0.55); white-space: nowrap;
+  }
+
+  /* ---- card stage ---- */
+  .card-stage {
+    perspective: 900px;
+    margin: 2rem auto 0;
+    max-width: 380px;
+    width: 100%;
+  }
+  .reason-card {
+    position: relative;
+    width: 100%; aspect-ratio: 4/5;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.34, 1.2, 0.64, 1);
+    cursor: pointer;
+    border-radius: 24px;
+  }
+  .reason-card.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute; inset: 0;
+    border-radius: 24px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.8rem; padding: 2rem 1.8rem;
+    text-align: center;
+  }
+  .card-front {
+    background: linear-gradient(150deg, #2a1420, #1a0f14 60%, #241220);
+    border: 2px solid rgba(232,193,126,0.45);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 60px rgba(255,143,171,0.08);
+  }
+  .card-back {
+    background: linear-gradient(150deg, #2a1220, #1a0814 60%, #1e0e18);
+    border: 2px solid rgba(255,143,171,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 60px rgba(255,143,171,0.1);
+    transform: rotateY(180deg);
+  }
+
+  .card-number {
+    font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.9;
+  }
+  .card-heart {
+    font-size: 3.2rem;
+    filter: drop-shadow(0 0 20px rgba(255,143,171,0.7));
+    animation: softBeat 2s ease-in-out infinite;
+  }
+  .card-front-hint {
+    font-size: 0.82rem; font-style: italic;
+    color: rgba(255,247,238,0.5);
+  }
+  .card-front-tap {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,143,171,0.6);
+    border: 1px solid rgba(255,143,171,0.3);
+    padding: 0.4rem 1rem; border-radius: 999px;
+    margin-top: 0.5rem;
+  }
+
+  .card-reason-num {
+    font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: rgba(255,143,171,0.7);
+  }
+  .card-reason-text {
+    font-family: Georgia, serif; font-size: 1.22rem; line-height: 1.7;
+    color: var(--cream);
+  }
+  .card-sign {
+    font-size: 0.8rem; font-style: italic;
+    color: rgba(255,247,238,0.45);
+  }
+
+  /* ---- controls ---- */
+  .controls {
+    display: flex; justify-content: center; gap: 1rem;
+    margin-top: 1.8rem; flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    border: 1px solid rgba(255,143,171,0.4);
+    background: rgba(30,17,24,0.65);
+    color: var(--cream); font-family: inherit;
+    font-size: 0.84rem; letter-spacing: 0.06em;
+    padding: 0.65rem 1.4rem; border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s var(--spring);
+    backdrop-filter: blur(6px);
+  }
+  .ctrl-btn:hover { background: rgba(224,86,124,0.25); }
+  .ctrl-btn:active { transform: scale(0.95); }
+  .ctrl-btn.primary {
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(224,86,124,0.35);
+  }
+  .ctrl-btn.primary:hover { filter: brightness(1.1); }
+
+  .all-done {
+    text-align: center; padding: 2rem 1rem 0;
+    opacity: 0; transition: opacity 0.8s ease;
+  }
+  .all-done.show { opacity: 1; }
+  .all-done .big { font-size: 2.6rem; margin-bottom: 0.6rem; }
+  .all-done h2 {
+    font-family: Georgia, serif; font-weight: 500; font-size: 1.5rem;
+    background: linear-gradient(90deg, #ffd3e0, var(--gold), #ffd3e0);
+    background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+  .all-done p { font-size: 0.88rem; font-style: italic; color: rgba(255,247,238,0.6); margin-top: 0.5rem; }
+
+  .footer-note { text-align: center; margin-top: 2rem; font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.4); }
+
+  @keyframes shimmer { to { background-position: 250% center; } }
+  @keyframes softBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  @keyframes fadeUpIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { opacity: 0; animation: fadeUpIn 0.9s var(--spring) forwards; }
+  .d1 { animation-delay: 0.2s; } .d2 { animation-delay: 0.4s; } .d3 { animation-delay: 0.6s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+<div class="page">
+  <div class="topbar">
+    <span class="brand">100 REASONS</span>
+    <a href="lovepage.html">&#8592; back</a>
+  </div>
+
+  <header class="fade-up d1">
+    <h1>100 Reasons I Love You</h1>
+    <p>tap the card to reveal each reason — one by one, all yours</p>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 100</span>
+    </div>
+  </header>
+
+  <div class="card-stage fade-up d2">
+    <div class="reason-card" id="reasonCard" role="button" tabindex="0" aria-label="Tap to reveal reason">
+      <div class="card-face card-front">
+        <span class="card-number">for Rezil, from Nard</span>
+        <span class="card-heart">♥</span>
+        <p class="card-front-hint">a reason is waiting for you</p>
+        <span class="card-front-tap">tap to reveal</span>
+      </div>
+      <div class="card-face card-back" id="cardBack">
+        <span class="card-reason-num" id="reasonNum"></span>
+        <p class="card-reason-text" id="reasonText"></p>
+        <span class="card-sign">&mdash; always, Nard</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls fade-up d3">
+    <button class="ctrl-btn" id="shuffleBtn">&#9734; random reason</button>
+    <button class="ctrl-btn primary" id="nextBtn">next reason &rarr;</button>
+  </div>
+
+  <div class="all-done" id="allDone">
+    <div class="big">💌</div>
+    <h2>All 100, just for you.</h2>
+    <p>you've read every single one &mdash; and I mean every word.</p>
+  </div>
+
+  <p class="footer-note">every reason is a little piece of my heart, given to you</p>
+</div>
+
+<script>
+  var REASONS = [
+    'the way your eyes light up when you smile',
+    'how you make every ordinary moment feel special',
+    'your laugh — the real one, the one you can\'t hold back',
+    'the way you say my name',
+    'how you care so deeply for the people you love',
+    'your heart — it\'s the most beautiful one I\'ve ever known',
+    'the way you make me feel like home',
+    'how brave you are, even when you don\'t feel it',
+    'the little things you do without even thinking',
+    'how you love with everything you have',
+    'the way your presence makes the room warmer',
+    'how you remember the small things that matter to me',
+    'the way you look when you\'re thinking deeply',
+    'how gentle you are with people you love',
+    'the way you make me want to be better',
+    'your kindness — it\'s effortless and real',
+    'how you face hard days with quiet strength',
+    'the way you hold on when things get hard',
+    'how your voice sounds like peace to me',
+    'the way you make me laugh like no one else can',
+    'how honest you are, even when it\'s difficult',
+    'the way you see the good in everything',
+    'how much you grow and evolve every single day',
+    'the softness in your eyes when you look at me',
+    'how you make me feel understood without saying a word',
+    'the way you dream — big, beautiful, and fearless',
+    'how your presence heals me on my worst days',
+    'the way you love — completely and without condition',
+    'how you make the mundane feel magical',
+    'the way you show up for the people you care about',
+    'how you carry everything with grace',
+    'the warmth in your hands',
+    'how you make silence feel comfortable',
+    'the way your smile reaches your eyes',
+    'how you\'ve never once made me feel small',
+    'the way you handle your emotions with maturity',
+    'how deeply you feel everything',
+    'the way you trust — and that you trusted me',
+    'how you light up when you\'re excited about something',
+    'the way you make me feel chosen every single day',
+    'how thoughtful you are in everything you do',
+    'the way you make hard things feel easier',
+    'how your laughter is the best sound in the world to me',
+    'the way you are exactly you — no pretense, no mask',
+    'how you make me feel like I\'m enough',
+    'the way you care — quietly, deeply, completely',
+    'how you face the future with hope',
+    'the way your love has made me braver',
+    'how just thinking of you makes everything better',
+    'the way you fill the spaces in my life I didn\'t know were empty',
+    'how you make every day worth waking up for',
+    'the way you love me on my difficult days',
+    'how you make even bad days survivable',
+    'the way you hold my heart like it\'s precious',
+    'how you inspire me just by being you',
+    'the way you always find the silver lining',
+    'how you make me feel at peace',
+    'the way you say "I love you" — and mean it every single time',
+    'how you push me to grow',
+    'the way you make me feel seen',
+    'how you carry so much love in one person',
+    'the way you choose to stay',
+    'how you make the world better just by being in it',
+    'the way your love feels like a safe place',
+    'how you notice when I\'m not okay',
+    'the way you love the people around you',
+    'how you make sacrifice look easy',
+    'the way you fight for what matters',
+    'how you make me feel loved without trying',
+    'the way you are patient with me',
+    'how you turn my worst moods around',
+    'the way your eyes crinkle when you really laugh',
+    'how you make even small moments feel like gifts',
+    'the way you believe in me even when I don\'t',
+    'how you love without keeping score',
+    'the way you show your love in actions, not just words',
+    'how you make me feel like the luckiest person alive',
+    'the way you hold space for my feelings',
+    'how you make everything better just by being there',
+    'the way you are — beautifully, perfectly you',
+    'how you love me back',
+    'the way you make my heart feel full',
+    'how you\'ve become my favorite person on earth',
+    'the way you make every goodbye hard',
+    'how you make every hello the best part of my day',
+    'the way you fight fair — with love, not cruelty',
+    'how you make me want a future with you in it',
+    'the way you make ordinary days extraordinary',
+    'how deeply I feel understood when I\'m with you',
+    'the way you make me feel like I\'m home',
+    'how you love me in the ways I need most',
+    'the way you are brave enough to be vulnerable',
+    'how you make loving you the easiest thing I\'ve ever done',
+    'the way you have grown into someone incredible',
+    'how you make every version of me feel loved',
+    'the way you show up — even when it\'s hard',
+    'how you have changed my life for the better',
+    'the way you make my heart feel things I never knew were possible',
+    'how you are my favorite story',
+    'the way you are — simply, completely, wonderfully you'
+  ];
+
+  var card = document.getElementById('reasonCard');
+  var reasonNum = document.getElementById('reasonNum');
+  var reasonText = document.getElementById('reasonText');
+  var progressFill = document.getElementById('progressFill');
+  var progressLabel = document.getElementById('progressLabel');
+  var allDone = document.getElementById('allDone');
+
+  var seen = [];
+  var currentIdx = -1;
+  var flipped = false;
+
+  try {
+    var stored = JSON.parse(localStorage.getItem('forMyGf_reasons_seen'));
+    if (Array.isArray(stored)) seen = stored;
+  } catch(e) {}
+
+  function saveSeen() {
+    try { localStorage.setItem('forMyGf_reasons_seen', JSON.stringify(seen)); } catch(e) {}
+  }
+
+  function updateProgress() {
+    var pct = (seen.length / REASONS.length) * 100;
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = seen.length + ' / ' + REASONS.length;
+    if (seen.length >= REASONS.length) {
+      setTimeout(function() { allDone.classList.add('show'); }, 600);
+    }
+  }
+
+  function showReason(idx) {
+    currentIdx = idx;
+    reasonNum.textContent = 'reason #' + (idx + 1);
+    reasonText.textContent = REASONS[idx];
+    if (seen.indexOf(idx) === -1) { seen.push(idx); saveSeen(); }
+    updateProgress();
+    if (!flipped) {
+      card.classList.add('flipped');
+      flipped = true;
+    } else {
+      card.classList.remove('flipped');
+      flipped = false;
+      setTimeout(function() {
+        card.classList.add('flipped');
+        flipped = true;
+      }, 350);
+    }
+    if (navigator.vibrate) { try { navigator.vibrate(18); } catch(e) {} }
+  }
+
+  function nextReason() {
+    var next = (currentIdx + 1) % REASONS.length;
+    showReason(next);
+  }
+
+  function randomReason() {
+    var unseen = [];
+    for (var i = 0; i < REASONS.length; i++) {
+      if (seen.indexOf(i) === -1) unseen.push(i);
+    }
+    var pool = unseen.length > 0 ? unseen : Array.from({length: REASONS.length}, function(_, i){ return i; });
+    var pick = pool[Math.floor(Math.random() * pool.length)];
+    showReason(pick);
+  }
+
+  card.addEventListener('click', function() {
+    if (!flipped) {
+      nextReason();
+    } else {
+      card.classList.remove('flipped');
+      flipped = false;
+    }
+  });
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', nextReason);
+  document.getElementById('shuffleBtn').addEventListener('click', randomReason);
+
+  updateProgress();
+
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+</script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Our Stars</title>
+<meta name="theme-color" content="#0a0612">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Stars — a sky full of us">
+<meta property="og:description" content="A sky I made just for you, full of our memories. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --rose: #ff8fab;
+    --rose-deep: #e0567c;
+    --cream: #fff7ee;
+    --gold: #e8c17e;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #0a0612;
+    color: var(--cream);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ---- sky canvas ---- */
+  #skyCanvas {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  /* ---- topbar overlay ---- */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.2rem;
+    background: linear-gradient(180deg, rgba(10,6,18,0.9), transparent);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+  .topbar a, .topbar button {
+    pointer-events: all;
+    color: var(--cream); text-decoration: none; font-size: 0.82rem;
+    letter-spacing: 0.06em; border: 1px solid rgba(255,143,171,0.35);
+    padding: 0.45rem 0.9rem; border-radius: 999px;
+    background: rgba(10,6,18,0.6);
+    backdrop-filter: blur(6px);
+    transition: background 0.3s ease;
+    cursor: pointer; font-family: inherit;
+  }
+  .topbar a:hover, .topbar button:hover { background: rgba(224,86,124,0.25); }
+  .topbar .brand { font-family: Georgia, serif; letter-spacing: 0.14em; color: var(--gold); font-size: 0.95rem; }
+
+  /* ---- bottom hint ---- */
+  .bottom-hint {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 10;
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,247,238,0.45);
+    pointer-events: none;
+    text-align: center;
+    animation: hintPulse 3s ease-in-out infinite;
+  }
+  @keyframes hintPulse { 0%,100%{opacity:0.45} 50%{opacity:0.8} }
+
+  /* ---- star popup card ---- */
+  .star-popup {
+    position: fixed;
+    z-index: 20;
+    background: rgba(16, 8, 26, 0.96);
+    border: 1px solid rgba(255,143,171,0.45);
+    border-radius: 20px;
+    padding: 1.4rem 1.5rem;
+    max-width: 280px;
+    width: 86vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,143,171,0.1);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: scale(0.88) translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s var(--spring);
+    pointer-events: none;
+  }
+  .star-popup.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: all;
+  }
+  .popup-close {
+    position: absolute; top: 0.8rem; right: 0.9rem;
+    background: none; border: none;
+    color: rgba(255,247,238,0.4); font-size: 1.1rem;
+    cursor: pointer; padding: 0.2rem; line-height: 1;
+    transition: color 0.2s ease;
+  }
+  .popup-close:hover { color: var(--rose); }
+  .popup-emoji { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .popup-category {
+    font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.3rem;
+  }
+  .popup-title {
+    font-family: Georgia, serif; font-size: 1.1rem; font-weight: 500;
+    color: var(--cream); margin-bottom: 0.5rem; line-height: 1.35;
+  }
+  .popup-body {
+    font-size: 0.88rem; line-height: 1.75;
+    color: rgba(255,247,238,0.82);
+    font-style: italic;
+  }
+  .popup-sign {
+    font-size: 0.76rem; color: rgba(255,143,171,0.6);
+    margin-top: 0.8rem; text-align: right;
+  }
+
+  /* ---- constellation label ---- */
+  .const-label {
+    position: fixed; z-index: 8;
+    font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase;
+    color: rgba(255,143,171,0.35);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  @keyframes twinkle { 0%,100%{opacity:1} 50%{opacity:0.5} }
+</style>
+</head>
+<body>
+<canvas id="skyCanvas"></canvas>
+
+<div class="topbar">
+  <span class="brand">OUR STARS</span>
+  <a href="lovepage.html">&#8592; back</a>
+</div>
+
+<p class="bottom-hint" id="bottomHint">tap a star to read its memory</p>
+
+<div class="star-popup" id="starPopup">
+  <button class="popup-close" id="popupClose">&times;</button>
+  <div class="popup-emoji" id="popupEmoji"></div>
+  <div class="popup-category" id="popupCat"></div>
+  <div class="popup-title" id="popupTitle"></div>
+  <div class="popup-body" id="popupBody"></div>
+  <div class="popup-sign">&mdash; always, Nard</div>
+</div>
+
+<script>
+  var STARS_DATA = [
+    { emoji: '🌟', cat: 'the beginning', title: 'The Day We Met', body: 'September 10, 2024. My whole world shifted on a Tuesday and I didn\'t even know it yet.', size: 'large', color: '#e8c17e' },
+    { emoji: '🦋', cat: 'first feeling', title: 'The Butterflies', body: 'I remember the first time I got nervous around you. My whole stomach did something embarrassing.', size: 'medium', color: '#ff8fab' },
+    { emoji: '💬', cat: 'first words', title: 'Our First Conversation', body: 'I kept re-reading what you said like it was something important. It was.', size: 'medium', color: '#ffd3e0' },
+    { emoji: '🌙', cat: 'late nights', title: 'Staying Up for You', body: 'I didn\'t mind losing sleep. Talking to you felt better than rest.', size: 'small', color: '#b8a0ff' },
+    { emoji: '❤️', cat: 'the moment', title: 'Said "I Love You"', body: 'December 2024. Three words that had been building in my chest for months. Finally said out loud.', size: 'large', color: '#ff5d8f' },
+    { emoji: '😂', cat: 'laughter', title: 'The First Time You Made Me Cry Laughing', body: 'I don\'t even remember what it was. I just remember my face hurting.', size: 'small', color: '#ffe9a8' },
+    { emoji: '🤝', cat: 'trust', title: 'When I Knew I Could Trust You', body: 'You kept something I told you in confidence. That meant everything.', size: 'medium', color: '#a0e8c0' },
+    { emoji: '🌧️', cat: 'hard days', title: 'You Stayed During a Hard Time', body: 'I wasn\'t easy to be around. You stayed anyway. I\'ll never forget that.', size: 'medium', color: '#80b8ff' },
+    { emoji: '🎵', cat: 'our song', title: 'The Song That Became Ours', body: 'You know the one. The one I can\'t hear without thinking about you immediately.', size: 'small', color: '#ff9ec4' },
+    { emoji: '✈️', cat: 'together', title: 'Our 2nd Meet', body: 'May 2025. A day I kept replaying in my head for weeks after.', size: 'large', color: '#e8c17e' },
+    { emoji: '🌅', cat: 'the future', title: 'The First Time I Imagined Our Future', body: 'It didn\'t scare me. It felt like the most natural thing in the world.', size: 'medium', color: '#ffb86b' },
+    { emoji: '🫂', cat: 'comfort', title: 'When You Were My Calm', body: 'There was a day when everything felt like too much. You just knew what to say.', size: 'small', color: '#ff8fab' },
+    { emoji: '💡', cat: 'growth', title: 'The Way You Make Me Better', body: 'You don\'t even try. You just are, and somehow that makes me want to be more.', size: 'small', color: '#f6ffc9' },
+    { emoji: '🌺', cat: 'beauty', title: 'The Way You Look When You Don\'t Know I\'m Looking', body: 'That version of you — unbothered, real, just existing — is my favorite.', size: 'medium', color: '#ffb3c6' },
+    { emoji: '🔮', cat: 'dreams', title: 'All the Things I Want to Do With You', body: 'The list is long and keeps growing. I want to do every single thing on it.', size: 'medium', color: '#c0a0ff' },
+    { emoji: '🧸', cat: 'softness', title: 'How Safe You Make Me Feel', body: 'I don\'t have to be anything other than myself with you. That\'s rare. That\'s everything.', size: 'small', color: '#ffd3e0' },
+    { emoji: '🌊', cat: 'depth', title: 'How Much I Feel for You', body: 'It surprised me at first, how deep it went. It still does, honestly.', size: 'large', color: '#80c8ff' },
+    { emoji: '⭐', cat: 'ordinary', title: 'Our Best Ordinary Day', body: 'No big occasion. Just you, and me, and a day that felt like a gift.', size: 'small', color: '#ffe9a8' },
+    { emoji: '💌', cat: 'love', title: 'Every Time I Think About You', body: 'Which is often. More than I admit. More than you probably know.', size: 'medium', color: '#ff8fab' },
+    { emoji: '♾️', cat: 'forever', title: 'Why I Choose You Every Day', body: 'Because no version of my future makes sense without you in it.', size: 'large', color: '#e8c17e' }
+  ];
+
+  var canvas = document.getElementById('skyCanvas');
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  var stars = [];
+  var bgStars = [];
+  var popup = document.getElementById('starPopup');
+  var activeIdx = -1;
+  var mouseX = -999, mouseY = -999;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+    placeStars();
+    placeBgStars();
+  }
+
+  function placeStars() {
+    var margin = 80;
+    stars = STARS_DATA.map(function(data, i) {
+      var baseSize = data.size === 'large' ? 11 : data.size === 'medium' ? 7 : 4.5;
+      return {
+        x: margin + Math.random() * (W - margin * 2),
+        y: margin + Math.random() * (H - margin * 2),
+        r: baseSize,
+        data: data,
+        phase: Math.random() * Math.PI * 2,
+        phaseSpeed: 0.015 + Math.random() * 0.025,
+        pulseAmp: 0.18 + Math.random() * 0.22,
+        hoverScale: 1,
+        idx: i
+      };
+    });
+
+    // draw R-N constellation — simple line between two named stars
+    // ensure "The Day We Met" and "Forever" are somewhat separated
+    stars[0].x = W * 0.35; stars[0].y = H * 0.38;
+    stars[19].x = W * 0.62; stars[19].y = H * 0.55;
+  }
+
+  function placeBgStars() {
+    bgStars = [];
+    for (var i = 0; i < 180; i++) {
+      bgStars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.4 + Math.random() * 1.2,
+        alpha: 0.15 + Math.random() * 0.5,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.006 + Math.random() * 0.012
+      });
+    }
+  }
+
+  function drawBgStars() {
+    bgStars.forEach(function(s) {
+      s.phase += s.speed;
+      var a = s.alpha * (0.6 + Math.sin(s.phase) * 0.4);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,247,238,' + a + ')';
+      ctx.fill();
+    });
+  }
+
+  function drawConstellation() {
+    // draw a subtle line between star 0 and star 19 (R & N)
+    var s1 = stars[0], s2 = stars[19];
+    if (!s1 || !s2) return;
+    var grad = ctx.createLinearGradient(s1.x, s1.y, s2.x, s2.y);
+    grad.addColorStop(0, 'rgba(255,143,171,0.25)');
+    grad.addColorStop(0.5, 'rgba(232,193,126,0.18)');
+    grad.addColorStop(1, 'rgba(255,143,171,0.25)');
+    ctx.beginPath();
+    ctx.moveTo(s1.x, s1.y);
+    // gentle curve through midpoint
+    var mx = (s1.x + s2.x) / 2 + (Math.sin(Date.now() / 3000) * 20);
+    var my = (s1.y + s2.y) / 2 - 30;
+    ctx.quadraticCurveTo(mx, my, s2.x, s2.y);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 7]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // labels
+    ctx.font = '500 9px "Segoe UI", sans-serif';
+    ctx.letterSpacing = '0.2em';
+    ctx.fillStyle = 'rgba(255,143,171,0.35)';
+    ctx.textAlign = 'center';
+    ctx.fillText('R ✦ N', (s1.x + s2.x) / 2, my - 8);
+  }
+
+  function drawStar(s) {
+    var t = Date.now();
+    s.phase += s.phaseSpeed;
+    var pulse = 1 + Math.sin(s.phase) * s.pulseAmp;
+    var r = s.r * pulse * s.hoverScale;
+    var isActive = s.idx === activeIdx;
+    var isHovered = !isActive && Math.hypot(s.x - mouseX, s.y - mouseY) < s.r * 3.5;
+
+    // outer glow
+    var glowR = r * (isHovered || isActive ? 4.5 : 3.2);
+    var glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
+    var col = s.data.color;
+    glow.addColorStop(0, col.replace(')', ',0.55)').replace('rgb', 'rgba').replace('#', 'rgba(').replace('rgba(', 'rgba(') );
+    // use hex opacity approach
+    glow.addColorStop(0, hexToRgba(col, isActive ? 0.7 : 0.5));
+    glow.addColorStop(0.4, hexToRgba(col, isHovered ? 0.22 : 0.14));
+    glow.addColorStop(1, hexToRgba(col, 0));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    // core
+    var core = ctx.createRadialGradient(s.x - r * 0.2, s.y - r * 0.2, 0, s.x, s.y, r);
+    core.addColorStop(0, '#fff');
+    core.addColorStop(0.4, hexToRgba(col, 1));
+    core.addColorStop(1, hexToRgba(col, 0.7));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = core;
+    ctx.fill();
+
+    // active ring
+    if (isActive) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r + 5 + Math.sin(t / 300) * 2, 0, Math.PI * 2);
+      ctx.strokeStyle = hexToRgba(col, 0.7);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // name label for large stars
+    if (s.data.size === 'large' || isHovered) {
+      ctx.font = '500 9px "Segoe UI",sans-serif';
+      ctx.fillStyle = isHovered ? 'rgba(255,247,238,0.9)' : 'rgba(255,247,238,0.45)';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.data.title, s.x, s.y + r + 14);
+    }
+  }
+
+  function hexToRgba(hex, alpha) {
+    var r = parseInt(hex.slice(1,3),16);
+    var g = parseInt(hex.slice(3,5),16);
+    var b = parseInt(hex.slice(5,7),16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // deep sky gradient
+    var sky = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H/2, Math.max(W,H));
+    sky.addColorStop(0, '#12083a');
+    sky.addColorStop(0.45, '#0a0618');
+    sky.addColorStop(1, '#050310');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, H);
+
+    drawBgStars();
+    drawConstellation();
+    stars.forEach(function(s) { drawStar(s); });
+
+    requestAnimationFrame(draw);
+  }
+
+  function hitTest(cx, cy) {
+    var best = -1, bestDist = 999;
+    stars.forEach(function(s, i) {
+      var d = Math.hypot(s.x - cx, s.y - cy);
+      var hitR = s.r * 3.5 + 6;
+      if (d < hitR && d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
+  }
+
+  function showPopup(idx, sx, sy) {
+    activeIdx = idx;
+    var s = STARS_DATA[idx];
+    document.getElementById('popupEmoji').textContent = s.emoji;
+    document.getElementById('popupCat').textContent = s.cat;
+    document.getElementById('popupTitle').textContent = s.title;
+    document.getElementById('popupBody').textContent = s.body;
+
+    // position popup near star but keep on screen
+    var pw = Math.min(280, window.innerWidth * 0.86);
+    var px = sx - pw / 2;
+    var py = sy + 28;
+    if (px < 12) px = 12;
+    if (px + pw > W - 12) px = W - pw - 12;
+    if (py + 220 > H - 20) py = sy - 240;
+    if (py < 70) py = 70;
+
+    popup.style.left = px + 'px';
+    popup.style.top = py + 'px';
+    popup.style.maxWidth = pw + 'px';
+    popup.classList.add('show');
+
+    if (navigator.vibrate) { try { navigator.vibrate(20); } catch(e){} }
+  }
+
+  function closePopup() {
+    popup.classList.remove('show');
+    activeIdx = -1;
+  }
+
+  document.getElementById('popupClose').addEventListener('click', closePopup);
+
+  canvas.addEventListener('click', function(e) {
+    var rect = canvas.getBoundingClientRect();
+    var cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+    var idx = hitTest(cx, cy);
+    if (idx >= 0) {
+      if (idx === activeIdx) { closePopup(); return; }
+      showPopup(idx, cx + rect.left, cy + rect.top);
+    } else {
+      closePopup();
+    }
+  });
+
+  canvas.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    var t = e.changedTouches[0];
+    var rect = canvas.getBoundingClientRect();
+    var cx = t.clientX - rect.left, cy = t.clientY - rect.top;
+    var idx = hitTest(cx, cy);
+    if (idx >= 0) {
+      if (idx === activeIdx) { closePopup(); return; }
+      showPopup(idx, t.clientX, t.clientY);
+    } else {
+      closePopup();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('mousemove', function(e) {
+    var rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    var idx = hitTest(mouseX, mouseY);
+    canvas.style.cursor = idx >= 0 ? 'pointer' : 'crosshair';
+  });
+
+  // hint fade after first tap
+  var hintFaded = false;
+  canvas.addEventListener('click', function() {
+    if (!hintFaded) {
+      hintFaded = true;
+      var h = document.getElementById('bottomHint');
+      h.style.transition = 'opacity 0.8s ease';
+      h.style.opacity = '0';
+    }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+
+  window.scrollTo(0, 0);
+</script>
+<script src="app.js"></script>
+</body>
+</html>

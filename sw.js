@@ -1,4 +1,4 @@
-var CACHE_NAME = 'for-my-gf-v2';
+var CACHE_NAME = 'for-my-gf-v3';
 var CORE = [
   'lovepage.html',
   'finale.html',
@@ -7,7 +7,11 @@ var CORE = [
   'diary.html',
   'scratch.html',
   'visitors.html',
+  'reasons.html',
+  'letters.html',
+  'stars.html',
   'manifest.json',
+  'app.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/favicon.png',
