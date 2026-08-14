@@ -5934,7 +5934,7 @@
     const annivLetter = document.getElementById('annivLetter');
     ANNIV_LETTER.forEach(function(para) {
       const p = document.createElement('p');
-      p.textContent = para;
+      p.dataset.full = para;
       annivLetter.appendChild(p);
     });
 
@@ -6402,7 +6402,7 @@
         function typePara() {
           if (idx >= paras.length) { active = false; return; }
           const p = paras[idx];
-          const full = p.textContent;
+          const full = p.dataset.full || '';
           p.textContent = '';
           let i = 0;
           const timer = setInterval(function() {
