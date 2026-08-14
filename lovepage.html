@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Our Love Story</title>
-  <meta name="theme-color" content="#fff9f5">
+  <meta name="theme-color" content="#1a0f14">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/favicon.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -20,24 +20,6 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-primary: #fff9f5;
-      --bg-secondary: #fff5ef;
-      --fg-primary: #3d3a38;
-      --fg-secondary: #6b6560;
-      --accent-primary: #e8a5a9;
-      --accent-secondary: #f4c7ca;
-      --accent-dark: #c98a8f;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(232, 165, 169, 0.2);
-      --shadow-soft: 0 4px 24px rgba(201, 138, 143, 0.12);
-      --shadow-hover: 0 8px 32px rgba(201, 138, 143, 0.2);
-      --gradient-romantic: linear-gradient(135deg, #fff5f0 0%, #fce8e8 50%, #f5e6e8 100%);
-      --serif: 'Cormorant Garamond', Georgia, serif;
-      --sans: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
-      --spring: cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    :root[data-theme="dark"] {
       --bg-primary: #1a0f14;
       --bg-secondary: #241218;
       --fg-primary: #fff7ee;
@@ -50,43 +32,13 @@
       --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.35);
       --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.5);
       --gradient-romantic: linear-gradient(135deg, #2a1420 0%, #1a0f14 50%, #241218 100%);
-    }
-
-    .theme-toggle {
-      position: fixed;
-      top: 1.5rem; left: 1.5rem;
-      z-index: 100000;
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-soft);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.4s var(--spring);
-      font-size: 1.3rem;
-      color: var(--fg-secondary);
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      pointer-events: all !important;
-    }
-    .theme-toggle:hover { transform: scale(1.1) rotate(10deg); box-shadow: var(--shadow-hover); }
-
-    @media (max-width: 768px) {
-      .theme-toggle {
-        top: 1rem; left: 1rem;
-        width: 60px; height: 60px;
-        font-size: 1.35rem;
-        touch-action: manipulation;
-      }
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+      --spring: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html { scroll-behavior: smooth; }
-    html { color-scheme: light; }
-    html[data-theme="dark"] { color-scheme: dark; }
+    html { color-scheme: dark; }
 
     body {
       font-family: var(--sans);
@@ -4661,7 +4613,6 @@
 
   <script>
     const YOUR_NAME = "Nard";
-    const PARTNER_NAME = "Rezil";
     const RELATIONSHIP_START_DATE = "2024-09-10";
     const MUSIC_FILE = "music/song.mp3";
     const PAGE_PASSWORD = "zingnardsept1024";
@@ -4715,9 +4666,6 @@
   </div>
 
   <div class="page-container">
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark and light theme" title="Theme">
-      <span id="themeIcon">🌙</span>
-    </button>
 
     <button class="music-toggle" id="musicToggle" aria-label="Toggle music">
       <svg id="playIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -6989,19 +6937,6 @@
     });
     finaleModal.addEventListener('click', function(e) {
       if (e.target === finaleModal) closeFinaleModal();
-    });
-
-    /* ---- theme toggle ---- */
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const savedTheme = (localStorage && localStorage.getItem('forMyGf_theme')) || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-    themeToggle.addEventListener('click', function() {
-      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', current);
-      themeIcon.textContent = current === 'dark' ? '☀️' : '🌙';
-      if (localStorage) localStorage.setItem('forMyGf_theme', current);
     });
 
     /* ---- little surprises hub ---- */

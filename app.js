@@ -1,6 +1,9 @@
 (function() {
   'use strict';
 
+  document.documentElement.setAttribute('data-theme', 'dark');
+  try { localStorage.removeItem('forMyGf_theme'); } catch(e) {}
+
   var PAGE = location.pathname.split('/').pop() || 'lovepage.html';
   var YOUR_NAME = 'Nard';
   var HER_NAME = 'Rezil';
@@ -8,103 +11,6 @@
 
   var storageOk = false;
   try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); storageOk = true; } catch (e) {}
-
-  /* ---------------- global dark mode ---------------- */
-  var THEME_KEY = 'forMyGf_theme';
-  function getSavedTheme() {
-    if (!storageOk) return null;
-    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
-  }
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-  }
-  function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(current);
-    if (storageOk) {
-      try { localStorage.setItem(THEME_KEY, current); } catch (e) {}
-    }
-  }
-  window.toggleTheme = toggleTheme;
-  window.getTheme = function() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; };
-  var savedTheme = getSavedTheme();
-  if (savedTheme) applyTheme(savedTheme);
-
-  /* ---------------- auto-create theme toggle button ---------------- */
-  function syncToggleIcon(iconEl) {
-    if (iconEl) iconEl.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
-  }
-  function createThemeToggle() {
-    if (document.getElementById('globalThemeToggle')) return;
-    var btn = document.getElementById('themeToggle');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.id = 'globalThemeToggle';
-      btn.setAttribute('aria-label', 'Toggle dark and light theme');
-      btn.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:100000;width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,143,171,0.4);background:rgba(26,15,20,0.85);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3);touch-action:manipulation;-webkit-tap-highlight-color:transparent;pointer-events:all;';
-      btn.innerHTML = '<span id="globalThemeIcon">\u2600\uFE0F</span>';
-      btn.addEventListener('mouseenter', function() { btn.style.transform = 'scale(1.1) rotate(10deg)'; });
-      btn.addEventListener('mouseleave', function() { btn.style.transform = 'scale(1) rotate(0deg)'; });
-      document.body.appendChild(btn);
-    }
-    btn.addEventListener('click', function() {
-      toggleTheme();
-      syncToggleIcon(document.getElementById('globalThemeIcon'));
-      syncToggleIcon(document.getElementById('themeIcon'));
-    });
-    syncToggleIcon(document.getElementById('globalThemeIcon'));
-    syncToggleIcon(document.getElementById('themeIcon'));
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createThemeToggle);
-  } else {
-    createThemeToggle();
-  }
-
-  /* ---------------- light mode overrides for dark-only pages ---------------- */
-  function injectThemeStyles() {
-    if (document.getElementById('globalThemeStyles')) return;
-    var st = document.createElement('style');
-    st.id = 'globalThemeStyles';
-    st.textContent =
-      'html:not([data-theme="dark"]) body {' +
-      '  background:#fff9f5 !important; color:#3d3a38 !important;' +
-      '}' +
-      'html:not([data-theme="dark"]) .bg-fade {' +
-      '  background:radial-gradient(1200px 600px at 50% -10%, rgba(232,165,169,0.25), transparent 60%),linear-gradient(180deg,#fff5ef,#fce8e8) !important;' +
-      '}' +
-      'html:not([data-theme="dark"]) .topbar { background:linear-gradient(180deg, rgba(255,249,245,0.92), rgba(255,249,245,0)) !important; }' +
-      'html:not([data-theme="dark"]) .topbar a,' +
-      'html:not([data-theme="dark"]) .btn,' +
-      'html:not([data-theme="dark"]) .composer,' +
-      'html:not([data-theme="dark"]) .panel,' +
-      'html:not([data-theme="dark"]) .card,' +
-      'html:not([data-theme="dark"]) .fun,' +
-      'html:not([data-theme="dark"]) .under-card,' +
-      'html:not([data-theme="dark"]) .board,' +
-      'html:not([data-theme="dark"]) .entry,' +
-      'html:not([data-theme="dark"]) .scratch-card {' +
-      '  color:#3d3a38 !important;' +
-      '}' +
-      'html:not([data-theme="dark"]) input, html:not([data-theme="dark"]) textarea {' +
-      '  color:#3d3a38 !important; background:rgba(255,255,255,0.85) !important;' +
-      '}' +
-      'html:not([data-theme="dark"]) .sub,' +
-      'html:not([data-theme="dark"]) .hint,' +
-      'html:not([data-theme="dark"]) .stat .lab,' +
-      'html:not([data-theme="dark"]) .counter,' +
-      'html:not([data-theme="dark"]) .hero-sub,' +
-      'html:not([data-theme="dark"]) .hero-eyebrow {' +
-      '  color:rgba(61,58,56,0.65) !important;' +
-      '}' +
-      'html:not([data-theme="dark"]) .topbar .brand { color:#c98a8f !important; }';
-    document.head.appendChild(st);
-  }
-  injectThemeStyles();
 
   /* ---------------- PWA ---------------- */
   if ('serviceWorker' in navigator) {
@@ -392,6 +298,7 @@
   /* ---------------- magnetic buttons ---------------- */
   window.initMagneticBtns = function(selector) {
     var btns = document.querySelectorAll(selector || 'button.extras-share-btn,.replay-btn,.mini-btn,.add,.btn,button.share');
+
     btns.forEach(function(btn) {
       if (btn.getAttribute('data-magnet')) return;
       btn.setAttribute('data-magnet', '1');
