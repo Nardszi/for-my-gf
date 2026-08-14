@@ -645,6 +645,486 @@
       margin-top: -2rem;
     }
 
+    .playlist-section { text-align: center; }
+
+    .playlist-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg-secondary);
+      margin: -2rem 0 2.5rem;
+    }
+
+    .playlist-list {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-soft);
+      text-align: left;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: all 0.6s var(--spring);
+    }
+
+    .playlist-item.visible { opacity: 1; transform: translateY(0); }
+
+    .playlist-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-primary);
+    }
+
+    .playlist-note-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border-radius: 14px;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 6px 16px rgba(201, 138, 143, 0.3);
+    }
+
+    .playlist-meta { flex: 1; min-width: 0; }
+
+    .playlist-title {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--fg-primary);
+      line-height: 1.3;
+    }
+
+    .playlist-artist {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      margin-top: 0.2rem;
+    }
+
+    .playlist-note {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--fg-secondary);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+
+    .playlist-play {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-primary);
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      color: var(--accent-dark);
+      cursor: pointer;
+      transition: all 0.3s var(--spring);
+    }
+
+    .playlist-play:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .playlist-item.playing .playlist-play {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+    }
+
+    .playlist-item.playing .playlist-note-icon {
+      animation: playlistPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes playlistPulse {
+      0%, 100% { box-shadow: 0 6px 16px rgba(201, 138, 143, 0.3); }
+      50% { box-shadow: 0 6px 24px rgba(201, 138, 143, 0.65); }
+    }
+
+    .playlist-eq {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      margin-left: 0.4rem;
+    }
+
+    .playlist-eq span {
+      width: 3px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+      animation: eqBar 0.9s ease-in-out infinite;
+    }
+
+    .playlist-eq span:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .playlist-eq span:nth-child(2) { height: 14px; animation-delay: 0.25s; }
+    .playlist-eq span:nth-child(3) { height: 6px; animation-delay: 0.5s; }
+    .playlist-eq span:nth-child(4) { height: 11px; animation-delay: 0.1s; }
+
+    @keyframes eqBar {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+
+    .dreams-section {
+      background: var(--gradient-romantic);
+      text-align: center;
+    }
+
+    .dreams-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg-secondary);
+      margin: -2rem 0 2.5rem;
+    }
+
+    .dreams-grid {
+      max-width: 480px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .dream-card {
+      position: relative;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.25rem 0.9rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(25px) scale(0.96);
+      transition: all 0.6s var(--spring);
+    }
+
+    .dream-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    .dream-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-primary);
+    }
+
+    .dream-card.locked .dream-text { filter: blur(5px); opacity: 0.35; user-select: none; }
+
+    .dream-card.locked:hover .dream-text { filter: blur(3px); opacity: 0.55; }
+
+    .dream-cat {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      opacity: 0.8;
+    }
+
+    .dream-text {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      line-height: 1.5;
+      color: var(--fg-primary);
+      text-align: center;
+      transition: all 0.5s var(--spring);
+    }
+
+    .dream-lock {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(232, 165, 169, 0.18);
+      color: var(--accent-dark);
+      font-size: 0.85rem;
+      transition: all 0.4s var(--spring);
+    }
+
+    .dream-card.locked:hover .dream-lock {
+      background: var(--accent-primary);
+      color: white;
+      transform: scale(1.15);
+    }
+
+    .dream-card.revealed {
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .dream-card.revealed .dream-lock {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      color: white;
+    }
+
+    .dream-card.revealed .dream-text { filter: none; opacity: 1; }
+
+    .notes-section { text-align: center; }
+
+    .notes-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg-secondary);
+      margin: -2rem 0 2.5rem;
+    }
+
+    .notes-grid {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .note-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: all 0.6s var(--spring);
+    }
+
+    .note-card.visible { opacity: 1; transform: translateY(0); }
+
+    .note-card.open { border-color: var(--accent-primary); }
+
+    .note-seal {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: var(--sans);
+      text-align: left;
+    }
+
+    .note-seal:active { background: rgba(232, 165, 169, 0.08); }
+
+    .note-wax {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      color: white;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(201, 138, 143, 0.35);
+      transition: transform 0.4s var(--spring);
+    }
+
+    .note-card.open .note-wax {
+      transform: scale(1.15) rotate(-8deg);
+      box-shadow: 0 6px 18px rgba(201, 138, 143, 0.5);
+    }
+
+    .note-seal-text {
+      flex: 1;
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--fg-primary);
+      transition: color 0.3s;
+    }
+
+    .note-chevron {
+      color: var(--fg-secondary);
+      font-size: 0.85rem;
+      transition: transform 0.4s var(--spring);
+    }
+
+    .note-card.open .note-chevron { transform: rotate(180deg); color: var(--accent-primary); }
+
+    .note-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s var(--spring);
+    }
+
+    .note-card.open .note-body { max-height: 420px; }
+
+    .note-inner {
+      padding: 0 1.25rem 1.25rem;
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--fg-secondary);
+      border-top: 1px dashed var(--card-border);
+      padding-top: 1rem;
+      margin: 0 1.25rem 1.25rem;
+    }
+
+    .game-section {
+      background: var(--gradient-romantic);
+      text-align: center;
+    }
+
+    .game-sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg-secondary);
+      margin: -2rem 0 2.5rem;
+    }
+
+    .game-card {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 1.75rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(25px);
+      transition: all 0.6s var(--spring);
+    }
+
+    .game-card.visible { opacity: 1; transform: translateY(0); }
+
+    .game-q {
+      font-family: var(--serif);
+      font-size: 1.45rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--fg-primary);
+      margin-bottom: 1.5rem;
+      min-height: 4.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .game-option {
+      padding: 1rem 1.25rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--fg-primary);
+      cursor: pointer;
+      transition: all 0.35s var(--spring);
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .game-option.visible { opacity: 1; transform: translateY(0); }
+
+    .game-option:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .game-option.chosen {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+      border-color: var(--accent-dark);
+      color: white;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(201, 138, 143, 0.4);
+    }
+
+    .game-option:disabled { cursor: default; }
+
+    .game-reveal {
+      margin-top: 1.25rem;
+      min-height: 2.4em;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-dark);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s var(--spring);
+    }
+
+    .game-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .game-next {
+      margin-top: 1.25rem;
+      padding: 0.8rem 1.9rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.35s var(--spring);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .game-next.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .game-next:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
     .reasons-intro {
       font-family: var(--serif);
       font-style: italic;
@@ -2792,6 +3272,47 @@
       <div class="letter-content" id="letterContent"></div>
     </section>
 
+    <section class="section playlist-section" id="playlistSection">
+      <div class="section-header">
+        <p class="section-label">Music For Us</p>
+        <h2 class="section-title">Our Playlist</h2>
+      </div>
+      <p class="playlist-sub">songs that sound like you</p>
+      <div class="playlist-list" id="playlistList"></div>
+    </section>
+
+    <section class="section dreams-section" id="dreamsSection">
+      <div class="section-header">
+        <p class="section-label">The Future We'll Make</p>
+        <h2 class="section-title">Our Bucket List</h2>
+      </div>
+      <p class="dreams-sub">tap to unlock each dream</p>
+      <div class="dreams-grid" id="dreamsGrid"></div>
+    </section>
+
+    <section class="section notes-section" id="notesSection">
+      <div class="section-header">
+        <p class="section-label">Words I Kept</p>
+        <h2 class="section-title">Little Notes</h2>
+      </div>
+      <p class="notes-sub">sealed with love — tap to open</p>
+      <div class="notes-grid" id="notesGrid"></div>
+    </section>
+
+    <section class="section game-section" id="gameSection">
+      <div class="section-header">
+        <p class="section-label">A Little Game</p>
+        <h2 class="section-title">Would You Rather</h2>
+      </div>
+      <p class="game-sub">pick your side</p>
+      <div class="game-card" id="gameCard">
+        <div class="game-q" id="gameQ"></div>
+        <div class="game-options" id="gameOptions"></div>
+        <div class="game-reveal" id="gameReveal"></div>
+        <button class="game-next" id="gameNext">Another one</button>
+      </div>
+    </section>
+
     <section class="section closing-section" id="closingSection">
       <p class="closing-text" id="closingText"></p>
       <p class="closing-signature" id="closingSignature"></p>
@@ -3774,6 +4295,147 @@
       setTimeout(createSidePhoto, 800);
       setInterval(createSidePhoto, 4500);
     }
+
+    const PLAYLIST = [
+      { title: "Until I Found You", artist: "Stephen Sanchez", note: "That's the day my heart finally knew where home was.", eq: true },
+      { title: "Make You Mine", artist: "Madison Beer", note: "From the moment I saw you, I already decided.", eq: false },
+      { title: "Yellow", artist: "Coldplay", note: "You are all the light in my world — I'd do anything for you.", eq: false },
+      { title: "Best Part", artist: "Daniel Caesar & H.E.R.", note: "You don't know I love you so — but I do, more each day.", eq: false },
+      { title: "Our Song", artist: "Anne-Marie & Niall Horan", note: "Every beat of this one is a memory of us.", eq: false },
+      { title: "Heaven", artist: "Niall Horan", note: "With you, I'm already there.", eq: false }
+    ];
+
+    const BUCKET_LIST = [
+      { cat: "Adventure", dream: "Watch the sunset together on a rooftop" },
+      { cat: "Food", dream: "Cook a meal together and eat it on the floor" },
+      { cat: "Travel", dream: "See the ocean for the first time, side by side" },
+      { cat: "Music", dream: "Slow dance in the kitchen with no song playing" },
+      { cat: "Simple", dream: "Fall asleep on a call and wake up still connected" },
+      { cat: "Dream", dream: "Build a home that smells like us" },
+      { cat: "Future", dream: "Meet each other's families and belong" },
+      { cat: "Forever", dream: "Keep choosing each other, every single day" }
+    ];
+
+    const NOTES = [
+      { title: "When you miss me", body: "I'm here. Even in the quiet, even in the distance, I'm thinking of you — probably smiling about something you said." },
+      { title: "When you're doubting yourself", body: "You are enough. You've always been enough. I see all of you, and I love all of you — especially the parts you hide." },
+      { title: "When you need a laugh", body: "Remember that one time we couldn't stop laughing and couldn't even remember why? That's you. That's us. I love that." },
+      { title: "When you're proud of yourself", body: "I always knew you could. I'm cheering the loudest for you, now and forever. This is just the beginning." }
+    ];
+
+    const GAME_QUESTIONS = [
+      { q: "Would you rather kiss me or hug me?", a: "Kiss me", b: "Hug me", revealA: "A bold choice — I like it.", revealB: "Good call. Hugs are our love language." },
+      { q: "Would you rather watch a sunset or a sunrise with me?", a: "Sunset", b: "Sunrise", revealA: "Sunsets are beautiful — but not as much as you.", revealB: "Early bird! We'll watch the world wake up together." },
+      { q: "Would you rather dance in the rain or under the stars?", a: "Rain", b: "Stars", revealA: "Messy, wild, and unforgettable. Very us.", revealB: "Perfect — a little magic with a lot of you." },
+      { q: "Would you rather hold hands or hold each other?", a: "Hold hands", b: "Hold each other", revealA: "Simple and sweet. Just like you.", revealB: "Best answer — there's nothing better." },
+      { q: "Would you rather have a lazy morning or an adventure-filled day with me?", a: "Lazy morning", b: "Adventure day", revealA: "Blankets, coffee, and you. Ideal.", revealB: "Let's go make memories — together." }
+    ];
+
+    const playlistList = document.getElementById('playlistList');
+    PLAYLIST.forEach(function(song, i) {
+      const item = document.createElement('div');
+      item.className = 'playlist-item';
+      item.innerHTML =
+        '<span class="playlist-note-icon">♪</span>' +
+        '<div class="playlist-meta">' +
+          '<div class="playlist-title"></div>' +
+          '<div class="playlist-artist"></div>' +
+          '<div class="playlist-note"></div>' +
+        '</div>' +
+        '<button class="playlist-play" type="button" aria-label="Play"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button>';
+      item.querySelector('.playlist-title').textContent = song.title;
+      item.querySelector('.playlist-artist').textContent = song.artist;
+      item.querySelector('.playlist-note').textContent = song.note;
+      item.addEventListener('click', function() {
+        document.getElementById('musicToggle').click();
+        playlistList.querySelectorAll('.playlist-item').forEach(function(el) { el.classList.remove('playing'); });
+        item.classList.add('playing');
+      });
+      playlistList.appendChild(item);
+      observer.observe(item);
+    });
+
+    const dreamsGrid = document.getElementById('dreamsGrid');
+    BUCKET_LIST.forEach(function(dream) {
+      const card = document.createElement('div');
+      card.className = 'dream-card locked';
+      card.innerHTML =
+        '<span class="dream-cat"></span>' +
+        '<span class="dream-text"></span>' +
+        '<span class="dream-lock">♥</span>';
+      card.querySelector('.dream-cat').textContent = dream.cat;
+      card.querySelector('.dream-text').textContent = dream.dream;
+      card.addEventListener('click', function() {
+        if (card.classList.contains('revealed')) return;
+        card.classList.add('revealed');
+        card.classList.remove('locked');
+        const rect = card.getBoundingClientRect();
+        spawnBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
+      });
+      dreamsGrid.appendChild(card);
+      observer.observe(card);
+    });
+
+    const notesGrid = document.getElementById('notesGrid');
+    NOTES.forEach(function(note) {
+      const card = document.createElement('div');
+      card.className = 'note-card';
+      card.innerHTML =
+        '<button class="note-seal" type="button">' +
+          '<span class="note-wax">♥</span>' +
+          '<span class="note-seal-text"></span>' +
+          '<span class="note-chevron">▾</span>' +
+        '</button>' +
+        '<div class="note-body"><div class="note-inner"></div></div>';
+      card.querySelector('.note-seal-text').textContent = note.title;
+      card.querySelector('.note-inner').textContent = note.body;
+      card.querySelector('.note-seal').addEventListener('click', function() {
+        const wasOpen = card.classList.contains('open');
+        notesGrid.querySelectorAll('.note-card.open').forEach(function(el) { el.classList.remove('open'); });
+        if (!wasOpen) card.classList.add('open');
+      });
+      notesGrid.appendChild(card);
+      observer.observe(card);
+    });
+
+    const gameQ = document.getElementById('gameQ');
+    const gameOptions = document.getElementById('gameOptions');
+    const gameReveal = document.getElementById('gameReveal');
+    const gameNext = document.getElementById('gameNext');
+    let gameIndex = 0;
+
+    function loadGameQuestion() {
+      const q = GAME_QUESTIONS[gameIndex];
+      gameQ.textContent = q.q;
+      gameReveal.textContent = '';
+      gameReveal.classList.remove('visible');
+      gameNext.classList.remove('visible');
+      gameOptions.innerHTML = '';
+      [q.a, q.b].forEach(function(opt, idx) {
+        const btn = document.createElement('button');
+        btn.className = 'game-option';
+        btn.type = 'button';
+        btn.textContent = opt;
+        setTimeout(function() { btn.classList.add('visible'); }, idx === 0 ? 150 : 300);
+        btn.addEventListener('click', function() {
+          if (btn.classList.contains('chosen')) return;
+          gameOptions.querySelectorAll('.game-option').forEach(function(el) { el.disabled = true; });
+          btn.classList.add('chosen');
+          gameReveal.textContent = idx === 0 ? q.revealA : q.revealB;
+          gameReveal.classList.add('visible');
+          gameNext.classList.add('visible');
+        });
+        gameOptions.appendChild(btn);
+      });
+    }
+
+    gameNext.addEventListener('click', function() {
+      gameIndex = (gameIndex + 1) % GAME_QUESTIONS.length;
+      loadGameQuestion();
+    });
+
+    loadGameQuestion();
+    observer.observe(document.getElementById('gameCard'));
 
     const REASONS = [
       "Your smile lights up even my darkest days.",
