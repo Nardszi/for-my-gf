@@ -9,6 +9,31 @@
   var storageOk = false;
   try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); storageOk = true; } catch (e) {}
 
+  /* ---------------- global dark mode ---------------- */
+  var THEME_KEY = 'forMyGf_theme';
+  function getSavedTheme() {
+    if (!storageOk) return null;
+    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+  }
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(current);
+    if (storageOk) {
+      try { localStorage.setItem(THEME_KEY, current); } catch (e) {}
+    }
+  }
+  window.toggleTheme = toggleTheme;
+  window.getTheme = function() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; };
+  var savedTheme = getSavedTheme();
+  if (savedTheme) applyTheme(savedTheme);
+
   /* ---------------- PWA ---------------- */
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
