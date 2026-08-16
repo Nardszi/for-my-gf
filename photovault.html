@@ -66,6 +66,9 @@ canvas#patternCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-ind
 </div>
 <p class="hint">connect the dots in the right order</p>
 </div>
+<style>
+.pattern-grid{touch-action:none}
+</style>
 <div class="gallery" id="gallery" aria-hidden="true"></div>
 <button class="reset-btn" id="resetBtn" style="display:none" aria-label="Lock vault">lock again</button>
 </div>
@@ -100,7 +103,7 @@ canvas.width=rect.width*dpr;
 canvas.height=rect.height*dpr;
 canvas.style.width=rect.width+'px';
 canvas.style.height=rect.height+'px';
-ctx.scale(dpr,dpr);
+ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 function getDotCenter(idx){
 var dot=dots[idx];
@@ -217,10 +220,10 @@ dots.forEach(function(dot,i){
 if(!visited.includes(i))dot.classList.remove('active');
 });
 }
-canvas.addEventListener('touchstart',handleStart,{passive:false});
-canvas.addEventListener('touchmove',handleMove,{passive:false});
-canvas.addEventListener('touchend',handleEnd);
-canvas.addEventListener('mousedown',handleStart);
+grid.addEventListener('touchstart',handleStart,{passive:false});
+grid.addEventListener('touchmove',handleMove,{passive:false});
+grid.addEventListener('touchend',handleEnd);
+grid.addEventListener('mousedown',handleStart);
 window.addEventListener('mousemove',handleMove);
 window.addEventListener('mouseup',handleEnd);
 resetBtn.addEventListener('click',lock);
