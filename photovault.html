@@ -35,7 +35,7 @@ header p{font-size:0.86rem;font-style:italic;color:rgba(255,247,238,0.62);margin
 .dot::after{content:'';position:absolute;top:50%;left:50%;width:8px;height:8px;background:transparent;border-radius:50%;transform:translate(-50%,-50%);transition:background 0.15s}
 .dot.visited::after{background:var(--cream)}
 canvas#patternCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;touch-action:none}
-.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;opacity:0;transform:translateY(20px);transition:opacity 0.8s var(--spring),transform 0.8s var(--spring);pointer-events:none}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;opacity:0;transform:translateY(20px);transition:opacity 0.8s var(--spring),transform 0.8s var(--spring);pointer-events:none}
 .gallery.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid rgba(255,143,171,0.2);filter:grayscale(0.15) contrast(1.05);transition:transform 0.4s var(--spring),filter 0.4s,box-shadow 0.4s}
 .gallery img:hover{transform:scale(1.03);filter:grayscale(0) contrast(1.1);box-shadow:0 8px 32px rgba(224,86,124,0.3)}
@@ -74,7 +74,7 @@ canvas#patternCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-ind
 </div>
 <script>
 var CORRECT_PATTERN=[0,1,2,5,8,7,6,3,4];
-var photos=['float-photo/1.jpg','float-photo/2.jpg','float-photo/3.jpg','float-photo/4.jpg','float-photo/5.jpg','float-photo/6.jpg'];
+var photos=['float-photos/1.jpg','float-photos/2.jpg','float-photos/3.jpg','float-photos/4.jpg','float-photos/5.jpg','float-photos/6.jpg','float-photos/7.jpg','float-photos/8.jpg','float-photos/9.jpg','float-photos/10.jpg','float-photos/11.jpg','float-photos/12.jpg','float-photos/13.jpg','float-photos/14.jpg','float-photos/15.jpg','float-photos/16.jpg','float-photos/17.jpg','float-photos/18.jpg','float-photos/19.jpg','float-photos/20.jpg'];
 var dots=[];
 var visited=[];
 var currentPath=[];
