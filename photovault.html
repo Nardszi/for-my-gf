@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Photo Vault — for us</title>
+<meta name="theme-color" content="#1a0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Photo Vault — our hidden gallery">
+<meta property="og:description" content="A secret gallery unlocked by a pattern only we know.">
+<meta property="og:image" content="og-preview.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--rose:#ff8fab;--rose-deep:#e0567c;--cream:#fff7ee;--gold:#e8c17e;--spring:cubic-bezier(0.34,1.56,0.64,1)}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:#120a10;color:var(--cream);min-height:100vh;overflow-x:hidden}
+.bg-fade{position:fixed;inset:0;z-index:0;background:radial-gradient(1200px 600px at 50% -10%,rgba(224,86,124,0.28),transparent 60%),radial-gradient(900px 500px at 100% 110%,rgba(232,193,126,0.12),transparent 55%),linear-gradient(180deg,#1a0f14,#120a10)}
+.page{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:0 1.2rem 3.5rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 0}
+.topbar a{color:var(--cream);text-decoration:none;font-size:0.82rem;letter-spacing:0.06em;border:1px solid rgba(255,143,171,0.35);padding:0.45rem 0.9rem;border-radius:999px;transition:background 0.3s ease}
+.topbar a:hover{background:rgba(224,86,124,0.25)}
+.topbar .brand{font-family:Georgia,serif;letter-spacing:0.14em;color:var(--gold);font-size:0.95rem}
+header{text-align:center;padding:1.4rem 0 1rem}
+header h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(2rem,8vw,3rem);background:linear-gradient(90deg,#ffd3e0,var(--gold),#fff,var(--gold),#ffd3e0);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 5s linear infinite}
+header p{font-size:0.86rem;font-style:italic;color:rgba(255,247,238,0.62);margin-top:0.4rem}
+.locked{text-align:center;padding:3rem 1rem}
+.locked .hint{font-size:0.78rem;color:rgba(255,247,238,0.4);margin-top:1rem}
+.pattern-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:280px;margin:2.5rem auto 1.5rem}
+.dot{position:relative;width:56px;height:56px}
+.dot::before{content:'';position:absolute;inset:0;border:2px solid rgba(255,143,171,0.4);border-radius:50%;transition:border-color 0.15s,box-shadow 0.15s,transform 0.15s}
+.dot.active::before{border-color:var(--rose);box-shadow:0 0 0 4px rgba(255,143,171,0.25);transform:scale(1.1)}
+.dot.visited::before{border-color:var(--rose);background:var(--rose)}
+.dot::after{content:'';position:absolute;top:50%;left:50%;width:8px;height:8px;background:transparent;border-radius:50%;transform:translate(-50%,-50%);transition:background 0.15s}
+.dot.visited::after{background:var(--cream)}
+canvas#patternCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;touch-action:none}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;opacity:0;transform:translateY(20px);transition:opacity 0.8s var(--spring),transform 0.8s var(--spring);pointer-events:none}
+.gallery.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid rgba(255,143,171,0.2);filter:grayscale(0.15) contrast(1.05);transition:transform 0.4s var(--spring),filter 0.4s,box-shadow 0.4s}
+.gallery img:hover{transform:scale(1.03);filter:grayscale(0) contrast(1.1);box-shadow:0 8px 32px rgba(224,86,124,0.3)}
+.gallery img:active{transform:scale(0.98)}
+.reset-btn{display:inline-block;margin-top:1.5rem;padding:0.6rem 1.4rem;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream);background:transparent;border:1px solid rgba(255,143,171,0.4);border-radius:999px;cursor:pointer;transition:background 0.3s,border-color 0.3s}
+.reset-btn:hover{background:rgba(224,86,124,0.2);border-color:var(--rose)}
+@keyframes shimmer{to{background-position:250% center}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp 1s var(--spring) forwards}
+.d1{animation-delay:0.3s}.d2{animation-delay:0.55s}.d3{animation-delay:0.8s}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+<div class="bg-fade" aria-hidden="true"></div>
+<div class="page">
+<div class="topbar">
+<span class="brand">PHOTO VAULT</span>
+<a href="lovepage.html">&#8592; back</a>
+</div>
+<header>
+<h1>Hidden Gallery</h1>
+<p>draw the pattern to unlock our memories</p>
+</header>
+<div class="locked" id="lockedView">
+<div class="pattern-grid" id="patternGrid">
+<canvas id="patternCanvas" aria-hidden="true"></canvas>
+</div>
+<p class="hint">connect the dots in the right order</p>
+</div>
+<div class="gallery" id="gallery" aria-hidden="true"></div>
+<button class="reset-btn" id="resetBtn" style="display:none" aria-label="Lock vault">lock again</button>
+</div>
+<script>
+var CORRECT_PATTERN=[0,1,2,5,8,7,6,3,4];
+var photos=['float-photo/1.jpg','float-photo/2.jpg','float-photo/3.jpg','float-photo/4.jpg','float-photo/5.jpg','float-photo/6.jpg'];
+var dots=[];
+var visited=[];
+var currentPath=[];
+var canvas=document.getElementById('patternCanvas');
+var ctx=canvas.getContext('2d');
+var grid=document.getElementById('patternGrid');
+var gallery=document.getElementById('gallery');
+var lockedView=document.getElementById('lockedView');
+var resetBtn=document.getElementById('resetBtn');
+var dpr=window.devicePixelRatio||1;
+function initDots(){
+grid.innerHTML='';
+dots=[];
+for(var i=0;i<9;i++){
+var dot=document.createElement('div');
+dot.className='dot';
+dot.dataset.index=i;
+grid.appendChild(dot);
+dots.push(dot);
+}
+resizeCanvas();
+}
+function resizeCanvas(){
+var rect=grid.getBoundingClientRect();
+canvas.width=rect.width*dpr;
+canvas.height=rect.height*dpr;
+canvas.style.width=rect.width+'px';
+canvas.style.height=rect.height+'px';
+ctx.scale(dpr,dpr);
+}
+function getDotCenter(idx){
+var dot=dots[idx];
+var rect=dot.getBoundingClientRect();
+var gridRect=grid.getBoundingClientRect();
+return{x:rect.left-gridRect.left+rect.width/2,y:rect.top-gridRect.top+rect.height/2};
+}
+function drawPattern(){
+ctx.clearRect(0,0,canvas.width/dpr,canvas.height/dpr);
+if(currentPath.length<2)return;
+ctx.strokeStyle='#ff8fab';
+ctx.lineWidth=3;
+ctx.lineCap='round';
+ctx.lineJoin='round';
+ctx.beginPath();
+var first=getDotCenter(currentPath[0]);
+ctx.moveTo(first.x,first.y);
+for(var i=1;i<currentPath.length;i++){
+var p=getDotCenter(currentPath[i]);
+ctx.lineTo(p.x,p.y);
+}
+ctx.stroke();
+if(visited.length>0){
+ctx.fillStyle='#ff8fab';
+for(var j=0;j<visited.length;j++){
+var c=getDotCenter(visited[j]);
+ctx.beginPath();
+ctx.arc(c.x,c.y,10,0,Math.PI*2);
+ctx.fill();
+}
+}
+var last=getDotCenter(visited[visited.length-1]);
+ctx.beginPath();
+ctx.arc(last.x,last.y,14,0,Math.PI*2);
+ctx.stroke();
+}
+function checkPattern(){
+return JSON.stringify(visited)===JSON.stringify(CORRECT_PATTERN);
+}
+function unlock(){
+lockedView.style.display='none';
+gallery.innerHTML='';
+photos.forEach(function(src,i){
+var img=document.createElement('img');
+img.src=src;
+img.alt='Memory '+ (i+1);
+img.loading='lazy';
+img.style.animationDelay=(i*0.08)+'s';
+gallery.appendChild(img);
+});
+gallery.classList.add('show');
+gallery.setAttribute('aria-hidden','false');
+resetBtn.style.display='inline-block';
+}
+function lock(){
+visited=[];
+currentPath=[];
+dots.forEach(function(d){d.classList.remove('active','visited')});
+gallery.classList.remove('show');
+gallery.setAttribute('aria-hidden','true');
+resetBtn.style.display='none';
+lockedView.style.display='block';
+drawPattern();
+}
+function handleStart(e){
+e.preventDefault();
+var pt=e.touches?e.touches[0]:e;
+var rect=grid.getBoundingClientRect();
+var x=pt.clientX-rect.left;
+var y=pt.clientY-rect.top;
+checkHit(x,y);
+}
+function handleMove(e){
+e.preventDefault();
+if(!visited.length)return;
+var pt=e.touches?e.touches[0]:e;
+var rect=grid.getBoundingClientRect();
+var x=pt.clientX-rect.left;
+var y=pt.clientY-rect.top;
+checkHit(x,y);
+drawPattern();
+}
+function handleEnd(){
+if(visited.length===0)return;
+if(checkPattern()){
+unlock();
+}else{
+dots.forEach(function(d){d.classList.add('shake');d.classList.remove('active','visited')});
+setTimeout(function(){
+dots.forEach(function(d){d.classList.remove('shake')});
+visited=[];
+drawPattern();
+},400);
+}
+currentPath=[];
+}
+function checkHit(x,y){
+dots.forEach(function(dot,i){
+if(visited.includes(i))return;
+var rect=dot.getBoundingClientRect();
+var gridRect=grid.getBoundingClientRect();
+var cx=rect.left-gridRect.left+rect.width/2;
+var cy=rect.top-gridRect.top+rect.height/2;
+var dx=x-cx;
+var dy=y-cy;
+if(dx*dx+dy*dy<=(rect.width/2)*(rect.height/2)){
+visited.push(i);
+dot.classList.add('active','visited');
+currentPath=[].concat(visited);
+drawPattern();
+}
+});
+dots.forEach(function(dot,i){
+if(!visited.includes(i))dot.classList.remove('active');
+});
+}
+canvas.addEventListener('touchstart',handleStart,{passive:false});
+canvas.addEventListener('touchmove',handleMove,{passive:false});
+canvas.addEventListener('touchend',handleEnd);
+canvas.addEventListener('mousedown',handleStart);
+window.addEventListener('mousemove',handleMove);
+window.addEventListener('mouseup',handleEnd);
+resetBtn.addEventListener('click',lock);
+window.addEventListener('resize',function(){resizeCanvas();drawPattern()});
+initDots();
+window.scrollTo(0,0);
+window.addEventListener('pageshow',function(){window.scrollTo(0,0)});
+</script>
+<script src="app.js"></script>
+</body>
+</html>

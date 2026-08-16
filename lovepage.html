@@ -7001,6 +7001,59 @@
     /* ---- scroll-triggered fireflies ---- */
     setTimeout(function() { if (window.initFireflies) window.initFireflies(); }, 900);
 
+    /* ---- hidden page access: Konami code + heart triple-tap + anniv long-press ---- */
+    (function initSecretAccess() {
+      var konami = [38,38,40,40,37,39,37,39,66,65];
+      var konamiIndex = 0;
+      window.addEventListener('keydown', function(e) {
+        if (e.keyCode === konami[konamiIndex]) {
+          konamiIndex++;
+          if (konamiIndex === konami.length) {
+            konamiIndex = 0;
+            window.location.href = 'timecapsule.html';
+          }
+        } else {
+          konamiIndex = 0;
+        }
+      });
+
+      var heartTapCount = 0;
+      var heartTapTimer = null;
+      var animatedHeart = document.getElementById('animatedHeart');
+      if (animatedHeart) {
+        animatedHeart.addEventListener('click', function(e) {
+          if (e.detail >= 2) return;
+          heartTapCount++;
+          if (heartTapCount === 1) {
+            heartTapTimer = setTimeout(function() { heartTapCount = 0; }, 600);
+          } else if (heartTapCount >= 3) {
+            clearTimeout(heartTapTimer);
+            heartTapCount = 0;
+            window.location.href = 'photovault.html';
+          }
+        });
+      }
+
+      var annivLock = document.getElementById('annivLock');
+      var annivPressTimer = null;
+      if (annivLock) {
+        annivLock.addEventListener('mousedown', function() {
+          annivPressTimer = setTimeout(function() {
+            window.location.href = 'timecapsule.html';
+          }, 1200);
+        });
+        annivLock.addEventListener('mouseup', function() { clearTimeout(annivPressTimer); });
+        annivLock.addEventListener('mouseleave', function() { clearTimeout(annivPressTimer); });
+        annivLock.addEventListener('touchstart', function() {
+          annivPressTimer = setTimeout(function() {
+            window.location.href = 'timecapsule.html';
+          }, 1200);
+        }, { passive: true });
+        annivLock.addEventListener('touchend', function() { clearTimeout(annivPressTimer); });
+        annivLock.addEventListener('touchcancel', function() { clearTimeout(annivPressTimer); });
+      }
+    })();
+
     /* ---- skip intro flow when returning from a sub-page in the same tab ---- */
     if (unlockedInSession) {
       const overlays = ['introScreen', 'loveScreen', 'quizScreen', 'lockScreen'];
