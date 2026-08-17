@@ -38,10 +38,29 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .constellation-guide.show{opacity:1;pointer-events:auto}
 .constellation-guide-title{font-family:Georgia,serif;font-size:18px;color:#e8c17e;letter-spacing:2px;margin-bottom:16px}
 .constellation-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;width:90%;margin-bottom:16px}
-.constellation-cell{background:rgba(15,8,40,.7);border:1px solid rgba(232,193,126,.2);border-radius:12px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center}
+.constellation-cell{background:rgba(15,8,40,.7);border:1px solid rgba(232,193,126,.2);border-radius:12px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s}
+.constellation-cell:hover{transform:scale(1.03)}
 .constellation-cell canvas{display:block}
 .constellation-cell span{font-size:10px;color:#e8c17e;letter-spacing:1px;margin-top:6px;font-family:Georgia,serif}
 .constellation-guide-close{font-size:11px;color:rgba(255,247,238,.4);letter-spacing:1px;margin-top:4px}
+.galaxy-section-title{font-family:Georgia,serif;font-size:14px;color:rgba(232,193,126,.6);letter-spacing:2px;margin:12px 0 8px;text-align:center}
+.tutorial-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.tutorial-overlay.show{opacity:1;pointer-events:auto}
+.tutorial-canvas{border:1px solid rgba(232,193,126,.2);border-radius:12px}
+.tutorial-title{font-family:Georgia,serif;font-size:20px;color:#e8c17e;letter-spacing:2px;margin-bottom:12px;min-height:30px}
+.tutorial-back{margin-top:16px;padding:6px 20px;border-radius:16px;border:1px solid rgba(232,193,126,.3);background:rgba(15,8,40,.6);color:#e8c17e;font-size:12px;font-family:Georgia,serif;cursor:pointer;transition:background .2s}
+.tutorial-back:hover{background:rgba(232,193,126,.2)}
+.planet-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:55;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.planet-modal.show{opacity:1;pointer-events:auto}
+.planet-modal-card{background:linear-gradient(135deg,#1a0e3e,#0f0828);border:1px solid rgba(232,193,126,.3);border-radius:18px;padding:28px 24px;max-width:320px;width:85%;text-align:center;transform:translateY(20px) scale(.9);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.planet-modal.show .planet-modal-card{transform:translateY(0) scale(1)}
+.planet-modal-visual{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.planet-modal-icon{border-radius:50%}
+.planet-modal-ring{position:absolute;border:2px solid;border-radius:50%;pointer-events:none}
+.planet-modal-name{font-family:Georgia,serif;font-size:18px;color:#e8c17e;letter-spacing:2px;margin-bottom:12px}
+.planet-modal-facts{text-align:left;font-size:13px;line-height:1.7;color:rgba(255,247,238,.85)}
+.planet-modal-facts li{margin-bottom:4px;list-style:none}
+.planet-modal-facts li::before{content:"✦ ";color:#e8c17e}
 @media(max-width:400px){.brand{font-size:15px}.pill{padding:5px 14px;font-size:11px}.constellation-grid{grid-template-columns:repeat(2,1fr);max-width:340px}}
 </style>
 </head>
@@ -81,6 +100,20 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
   <div class="constellation-guide-title">✦ CONSTELLATION GUIDE ✦</div>
   <div class="constellation-grid" id="constellationGrid"></div>
   <div class="constellation-guide-close">tap anywhere to close</div>
+</div>
+
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tutorial-title" id="tutorialTitle"></div>
+  <canvas class="tutorial-canvas" id="tutorialCanvas" width="500" height="400"></canvas>
+  <button class="tutorial-back" id="tutorialBack">← Back to Guide</button>
+</div>
+
+<div class="planet-modal" id="planetModal">
+  <div class="planet-modal-card">
+    <div class="planet-modal-visual" id="planetVisual"></div>
+    <div class="planet-modal-name" id="planetName"></div>
+    <ul class="planet-modal-facts" id="planetFacts"></ul>
+  </div>
 </div>
 
 <script>
@@ -481,16 +514,15 @@ function drawBurstParticles(){
   ctx.globalAlpha=1;
 }
 
-// Solar system
 var planets=[
-  {name:"Mercury",color:"#999",r:5,dist:40,speed:4.1,angle:0,glow:"153,153,153",moon:false},
-  {name:"Venus",color:"#e8a040",r:7,dist:60,speed:3.2,angle:1.2,glow:"232,160,64",moon:false},
-  {name:"Earth",color:"#4090c0",r:7,dist:85,speed:2.6,angle:2.8,glow:"64,144,192",moon:true},
-  {name:"Mars",color:"#c04030",r:6,dist:110,speed:2.1,angle:4.1,glow:"192,64,48",moon:false},
-  {name:"Jupiter",color:"#c08040",r:10,dist:145,speed:1.5,angle:0.7,glow:"192,128,64",moon:false},
-  {name:"Saturn",color:"#d4a040",r:9,dist:180,speed:1.2,angle:3.3,glow:"212,160,64",moon:false,hasRing:true},
-  {name:"Uranus",color:"#60c0d0",r:7,dist:210,speed:0.9,angle:5.5,glow:"96,192,208",moon:false},
-  {name:"Neptune",color:"#4060d0",r:7,dist:238,speed:0.7,angle:1.8,glow:"64,96,208",moon:false}
+  {name:"Mercury",color:"#999",r:5,dist:40,speed:4.1,angle:0,glow:"153,153,153",moon:false,facts:["Mercury is the smallest planet in our solar system.","It has no atmosphere and temperatures swing from -180°C to 430°C.","A year on Mercury is just 88 Earth days.","Like how you orbit my heart, Mercury races around the Sun faster than any planet."]},
+  {name:"Venus",color:"#e8a040",r:7,dist:60,speed:3.2,angle:1.2,glow:"232,160,64",moon:false,facts:["Venus spins backwards compared to most planets.","It's the hottest planet with surface temps of 465°C.","Venus is often called Earth's twin sister.","Venus glows brightest in our sky — just like you glow brightest in my world."]},
+  {name:"Earth",color:"#4090c0",r:7,dist:85,speed:2.6,angle:2.8,glow:"64,144,192",moon:true,facts:["Earth is the only planet known to support life.","71% of its surface is covered in water.","Our Moon is slowly drifting away from us each year.","Earth is my favorite planet because it's where I found you."]},
+  {name:"Mars",color:"#c04030",r:6,dist:110,speed:2.1,angle:4.1,glow:"192,64,48",moon:false,facts:["Mars has the tallest volcano in the solar system — Olympus Mons.","Its red color comes from iron oxide (rust) on its surface.","Mars has two tiny moons: Phobos and Deimos.","Mars is called the Red Planet, but you make my heart blush pinker."]},
+  {name:"Jupiter",color:"#c08040",r:10,dist:145,speed:1.5,angle:0.7,glow:"192,128,64",moon:false,facts:["Jupiter is so massive it could fit all other planets inside it.","Its Great Red Spot is a storm that has raged for over 350 years.","Jupiter has at least 95 known moons.","Jupiter is a giant — but my love for you is even bigger."]},
+  {name:"Saturn",color:"#d4a040",r:9,dist:180,speed:1.2,angle:3.3,glow:"212,160,64",moon:false,hasRing:true,facts:["Saturn's rings are made of billions of chunks of ice and rock.","It's the least dense planet — it would float in water.","Saturn has a mysterious hexagon storm at its north pole.","Saturn wears rings like a king — and you're the queen of my universe."]},
+  {name:"Uranus",color:"#60c0d0",r:7,dist:210,speed:0.9,angle:5.5,glow:"96,192,208",moon:false,facts:["Uranus rotates on its side like a rolling ball.","It has faint rings that were only discovered in 1977.","Uranus takes 84 years to orbit the Sun.","Uranus is tilted sideways — just like how you tilt my world upside down."]},
+  {name:"Neptune",color:"#4060d0",r:7,dist:238,speed:0.7,angle:1.8,glow:"64,96,208",moon:false,facts:["Neptune has the strongest winds in the solar system — up to 2,100 km/h.","It was the first planet predicted mathematically before being seen.","Neptune takes 165 years to orbit the Sun.","Neptune is deep and mysterious — just like my feelings for you."]}
 ];
 
 var solarSystemX=0,solarSystemY=0;
@@ -513,7 +545,6 @@ function drawSolarSystem(t){
   var cx=solarSystemX;
   var cy=solarSystemY;
 
-  // Orbit paths
   for(var i=0;i<planets.length;i++){
     var p=planets[i];
     ctx.beginPath();
@@ -525,7 +556,6 @@ function drawSolarSystem(t){
     ctx.setLineDash([]);
   }
 
-  // Sun glow layers
   var pulseFactor=1+Math.sin(t*0.003)*0.15;
   for(var g=3;g>=0;g--){
     var glowR=(15+g*8)*pulseFactor;
@@ -540,7 +570,6 @@ function drawSolarSystem(t){
     ctx.fill();
   }
 
-  // Sun rotating rays
   ctx.save();
   ctx.translate(cx,cy);
   ctx.rotate(t*0.0005);
@@ -556,7 +585,6 @@ function drawSolarSystem(t){
   }
   ctx.restore();
 
-  // Sun core
   var sunGrad2=ctx.createRadialGradient(cx-2,cy-2,0,cx,cy,14);
   sunGrad2.addColorStop(0,"#fff8e0");
   sunGrad2.addColorStop(0.4,"#ffd040");
@@ -567,13 +595,11 @@ function drawSolarSystem(t){
   ctx.fillStyle=sunGrad2;
   ctx.fill();
 
-  // Planets
   for(var i=0;i<planets.length;i++){
     var p=planets[i];
     var px=cx+Math.cos(p.angle)*p.dist;
     var py=cy+Math.sin(p.angle)*p.dist;
 
-    // Planet glow
     var pGrad=ctx.createRadialGradient(px,py,0,px,py,p.r*2);
     pGrad.addColorStop(0,"rgba("+p.glow+",0.25)");
     pGrad.addColorStop(1,"rgba("+p.glow+",0)");
@@ -582,7 +608,6 @@ function drawSolarSystem(t){
     ctx.fillStyle=pGrad;
     ctx.fill();
 
-    // Saturn ring
     if(p.hasRing){
       ctx.save();
       ctx.beginPath();
@@ -598,7 +623,6 @@ function drawSolarSystem(t){
       ctx.restore();
     }
 
-    // Planet body
     var planetGrad=ctx.createRadialGradient(px-p.r*0.3,py-p.r*0.3,0,px,py,p.r);
     planetGrad.addColorStop(0,"rgba(255,255,255,0.3)");
     planetGrad.addColorStop(0.5,p.color);
@@ -608,7 +632,6 @@ function drawSolarSystem(t){
     ctx.fillStyle=planetGrad;
     ctx.fill();
 
-    // Earth moon
     if(p.moon){
       var moonAngle=t*0.005;
       var moonDist=14;
@@ -620,7 +643,6 @@ function drawSolarSystem(t){
       ctx.fill();
     }
 
-    // Planet name
     ctx.font="8px 'Segoe UI',sans-serif";
     ctx.fillStyle="rgba(255,247,238,0.5)";
     ctx.textAlign="center";
@@ -628,12 +650,69 @@ function drawSolarSystem(t){
   }
 }
 
-// Planet click detection
+function showPlanetModal(planetIdx, fromX, fromY){
+  var p=planets[planetIdx];
+  var modal=document.getElementById("planetModal");
+  var visual=document.getElementById("planetVisual");
+  var nameEl=document.getElementById("planetName");
+  var factsEl=document.getElementById("planetFacts");
+
+  visual.innerHTML="";
+  var iconDiv=document.createElement("div");
+  iconDiv.className="planet-modal-icon";
+  var size=80;
+  iconDiv.style.width=size+"px";
+  iconDiv.style.height=size+"px";
+  iconDiv.style.background="radial-gradient(circle at 35% 35%,rgba(255,255,255,0.3),"+p.color+" 60%,rgba(0,0,0,0.4))";
+  iconDiv.style.boxShadow="0 0 30px rgba("+p.glow+",0.4)";
+  visual.appendChild(iconDiv);
+
+  if(p.hasRing){
+    var ring=document.createElement("div");
+    ring.className="planet-modal-ring";
+    ring.style.width=(size+40)+"px";
+    ring.style.height=(size*0.35)+"px";
+    ring.style.top=((size-size*0.35)/2)+"px";
+    ring.style.left=-20+"px";
+    ring.style.borderColor="rgba(212,160,64,0.5)";
+    ring.style.transform="rotateX(75deg)";
+    visual.appendChild(ring);
+
+    var ring2=document.createElement("div");
+    ring2.className="planet-modal-ring";
+    ring2.style.width=(size+60)+"px";
+    ring2.style.height=(size*0.45)+"px";
+    ring2.style.top=((size-size*0.45)/2)+"px";
+    ring2.style.left=-30+"px";
+    ring2.style.borderColor="rgba(212,160,64,0.25)";
+    ring2.style.transform="rotateX(75deg)";
+    visual.appendChild(ring2);
+  }
+
+  nameEl.textContent=p.name;
+  factsEl.innerHTML="";
+  for(var i=0;i<p.facts.length;i++){
+    var li=document.createElement("li");
+    li.textContent=p.facts[i];
+    factsEl.appendChild(li);
+  }
+
+  modal.classList.add("show");
+}
+
+function closePlanetModal(){
+  document.getElementById("planetModal").classList.remove("show");
+}
+document.getElementById("planetModal").addEventListener("click",function(){closePlanetModal()});
+
 canvas.addEventListener("click",function(e){
   var rect=canvas.getBoundingClientRect();
   var cx=e.clientX-rect.left;
   var cy=e.clientY-rect.top;
   var ssx=solarSystemX,ssy=solarSystemY;
+
+  if(constellationMode) return;
+
   for(var i=0;i<planets.length;i++){
     var p=planets[i];
     var px=ssx+Math.cos(p.angle)*p.dist;
@@ -643,7 +722,7 @@ canvas.addEventListener("click",function(e){
     var clickR=p.r+10;
     if(dx*dx+dy*dy<clickR*clickR){
       if(navigator.vibrate) navigator.vibrate(30);
-      showQuote();
+      showPlanetModal(i,px,py);
       return;
     }
   }
@@ -656,6 +735,9 @@ canvas.addEventListener("touchend",function(e){
   var cx=t.clientX-rect.left;
   var cy=t.clientY-rect.top;
   var ssx=solarSystemX,ssy=solarSystemY;
+
+  if(constellationMode) return;
+
   for(var i=0;i<planets.length;i++){
     var p=planets[i];
     var px=ssx+Math.cos(p.angle)*p.dist;
@@ -665,13 +747,12 @@ canvas.addEventListener("touchend",function(e){
     var clickR=p.r+10;
     if(dx*dx+dy*dy<clickR*clickR){
       if(navigator.vibrate) navigator.vibrate(30);
-      showQuote();
+      showPlanetModal(i,px,py);
       return;
     }
   }
 });
 
-// Quotes
 var quotes=[
   {text:"I fell in love the way you fall asleep: slowly, and then all at once.",author:"John Green"},
   {text:"You are my sun, my moon, and all my stars.",author:"E.E. Cummings"},
@@ -736,7 +817,6 @@ function showQuote(){
 }
 document.getElementById("overlay").addEventListener("click",function(){this.classList.remove("show")});
 
-// Constellation patterns for guide
 var constellationPatterns=[
   {name:"Orion",subtitle:"the hunter",stars:[
     {x:55,y:15},{x:75,y:15},{x:65,y:40},{x:65,y:65},{x:55,y:90},{x:75,y:90},{x:65,y:55}
@@ -758,13 +838,56 @@ var constellationPatterns=[
   ],lines:[[0,1],[1,2],[3,4],[0,3],[1,4]]}
 ];
 
+var galaxyPatterns=[
+  {name:"Milky Way",subtitle:"our galaxy",type:"milkyway",dots:[]},
+  {name:"Andromeda",subtitle:"nearest spiral",type:"spiral",dots:[]},
+  {name:"Whirlpool",subtitle:"double spiral",type:"doublespiral",dots:[]}
+];
+
+function generateGalaxyDots(type, cw, ch){
+  var dots=[];
+  if(type==="milkyway"){
+    for(var i=0;i<60;i++){
+      var t=Math.random();
+      var x=10+t*(cw-20);
+      var y=ch/2+(Math.random()-.5)*30*(.3+Math.abs(t-.5)*1.4);
+      var r=.8+Math.random()*1.5;
+      dots.push({x:x,y:y,r:r,a:.3+Math.random()*.5});
+    }
+  }else if(type==="spiral"){
+    for(var i=0;i<45;i++){
+      var angle=Math.random()*Math.PI*4;
+      var dist=5+Math.random()*45;
+      var x=cw/2+Math.cos(angle)*dist;
+      var y=ch/2+Math.sin(angle)*dist*.6;
+      var r=.8+Math.random()*1.5;
+      dots.push({x:x,y:y,r:r,a:.3+Math.random()*.5});
+    }
+  }else if(type==="doublespiral"){
+    for(var arm=0;arm<2;arm++){
+      var offset=arm*Math.PI;
+      for(var i=0;i<30;i++){
+        var angle=offset+i*0.3;
+        var dist=3+i*1.6;
+        var x=cw/2+Math.cos(angle)*dist;
+        var y=ch/2+Math.sin(angle)*dist*.6;
+        var r=.8+Math.random()*1.3;
+        dots.push({x:x,y:y,r:r,a:.3+Math.random()*.5});
+      }
+    }
+  }
+  return dots;
+}
+
 function buildConstellationGuide(){
   var grid=document.getElementById("constellationGrid");
   grid.innerHTML="";
+
   for(var i=0;i<constellationPatterns.length;i++){
     var pat=constellationPatterns[i];
     var cell=document.createElement("div");
     cell.className="constellation-cell";
+    cell.dataset.constellation=i;
     var cvs=document.createElement("canvas");
     var cw=130,ch=100;
     cvs.width=cw*2;cvs.height=ch*2;
@@ -772,7 +895,6 @@ function buildConstellationGuide(){
     var cctx=cvs.getContext("2d");
     cctx.setTransform(2,0,0,2,0,0);
     cctx.clearRect(0,0,cw,ch);
-    // Draw lines
     cctx.strokeStyle="rgba(232,193,126,0.35)";
     cctx.lineWidth=1;
     for(var j=0;j<pat.lines.length;j++){
@@ -783,7 +905,6 @@ function buildConstellationGuide(){
       cctx.lineTo(s2.x,s2.y);
       cctx.stroke();
     }
-    // Draw stars
     for(var j=0;j<pat.stars.length;j++){
       var s=pat.stars[j];
       cctx.beginPath();
@@ -809,15 +930,183 @@ function buildConstellationGuide(){
     }
     grid.appendChild(cell);
   }
+
+  var galaxyTitle=document.createElement("div");
+  galaxyTitle.className="galaxy-section-title";
+  galaxyTitle.textContent="✦ GALAXIES ✦";
+  grid.appendChild(galaxyTitle);
+
+  for(var i=0;i<galaxyPatterns.length;i++){
+    var gal=galaxyPatterns[i];
+    var cell=document.createElement("div");
+    cell.className="constellation-cell";
+    var cvs=document.createElement("canvas");
+    var cw=130,ch=100;
+    cvs.width=cw*2;cvs.height=ch*2;
+    cvs.style.width=cw+"px";cvs.style.height=ch+"px";
+    var cctx=cvs.getContext("2d");
+    cctx.setTransform(2,0,0,2,0,0);
+    cctx.clearRect(0,0,cw,ch);
+    var dots=generateGalaxyDots(gal.type,cw,ch);
+    for(var j=0;j<dots.length;j++){
+      var d=dots[j];
+      cctx.beginPath();
+      cctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+      cctx.fillStyle="rgba(232,193,126,"+d.a+")";
+      cctx.fill();
+    }
+    cell.appendChild(cvs);
+    var label=document.createElement("span");
+    label.textContent=gal.name;
+    cell.appendChild(label);
+    if(gal.subtitle){
+      var sub=document.createElement("span");
+      sub.textContent=gal.subtitle;
+      sub.style.fontSize="8px";
+      sub.style.opacity="0.6";
+      sub.style.marginTop="2px";
+      cell.appendChild(sub);
+    }
+    grid.appendChild(cell);
+  }
 }
 buildConstellationGuide();
 
 document.getElementById("guideBtn").addEventListener("click",function(){
   document.getElementById("guideOverlay").classList.add("show");
 });
-document.getElementById("guideOverlay").addEventListener("click",function(){this.classList.remove("show")});
+document.getElementById("guideOverlay").addEventListener("click",function(e){
+  if(e.target===this) this.classList.remove("show");
+});
 
-// Constellation mode
+var constellationTutorialData=[
+  {name:"Orion",positions:[[.5,.1],[.35,.25],[.65,.25],[.3,.45],[.7,.45],[.4,.7],[.6,.7]],lines:[[0,2],[1,2],[2,3],[3,4],[3,5],[2,6]]},
+  {name:"Ursa Major",positions:[[.1,.5],[.25,.35],[.45,.3],[.6,.35],[.7,.5],[.65,.65],[.5,.7]],lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[3,5]]},
+  {name:"Cassiopeia",positions:[[.1,.5],[.3,.2],[.5,.5],[.7,.2],[.9,.5]],lines:[[0,1],[1,2],[2,3],[3,4]]},
+  {name:"Leo",positions:[[.2,.3],[.4,.15],[.6,.2],[.7,.4],[.55,.55],[.35,.5]],lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+  {name:"Cygnus",positions:[[.5,.1],[.5,.9],[.15,.5],[.85,.5],[.35,.3]],lines:[[0,1],[1,2],[1,3],[1,4]]},
+  {name:"Gemini",positions:[[.3,.1],[.7,.1],[.3,.45],[.7,.45],[.3,.85],[.7,.85]],lines:[[0,1],[2,3],[4,5],[0,2],[1,3]]}
+];
+
+var tutorialAnim={active:false,idx:0,phase:0,step:0,timer:0,backToGrid:false};
+var tutorialCanvasEl=document.getElementById("tutorialCanvas");
+var tutorialCtx=tutorialCanvasEl.getContext("2d");
+var tutorialTitleEl=document.getElementById("tutorialTitle");
+
+function startTutorial(constellationIdx){
+  document.getElementById("guideOverlay").classList.remove("show");
+  tutorialAnim.active=true;
+  tutorialAnim.idx=constellationIdx;
+  tutorialAnim.phase=0;
+  tutorialAnim.step=0;
+  tutorialAnim.timer=0;
+  tutorialAnim.backToGrid=false;
+  document.getElementById("tutorialOverlay").classList.add("show");
+  requestAnimationFrame(animateTutorial);
+}
+
+function stopTutorial(){
+  tutorialAnim.active=false;
+  document.getElementById("tutorialOverlay").classList.remove("show");
+  document.getElementById("guideOverlay").classList.add("show");
+}
+
+document.getElementById("tutorialBack").addEventListener("click",function(){stopTutorial()});
+
+function animateTutorial(ts){
+  if(!tutorialAnim.active) return;
+  var cw=tutorialCanvasEl.width/2;
+  var ch=tutorialCanvasEl.height/2;
+  var data=constellationTutorialData[tutorialAnim.idx];
+  tutorialTitleEl.textContent=data.name;
+
+  tutorialCtx.setTransform(2,0,0,2,0,0);
+  tutorialCtx.clearRect(0,0,cw,ch);
+
+  var starR=4;
+  var margin=40;
+  var drawW=cw-margin*2;
+  var drawH=ch-margin*2;
+
+  tutorialAnim.timer+=16;
+
+  for(var i=0;i<data.positions.length;i++){
+    var px=margin+data.positions[i][0]*drawW;
+    var py=margin+data.positions[i][1]*drawH;
+    var dimAlpha=(tutorialAnim.phase===0&&i>tutorialAnim.step)?0.12:0.7;
+    tutorialCtx.beginPath();
+    tutorialCtx.arc(px,py,starR,0,Math.PI*2);
+    tutorialCtx.fillStyle="rgba(255,247,238,"+dimAlpha+")";
+    tutorialCtx.fill();
+    if(dimAlpha>0.5){
+      tutorialCtx.beginPath();
+      tutorialCtx.arc(px,py,starR+3,0,Math.PI*2);
+      tutorialCtx.fillStyle="rgba(255,247,238,0.1)";
+      tutorialCtx.fill();
+    }
+  }
+
+  var linesToDraw=(tutorialAnim.phase===0)?tutorialAnim.step:data.lines.length;
+  for(var i=0;i<linesToDraw&&i<data.lines.length;i++){
+    var l=data.lines[i];
+    var s1x=margin+data.positions[l[0]][0]*drawW;
+    var s1y=margin+data.positions[l[0]][1]*drawH;
+    var s2x=margin+data.positions[l[1]][0]*drawW;
+    var s2y=margin+data.positions[l[1]][1]*drawH;
+    tutorialCtx.save();
+    tutorialCtx.strokeStyle="rgba(232,193,126,0.7)";
+    tutorialCtx.lineWidth=2;
+    tutorialCtx.shadowColor="rgba(232,193,126,0.5)";
+    tutorialCtx.shadowBlur=6;
+    tutorialCtx.beginPath();
+    tutorialCtx.moveTo(s1x,s1y);
+    tutorialCtx.lineTo(s2x,s2y);
+    tutorialCtx.stroke();
+    tutorialCtx.restore();
+  }
+
+  if(tutorialAnim.phase===1){
+    var alpha=Math.min(1,tutorialAnim.timer/500);
+    tutorialCtx.save();
+    tutorialCtx.font="bold 22px Georgia,serif";
+    tutorialCtx.textAlign="center";
+    tutorialCtx.textBaseline="middle";
+    tutorialCtx.fillStyle="rgba(232,193,126,"+alpha+")";
+    tutorialCtx.shadowColor="rgba(232,193,126,0.6)";
+    tutorialCtx.shadowBlur=12;
+    tutorialCtx.fillText(data.name,cw/2,ch-25);
+    tutorialCtx.restore();
+  }
+
+  if(tutorialAnim.phase===0&&tutorialAnim.timer>400){
+    tutorialAnim.timer=0;
+    tutorialAnim.step++;
+    if(tutorialAnim.step>=data.lines.length){
+      tutorialAnim.phase=1;
+      tutorialAnim.timer=0;
+    }
+  }else if(tutorialAnim.phase===1&&tutorialAnim.timer>1500){
+    tutorialAnim.idx++;
+    if(tutorialAnim.idx>=constellationTutorialData.length){
+      tutorialAnim.idx=0;
+    }
+    tutorialAnim.phase=0;
+    tutorialAnim.step=0;
+    tutorialAnim.timer=0;
+  }
+
+  requestAnimationFrame(animateTutorial);
+}
+
+document.getElementById("constellationGrid").addEventListener("click",function(e){
+  var cell=e.target.closest(".constellation-cell");
+  if(!cell) return;
+  var idx=cell.dataset.constellation;
+  if(idx!==undefined){
+    startTutorial(parseInt(idx));
+  }
+});
+
 document.getElementById("constellationBtn").addEventListener("click",function(){
   constellationMode=!constellationMode;
   this.classList.toggle("active",constellationMode);
