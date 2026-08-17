@@ -37,6 +37,12 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .quote-emoji{font-size:32px;margin-bottom:10px}
 .quote-text{font-family:Georgia,serif;font-size:16px;line-height:1.55;color:#fff7ee;margin-bottom:12px}
 .quote-author{font-size:12px;color:#e8c17e;letter-spacing:1px}
+.guide-card{background:linear-gradient(135deg,#1a0e3e,#0f0828);border:1px solid rgba(232,193,126,.3);border-radius:18px;padding:28px 24px;max-width:340px;width:88%;text-align:center;transform:translateY(20px) scale(.95);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.overlay.show .guide-card{transform:translateY(0) scale(1)}
+.guide-title{font-family:Georgia,serif;font-size:18px;color:#e8c17e;letter-spacing:2px;margin-bottom:16px}
+.guide-instructions{font-size:13px;line-height:1.7;color:rgba(255,247,238,.8);text-align:left}
+.guide-instructions p{margin-bottom:10px}
+.guide-close{margin-top:16px;font-size:12px;color:rgba(232,193,126,.6);letter-spacing:1px}
 @media(max-width:400px){.brand{font-size:15px}.pill{padding:5px 14px;font-size:11px}}
 </style>
 </head>
@@ -47,6 +53,7 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
   <a href="lovepage.html" class="back-link">← lovepage</a>
   <span class="brand">OUR SKY</span>
   <div class="topbar-btns">
+    <button class="topbar-btn" id="guideBtn" title="Constellation Guide">?</button>
     <button class="topbar-btn" id="constellationBtn" title="Constellation Mode">✦</button>
     <button class="topbar-btn" id="windBtn" title="Solar Wind">
       <svg viewBox="0 0 24 24"><path d="M4 8h10a3 3 0 1 0-3-3"/><path d="M4 12h14a3 3 0 1 1-3 3"/><path d="M4 16h6a3 3 0 1 1-3 3"/></svg>
@@ -68,6 +75,19 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     <div class="quote-emoji" id="qEmoji">💕</div>
     <div class="quote-text" id="qText"></div>
     <div class="quote-author" id="qAuthor"></div>
+  </div>
+</div>
+
+<div class="overlay" id="guideOverlay">
+  <div class="guide-card">
+    <div class="guide-title">✦ CONSTELLATION GUIDE</div>
+    <div class="guide-instructions">
+      <p>1. Tap <strong>✦</strong> in the top bar to enter constellation mode.</p>
+      <p>2. Tap anywhere on the sky to place stars.</p>
+      <p>3. Stars within <strong>200px</strong> of each other will auto-connect with golden lines.</p>
+      <p>4. Tap <strong>✦</strong> again to exit and clear your constellation.</p>
+    </div>
+    <div class="guide-close">tap anywhere to close</div>
   </div>
 </div>
 
@@ -138,15 +158,40 @@ var themes={
   northern:{bg:"#071020",ribbons:[[80,255,160],[60,180,255],[100,255,220],[50,200,180]],stars:"#d0ffe8"}
 };
 
-// Background stars
+// Background stars - moving with parallax
 var bgStars=[];
 function initStars(){
   bgStars=[];
   for(var i=0;i<220;i++){
-    bgStars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.5+.3,phase:Math.random()*6.28,speed:Math.random()*.3+.1});
+    var r=Math.random()*1.5+.3;
+    bgStars.push({
+      x:Math.random()*W,y:Math.random()*H,
+      r:r,phase:Math.random()*6.28,
+      twinkleSpeed:Math.random()*.3+.1,
+      driftX:-(.02+r*.015),
+      driftY:-(.015+r*.01)
+    });
   }
 }
 initStars();
+
+function updateAndDrawStars(t){
+  var tc=themes[activeTheme];
+  for(var i=0;i<bgStars.length;i++){
+    var s=bgStars[i];
+    s.x+=s.driftX*dt*0.06;
+    s.y+=s.driftY*dt*0.06;
+    if(s.x<-5) s.x+=W+10;
+    if(s.x>W+5) s.x-=W+10;
+    if(s.y<-5) s.y+=H+10;
+    if(s.y>H+5) s.y-=H+10;
+    var a=.3+noise.noise2D(s.x*0.01+s.phase,s.y*0.01+t*0.0001*s.twinkleSpeed)*.35+.35;
+    ctx.fillStyle=tc.stars;
+    ctx.globalAlpha=a;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
 
 // Aurora ribbons
 var ribbons=[];
@@ -213,21 +258,43 @@ var characters=[
 ];
 characters.forEach(function(c){c.init()});
 
-function drawCharacters(t){
-  characters.forEach(function(c){
-    var px=c.x+Math.sin(t*.001*c.speedX+c.phaseX)*c.ampX;
-    var py=c.y+Math.sin(t*.001*c.speedY+c.phaseY)*c.ampY;
-    px=((px%W)+W)%W;
-    py=Math.max(40,Math.min(H-60,py));
-    ctx.font="32px serif";
+// Mini floating characters (no labels)
+var miniChars=[];
+function initMiniChars(){
+  miniChars=[
+    {emoji:"\u{1F6F8}",size:18,x:W*.25,y:H*.55,phaseX:1,phaseY:2,speedX:.6,speedY:.4,orbitR:30,glow:"255,255,255"},
+    {emoji:"\u{1F6F8}",size:16,x:W*.6,y:H*.2,phaseX:3,phaseY:0,speedX:.5,speedY:.35,orbitR:25,glow:"200,220,255"},
+    {emoji:"\u{1F6F8}",size:14,x:W*.85,y:H*.6,phaseX:5,phaseY:4,speedX:.45,speedY:.3,orbitR:20,glow:"220,200,255"},
+    {emoji:"\u{1F47D}",size:16,x:W*.4,y:H*.4,phaseX:2,phaseY:3,speedX:.5,speedY:.7,ampY:15,glow:"100,255,200"},
+    {emoji:"\u{1F47D}",size:14,x:W*.75,y:H*.3,phaseX:4.5,phaseY:1.5,speedX:.4,speedY:.6,ampY:12,glow:"150,255,180"},
+    {emoji:"\u{1F680}",size:16,x:W*.2,y:H*.7,phaseX:0.5,phaseY:5,speedX:.3,speedY:.5,driftX:30,driftY:20,glow:"255,200,100"},
+    {emoji:"\u{1F680}",size:14,x:W*.55,y:H*.15,phaseX:3.5,phaseY:2.5,speedX:.35,speedY:.45,driftX:25,driftY:15,glow:"255,180,80"}
+  ];
+}
+initMiniChars();
+
+function drawMiniChars(t){
+  for(var i=0;i<miniChars.length;i++){
+    var c=miniChars[i];
+    var px,py;
+    if(c.orbitR){
+      px=c.x+Math.sin(t*.001*c.speedX+c.phaseX)*c.orbitR;
+      py=c.y+Math.cos(t*.001*c.speedY+c.phaseY)*c.orbitR;
+    }else if(c.driftX){
+      px=c.x+Math.sin(t*.001*c.speedX+c.phaseX)*c.driftX;
+      py=c.y+Math.sin(t*.0008*c.speedY+c.phaseY)*c.driftY;
+    }else{
+      px=c.x+Math.sin(t*.001*c.speedX+c.phaseX)*c.ampY*1.5;
+      py=c.y+Math.sin(t*.001*c.speedY+c.phaseY)*c.ampY;
+    }
+    ctx.save();
+    ctx.shadowColor="rgba("+c.glow+",0.4)";
+    ctx.shadowBlur=8;
+    ctx.font=c.size+"px serif";
     ctx.textAlign="center";
     ctx.fillText(c.emoji,px,py);
-    ctx.font="bold 10px 'Segoe UI',sans-serif";
-    ctx.fillStyle=c.color;
-    ctx.globalAlpha=.85;
-    ctx.fillText(c.label,px,py+18);
-    ctx.globalAlpha=1;
-  });
+    ctx.restore();
+  }
 }
 
 // Sparkle trail
@@ -547,6 +614,12 @@ function showQuote(){
 }
 document.getElementById("overlay").addEventListener("click",function(){this.classList.remove("show")});
 
+// Constellation guide overlay
+document.getElementById("guideBtn").addEventListener("click",function(){
+  document.getElementById("guideOverlay").classList.add("show");
+});
+document.getElementById("guideOverlay").addEventListener("click",function(){this.classList.remove("show")});
+
 // Constellation
 document.getElementById("constellationBtn").addEventListener("click",function(){
   constellationMode=!constellationMode;
@@ -610,19 +683,12 @@ function frame(ts){
 
   ctx.clearRect(0,0,W,H);
 
-  // Stars
-  var tc=themes[activeTheme];
-  bgStars.forEach(function(s){
-    var a=.3+noise.noise2D(s.x*10+s.phase,s.y*10+time*0.0001*s.speed)*.35+.35;
-    ctx.fillStyle=tc.stars;
-    ctx.globalAlpha=a;
-    ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);ctx.fill();
-  });
-  ctx.globalAlpha=1;
+  updateAndDrawStars(time);
 
   drawRibbons(time);
   drawConstellations();
   drawCharacters(time);
+  drawMiniChars(time);
 
   // Spawn meteors
   meteorTimer+=dt;
