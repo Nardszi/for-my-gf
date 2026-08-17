@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Our Aurora</title>
+<meta name="theme-color" content="#0a0612">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Aurora - a sky we paint together">
+<meta property="og:description" content="Swipe through the sky and leave traces of us. Made with all my love, Nard.">
+<meta property="og:image" content="og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --rose:#ff8fab;--rose-deep:#e0567c;
+  --cream:#fff7ee;--gold:#e8c17e;
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+  background:#050310;color:var(--cream);
+  user-select:none;-webkit-user-select:none;
+  touch-action:none;
+}
+#auroraCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.2rem;
+  background:linear-gradient(180deg,rgba(5,3,16,0.92) 60%,transparent);
+  pointer-events:none;
+}
+.topbar a,.topbar button{
+  pointer-events:all;
+  color:var(--cream);text-decoration:none;font-size:0.8rem;
+  letter-spacing:0.06em;border:1px solid rgba(255,143,171,0.35);
+  padding:0.4rem 0.8rem;border-radius:999px;
+  background:rgba(5,3,16,0.5);backdrop-filter:blur(6px);
+  transition:background 0.3s;cursor:pointer;font-family:inherit;
+}
+.topbar a:hover,.topbar button:hover{background:rgba(224,86,124,0.25)}
+.topbar .brand{font-family:Georgia,serif;letter-spacing:0.14em;color:var(--gold);font-size:0.92rem}
+.topbar .actions{display:flex;gap:0.5rem}
+.hint{
+  position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:20;
+  font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(255,247,238,0.4);pointer-events:none;text-align:center;
+  animation:hintPulse 3s ease-in-out infinite;max-width:90vw;line-height:1.5;
+}
+@keyframes hintPulse{0%,100%{opacity:0.4}50%{opacity:0.75}}
+.colorPicker{
+  position:fixed;bottom:3.5rem;left:50%;transform:translateX(-50%);z-index:20;
+  display:flex;gap:0.6rem;opacity:0;transition:opacity 0.4s;pointer-events:none;
+}
+.colorPicker.show{opacity:1;pointer-events:all}
+.colorBtn{
+  width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,247,238,0.3);
+  cursor:pointer;transition:transform 0.2s var(--spring),border-color 0.3s;
+}
+.colorBtn:active{transform:scale(0.88)}
+.colorBtn.active{border-color:var(--cream);box-shadow:0 0 14px rgba(255,247,238,0.35)}
+.colorBtn[data-color="rose"]{background:var(--rose)}
+.colorBtn[data-color="gold"]{background:var(--gold)}
+.colorBtn[data-color="cream"]{background:var(--cream)}
+.colorBtn[data-color="blush"]{background:#ffd3e0}
+.colorBtn[data-color="lavender"]{background:#b8a0ff}
+.modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(5,3,16,0.85);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.35s;
+}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{
+  background:rgba(16,8,26,0.96);
+  border:1px solid rgba(255,143,171,0.4);
+  border-radius:24px;padding:2rem 1.8rem;
+  max-width:320px;width:88vw;
+  box-shadow:0 24px 80px rgba(0,0,0,0.7);
+  transform:scale(0.9) translateY(12px);
+  transition:transform 0.4s var(--spring);
+  text-align:center;position:relative;
+}
+.modal-overlay.show .modal{transform:scale(1) translateY(0)}
+.modal-close{
+  position:absolute;top:0.8rem;right:1rem;
+  background:none;border:none;color:rgba(255,247,238,0.4);
+  font-size:1.2rem;cursor:pointer;padding:0.2rem;
+}
+.modal-close:hover{color:var(--rose)}
+.modal-emoji{font-size:2rem;margin-bottom:0.6rem}
+.modal-from{font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem}
+.modal-text{font-family:Georgia,serif;font-size:1.05rem;line-height:1.6;color:var(--cream);margin:0.8rem 0}
+.modal-photo{width:100%;max-height:180px;object-fit:cover;border-radius:14px;margin:0.8rem 0}
+.modal-date{font-size:0.7rem;color:rgba(255,247,238,0.45);margin-top:0.4rem}
+.addForm{margin-top:1rem}
+.addForm textarea{
+  width:100%;background:rgba(255,143,171,0.08);
+  border:1px solid rgba(255,143,171,0.25);border-radius:14px;
+  color:var(--cream);font-family:Georgia,serif;font-size:0.95rem;
+  padding:0.8rem;resize:none;min-height:80px;outline:none;transition:border-color 0.3s;
+}
+.addForm textarea:focus{border-color:var(--rose)}
+.addForm textarea::placeholder{color:rgba(255,247,238,0.3)}
+.addForm .row{display:flex;gap:0.5rem;margin-top:0.6rem;align-items:center}
+.addForm input[type="text"]{
+  flex:1;background:rgba(255,143,171,0.08);
+  border:1px solid rgba(255,143,171,0.25);border-radius:10px;
+  color:var(--cream);font-size:0.82rem;padding:0.55rem 0.7rem;outline:none;
+}
+.addForm input:focus{border-color:var(--rose)}
+.addForm .btn-row{display:flex;gap:0.5rem;margin-top:0.7rem;justify-content:center}
+.addForm .btn{
+  border:1px solid rgba(255,143,171,0.4);
+  background:rgba(255,143,171,0.1);color:var(--cream);
+  font-family:inherit;font-size:0.8rem;letter-spacing:0.06em;
+  padding:0.55rem 1.2rem;border-radius:999px;cursor:pointer;transition:background 0.3s;
+}
+.addForm .btn:hover{background:rgba(224,86,124,0.3)}
+.addForm .btn.primary{background:rgba(224,86,124,0.35);border-color:var(--rose)}
+.addForm .authorToggle{display:flex;gap:0.4rem;margin-top:0.5rem;justify-content:center}
+.addForm .authorBtn{
+  font-size:0.72rem;letter-spacing:0.1em;
+  padding:0.35rem 0.9rem;border-radius:999px;
+  border:1px solid rgba(255,247,238,0.2);background:transparent;
+  color:rgba(255,247,238,0.5);cursor:pointer;transition:all 0.3s;
+}
+.addForm .authorBtn.active{border-color:var(--gold);color:var(--gold);background:rgba(232,193,126,0.12)}
+.memCount{
+  position:fixed;top:0.9rem;left:50%;transform:translateX(-50%);z-index:15;
+  font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,247,238,0.3);pointer-events:none;
+}
+.memDot{
+  position:absolute;width:8px;height:8px;border-radius:50%;
+  transform:translate(-50%,-50%);pointer-events:all;cursor:pointer;
+  transition:transform 0.2s var(--spring);z-index:5;
+}
+.memDot:hover{transform:translate(-50%,-50%) scale(1.5)}
+.memDot::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid rgba(255,247,238,0.25);
+  animation:dotPulse 2.5s ease-in-out infinite;
+}
+@keyframes dotPulse{0%,100%{opacity:0.25;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}
+.modal-delete{
+  margin-top:0.8rem;font-size:0.68rem;color:rgba(255,247,238,0.3);
+  background:none;border:none;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;
+  transition:color 0.3s;
+}
+.modal-delete:hover{color:var(--rose-deep)}
+@media(max-height:600px){
+  .modal{padding:1.4rem 1.2rem;max-width:280px}
+  .modal-emoji{font-size:1.6rem}
+  .modal-text{font-size:0.9rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+</style>
+</head>
+<body>
+<canvas id="auroraCanvas"></canvas>
+<div class="topbar">
+  <span class="brand">OUR AURORA</span>
+  <div class="actions">
+    <button id="btnAdd">+ memory</button>
+    <a href="lovepage.html">&#8592; back</a>
+  </div>
+</div>
+<div class="memCount" id="memCount">0 memories in the sky</div>
+<div class="colorPicker" id="colorPicker">
+  <div class="colorBtn active" data-color="rose"></div>
+  <div class="colorBtn" data-color="gold"></div>
+  <div class="colorBtn" data-color="cream"></div>
+  <div class="colorBtn" data-color="blush"></div>
+  <div class="colorBtn" data-color="lavender"></div>
+</div>
+<div class="hint" id="hint">swipe to paint aurora &middot; double-tap to leave a memory &middot; press S for solar wind</div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-emoji" id="mEmoji"></div>
+    <div class="modal-from" id="mFrom"></div>
+    <div class="modal-text" id="mText"></div>
+    <img class="modal-photo" id="mPhoto" style="display:none"/>
+    <div class="modal-date" id="mDate"></div>
+    <button class="modal-delete" id="mDelete">remove memory</button>
+  </div>
+</div>
+<div class="modal-overlay" id="addOverlay">
+  <div class="modal">
+    <button class="modal-close" id="addClose">&times;</button>
+    <div class="modal-emoji">&#128171;</div>
+    <div class="modal-from">leave a memory in the sky</div>
+    <div class="addForm">
+      <textarea id="addText" placeholder="what do you want to remember here?" maxlength="280"></textarea>
+      <div class="authorToggle">
+        <button class="authorBtn active" data-author="Nard">Nard</button>
+        <button class="authorBtn" data-author="Rezil">Rezil</button>
+      </div>
+      <div class="row">
+        <input type="text" id="addEmoji" placeholder="emoji" maxlength="4" value="&#128171;"/>
+        <input type="text" id="addPhoto" placeholder="photo URL (optional)"/>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="addCancel">cancel</button>
+        <button class="btn primary" id="addSave">save to sky</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+var G2=(3-Math.sqrt(3))/6;
+var F2=0.5*(Math.sqrt(3)-1);
+var grad3=[[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+function SimplexNoise(r){if(!r)r=Math;this.perm=new Uint8Array(512);this.permMod12=new Uint8Array(512);var p=new Uint8Array(256);var i,n,q;for(i=0;i<256;i++)p[i]=i;for(i=255;i>0;i--){n=Math.floor((i+1)*r.random());q=p[i];p[i]=p[n];p[n]=q}for(i=0;i<512;i++){this.perm[i]=p[i&255];this.permMod12[i]=this.perm[i]%12}}
+SimplexNoise.prototype.noise2D=function(xin,yin){
+var s=(xin+yin)*F2;var i=Math.floor(xin+s);var j=Math.floor(yin+s);
+var t=(i+j)*G2;var x0=xin-(i-t);var y0=yin-(j-t);
+var i1,j1;if(x0>y0){i1=1;j1=0}else{i1=0;j1=1}
+var x1=x0-i1+G2;var y1=y0-j1+G2;var x2=x0-1+2*G2;var y2=y0-1+2*G2;
+var ii=i&255;var jj=j&255;
+var gi0=this.permMod12[ii+this.perm[jj]];
+var gi1=this.permMod12[ii+i1+this.perm[jj+j1]];
+var gi2=this.permMod12[ii+1+this.perm[jj+1]];
+var n0=0,n1=0,n2=0;
+var t0=0.5-x0*x0-y0*y0;
+if(t0>=0){t0*=t0;n0=t0*t0*(grad3[gi0][0]*x0+grad3[gi0][1]*y0)}
+var t1=0.5-x1*x1-y1*y1;
+if(t1>=0){t1*=t1;n1=t1*t1*(grad3[gi1][0]*x1+grad3[gi1][1]*y1)}
+var t2=0.5-x2*x2-y2*y2;
+if(t2>=0){t2*=t2;n2=t2*t2*(grad3[gi2][0]*x2+grad3[gi2][1]*y2)}
+return 70*(n0+n1+n2);
+};
+var simplex=new SimplexNoise();
+var STORAGE_KEY="forMyGf_aurora_memories";
+var COLORS={rose:{r:255,g:143,b:171},gold:{r:232,g:193,b:126},cream:{r:255,g:247,b:238},blush:{r:255,g:211,b:224},lavender:{r:184,g:160,b:255}};
+var canvas=document.getElementById("auroraCanvas");
+var ctx=canvas.getContext("2d");
+var W,H,dpr;
+var t=0;
+var ribbons=[];
+var activeRibbon=null;
+var currentColor="rose";
+var pointing=false;
+var memories=loadMemories();
+var viewingMem=null;
+var bgStars=[];
+var shootingStars=[];
+var solarWind=0;
+var hintFaded=false;
+var hintEl=document.getElementById("hint");
+var dotsContainer=document.createElement("div");
+dotsContainer.style.cssText="position:fixed;inset:0;z-index:5;pointer-events:none";
+document.body.appendChild(dotsContainer);
+function resize(){
+dpr=Math.min(window.devicePixelRatio||1,2);
+W=window.innerWidth;H=window.innerHeight;
+canvas.width=W*dpr;canvas.height=H*dpr;
+canvas.style.width=W+"px";canvas.style.height=H+"px";
+ctx.setTransform(dpr,0,0,dpr,0,0);
+placeBgStars();renderDots();
+}
+function placeBgStars(){
+bgStars=[];
+for(var i=0;i<220;i++){
+bgStars.push({x:Math.random()*W,y:Math.random()*H,r:0.3+Math.random()*1.4,a:0.15+Math.random()*0.5,phase:Math.random()*Math.PI*2,speed:0.005+Math.random()*0.012});
+}
+}
+function loadMemories(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
+function saveMemories(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(memories))}catch(e){}}
+function nextId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function updateCount(){document.getElementById("memCount").textContent=memories.length+" memory"+(memories.length!==1?"s":"")+" in the sky"}
+function renderDots(){
+dotsContainer.innerHTML="";
+memories.forEach(function(m){
+var dot=document.createElement("div");dot.className="memDot";
+dot.style.left=(m.x*W)+"px";dot.style.top=(m.y*H)+"px";
+var c=COLORS[m.color]||COLORS.rose;
+dot.style.background="rgba("+c.r+","+c.g+","+c.b+",0.8)";
+dot.style.boxShadow="0 0 8px rgba("+c.r+","+c.g+","+c.b+",0.5)";
+dot.setAttribute("data-id",m.id);
+dot.addEventListener("click",function(e){e.stopPropagation();showMemory(m)});
+dotsContainer.appendChild(dot);
+});
+updateCount();
+}
+function addPoint(x,y){
+if(!activeRibbon){
+activeRibbon={points:[{x:x,y:y}],color:currentColor,width:18+Math.random()*14,life:1,opacity:0.7,born:Date.now()};
+ribbons.push(activeRibbon);
+}else{
+var pts=activeRibbon.points;var last=pts[pts.length-1];
+var dx=x-last.x,dy=y-last.y;
+if(Math.sqrt(dx*dx+dy*dy)>4){pts.push({x:x,y:y});if(pts.length>80)pts.shift()}
+}
+}
+function endRibbon(){activeRibbon=null}
+function drawBg(){
+var sky=ctx.createRadialGradient(W/2,H*0.2,0,W/2,H/2,Math.max(W,H));
+sky.addColorStop(0,"#0f0828");sky.addColorStop(0.5,"#070415");sky.addColorStop(1,"#030210");
+ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+}
+function drawStars(){
+bgStars.forEach(function(s){
+s.phase+=s.speed;var a=s.a*(0.55+Math.sin(s.phase)*0.45);
+ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fillStyle="rgba(255,247,238,"+a+")";ctx.fill();
+});
+}
+function drawShootingStars(){
+var now=Date.now();
+if(Math.random()<0.003&&shootingStars.length<2){
+shootingStars.push({x:Math.random()*W*0.7,y:Math.random()*H*0.3,vx:3+Math.random()*4,vy:1+Math.random()*2,len:40+Math.random()*60,life:1,born:now});
+}
+for(var i=shootingStars.length-1;i>=0;i--){
+var s=shootingStars[i];var age=(now-s.born)/800;s.life=Math.max(0,1-age);
+if(s.life<=0){shootingStars.splice(i,1);continue}
+ctx.save();ctx.globalAlpha=s.life*0.8;ctx.strokeStyle="rgba(255,247,238,0.9)";ctx.lineWidth=1.5;
+ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*s.len*0.03,s.y-s.vy*s.len*0.03);ctx.stroke();
+ctx.restore();s.x+=s.vx;s.y+=s.vy;
+}
+}
+function drawRibbon(r){
+var pts=r.points;if(pts.length<2)return;
+var age=(Date.now()-r.born)/1000;var fade=Math.min(1,age/0.5);
+var c=COLORS[r.color]||COLORS.rose;
+var windOff=solarWind*Math.sin(t*3+pts[0].x*0.01)*15;
+ctx.save();ctx.globalAlpha=r.opacity*fade*r.life;
+ctx.lineCap="round";ctx.lineJoin="round";
+for(var layer=0;layer<4;layer++){
+var lw=r.width*(1+layer*0.7);var la=(0.08-layer*0.015)*fade;
+ctx.beginPath();ctx.moveTo(pts[0].x+windOff,pts[0].y);
+for(var i=1;i<pts.length-1;i++){
+var xc=(pts[i].x+pts[i+1].x)/2+windOff;var yc=(pts[i].y+pts[i+1].y)/2;
+ctx.quadraticCurveTo(pts[i].x+windOff,pts[i].y,xc,yc);
+}
+var last=pts[pts.length-1];ctx.lineTo(last.x+windOff,last.y);
+ctx.strokeStyle="rgba("+c.r+","+c.g+","+c.b+","+la+")";ctx.lineWidth=lw;
+ctx.filter="blur("+(8+layer*6)+"px)";ctx.stroke();
+}
+ctx.filter="none";ctx.beginPath();ctx.moveTo(pts[0].x+windOff,pts[0].y);
+for(var i=1;i<pts.length-1;i++){
+var xc=(pts[i].x+pts[i+1].x)/2+windOff;var yc=(pts[i].y+pts[i+1].y)/2;
+ctx.quadraticCurveTo(pts[i].x+windOff,pts[i].y,xc,yc);
+}
+var last=pts[pts.length-1];ctx.lineTo(last.x+windOff,last.y);
+ctx.strokeStyle="rgba("+Math.min(255,c.r+40)+","+Math.min(255,c.g+40)+","+Math.min(255,c.b+40)+","+(0.55*fade)+")";
+ctx.lineWidth=2;ctx.filter="blur(2px)";ctx.stroke();ctx.restore();
+}
+function drawAuroraWash(){
+var now=Date.now();
+ribbons.forEach(function(r){
+if(r.life<=0)return;var c=COLORS[r.color]||COLORS.rose;
+var pts=r.points;if(pts.length<2)return;
+var age=(now-r.born)/1000;var fade=Math.min(1,age/0.5)*r.life;
+var mid=pts[Math.floor(pts.length/2)];
+var grad=ctx.createRadialGradient(mid.x,mid.y,0,mid.x,mid.y,250);
+grad.addColorStop(0,"rgba("+c.r+","+c.g+","+c.b+","+0.06*fade+")");
+grad.addColorStop(1,"rgba("+c.r+","+c.g+","+c.b+",0)");
+ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+});
+}
+function decay(){
+var now=Date.now();
+for(var i=ribbons.length-1;i>=0;i--){
+var r=ribbons[i];var age=(now-r.born)/1000;
+if(age>12)r.life-=0.008;
+if(r.life<=0)ribbons.splice(i,1);
+}
+}
+function triggerSolarWind(){solarWind=1;if(navigator.vibrate)navigator.vibrate([30,40,60,30,100])}
+function draw(){
+t+=0.016;solarWind*=0.96;decay();
+drawBg();drawStars();drawShootingStars();drawAuroraWash();ribbons.forEach(drawRibbon);
+requestAnimationFrame(draw);
+}
+canvas.addEventListener("mousedown",function(e){pointing=true;addPoint(e.clientX,e.clientY)});
+canvas.addEventListener("mousemove",function(e){if(pointing)addPoint(e.clientX,e.clientY)});
+canvas.addEventListener("mouseup",function(){pointing=false;endRibbon()});
+canvas.addEventListener("touchstart",function(e){e.preventDefault();pointing=true;var t2=e.touches[0];addPoint(t2.clientX,t2.clientY)},{passive:false});
+canvas.addEventListener("touchmove",function(e){e.preventDefault();if(!pointing)return;var t2=e.touches[0];addPoint(t2.clientX,t2.clientY)},{passive:false});
+canvas.addEventListener("touchend",function(e){e.preventDefault();pointing=false;endRibbon()});
+var lastTap=0;
+function handleDoubleTap(x,y){var now=Date.now();if(now-lastTap<350){openAddModal(x/W,y/H);lastTap=0}else{lastTap=now}}
+canvas.addEventListener("click",function(e){handleDoubleTap(e.clientX,e.clientY)});
+canvas.addEventListener("touchend",function(e){var touch=e.changedTouches[0];handleDoubleTap(touch.clientX,touch.clientY)});
+var shakeLast=0;
+if(window.DeviceMotionEvent){
+window.addEventListener("devicemotion",function(e){
+var a=e.accelerationIncludingGravity;if(!a)return;
+var force=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z);
+if(force>25){var now=Date.now();if(now-shakeLast>1500){shakeLast=now;triggerSolarWind()}}
+});
+}
+document.addEventListener("keydown",function(e){if(e.key==="s"||e.key==="S")triggerSolarWind()});
+document.querySelectorAll(".colorBtn").forEach(function(btn){
+btn.addEventListener("click",function(){
+document.querySelectorAll(".colorBtn").forEach(function(b){b.classList.remove("active")});
+btn.classList.add("active");currentColor=btn.getAttribute("data-color");
+});
+});
+setTimeout(function(){document.getElementById("colorPicker").classList.add("show")},800);
+function fadeHint(){if(hintFaded)return;hintFaded=true;hintEl.style.transition="opacity 1.2s";hintEl.style.opacity="0"}
+canvas.addEventListener("click",fadeHint);canvas.addEventListener("touchstart",fadeHint);
+function showMemory(m){
+viewingMem=m;document.getElementById("mEmoji").textContent=m.emoji||"&#128171;";
+document.getElementById("mFrom").textContent="\u2014 "+m.author;
+document.getElementById("mText").textContent=m.text;
+var photoEl=document.getElementById("mPhoto");
+if(m.photo){photoEl.src=m.photo;photoEl.style.display="block"}else{photoEl.style.display="none"}
+document.getElementById("mDate").textContent=new Date(m.ts).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+document.getElementById("modalOverlay").classList.add("show");
+}
+document.getElementById("modalClose").addEventListener("click",function(){document.getElementById("modalOverlay").classList.remove("show");viewingMem=null});
+document.getElementById("mDelete").addEventListener("click",function(){
+if(!viewingMem)return;memories=memories.filter(function(m){return m.id!==viewingMem.id});
+saveMemories();renderDots();document.getElementById("modalOverlay").classList.remove("show");viewingMem=null;
+});
+var addFormPos={x:0.5,y:0.5};var addFormAuthor="Nard";
+function openAddModal(x,y){
+addFormPos={x:x,y:y};document.getElementById("addText").value="";
+document.getElementById("addEmoji").value="&#128171;";document.getElementById("addPhoto").value="";
+document.querySelectorAll(".authorBtn").forEach(function(b){b.classList.remove("active")});
+document.querySelector('.authorBtn[data-author="Nard"]').classList.add("active");
+addFormAuthor="Nard";document.getElementById("addOverlay").classList.add("show");
+setTimeout(function(){document.getElementById("addText").focus()},400);
+}
+document.getElementById("btnAdd").addEventListener("click",function(){openAddModal(0.3+Math.random()*0.4,0.3+Math.random()*0.4)});
+document.getElementById("addClose").addEventListener("click",function(){document.getElementById("addOverlay").classList.remove("show")});
+document.getElementById("addCancel").addEventListener("click",function(){document.getElementById("addOverlay").classList.remove("show")});
+document.querySelectorAll(".authorBtn").forEach(function(btn){
+btn.addEventListener("click",function(){
+document.querySelectorAll(".authorBtn").forEach(function(b){b.classList.remove("active")});
+btn.classList.add("active");addFormAuthor=btn.getAttribute("data-author");
+});
+});
+document.getElementById("addSave").addEventListener("click",function(){
+var text=document.getElementById("addText").value.trim();if(!text)return;
+var emoji=document.getElementById("addEmoji").value.trim()||"&#128171;";
+var photo=document.getElementById("addPhoto").value.trim();
+var mem={id:nextId(),x:addFormPos.x,y:addFormPos.y,color:currentColor,text:text,emoji:emoji,author:addFormAuthor,photo:photo||null,ts:Date.now()};
+memories.push(mem);saveMemories();renderDots();
+document.getElementById("addOverlay").classList.remove("show");
+if(navigator.vibrate)navigator.vibrate(20);
+});
+window.addEventListener("resize",resize);resize();draw();updateCount();
+window.scrollTo(0,0);window.addEventListener("pageshow",function(){window.scrollTo(0,0)});
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

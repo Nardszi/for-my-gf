@@ -7040,6 +7040,22 @@
         annivLock.addEventListener('touchend', function() { clearTimeout(annivPressTimer); });
         annivLock.addEventListener('touchcancel', function() { clearTimeout(annivPressTimer); });
       }
+
+      /* triple-tap the & to open aurora */
+      var ampTapCount = 0;
+      var ampTapTimer = null;
+      document.addEventListener('click', function(e) {
+        if (e.target.classList && e.target.classList.contains('ampersand')) {
+          ampTapCount++;
+          if (ampTapCount === 1) {
+            ampTapTimer = setTimeout(function() { ampTapCount = 0; }, 700);
+          } else if (ampTapCount >= 3) {
+            clearTimeout(ampTapTimer);
+            ampTapCount = 0;
+            window.location.href = 'aurora.html';
+          }
+        }
+      });
     })();
 
     /* ---- skip intro flow when returning from a sub-page in the same tab ---- */
