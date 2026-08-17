@@ -1221,7 +1221,7 @@ function closePlanetModal(){
 document.getElementById("planetModal").addEventListener("click",function(){closePlanetModal()});
 
 document.getElementById("rocketBtn").addEventListener("click",function(){launchRocket();});
-document.getElementById("roomBtn").addEventListener("click",function(){if(rocket.active)return;if(room.open)closeRoom();else openRoom();if(room.open)this.classList.add("active");});
+document.getElementById("roomBtn").addEventListener("click",function(){if(rocket.active)return;if(room.open){closeRoom();}else{openRoom();this.classList.add("active");}});
 
 canvas.addEventListener("click",function(e){
   if(rocket.active)return;
@@ -1570,6 +1570,8 @@ roomCanvasEl.addEventListener("touchend",function(e){
   if(e.changedTouches.length===0)return;
   var t2=e.changedTouches[0];
   var rect=roomCanvasEl.getBoundingClientRect();
+  var dy=t2.clientY-room.touchStartY;
+  if(dy>50){closeRoom();return;}
   var mx=(t2.clientX-rect.left)/rect.width*360;
   var my=(t2.clientY-rect.top)/rect.height*500;
   if(mx>=60&&mx<=110&&my>=210&&my<=280){room.lampBright=!room.lampBright;return;}
