@@ -6121,7 +6121,6 @@
       "Happy anniversary, my love. Here's to us — today, tomorrow, and every day after."
     ];
 
-    const ANNIV_STORAGE_KEY = 'forMyGf_annivUnlocked';
     const ANNIV_VOW = "I promise to keep choosing you, keep laughing with you, and keep falling in love with you — today, tomorrow, and always.";
     const ANNIV_WISHES = [
       "More sleepy mornings and slow, lazy coffee with you.",
@@ -6264,7 +6263,6 @@
       const value = annivInput.value.trim().toLowerCase();
       if (value === ANNIV_PASSWORD) {
         annivLockError.classList.remove('show');
-        localStorage.setItem(ANNIV_STORAGE_KEY, '1');
         openAnnivPage();
       } else {
         annivInput.value = '';
@@ -6712,16 +6710,6 @@
         if (mainMusicWasPlaying && !isPlaying && musicToggle) musicToggle.click();
         mainMusicWasPlaying = false;
       });
-    }
-
-    if (localStorage.getItem(ANNIV_STORAGE_KEY)) {
-      annivLock.style.display = 'none';
-      const revisit = document.createElement('button');
-      revisit.className = 'anniv-unlock';
-      revisit.textContent = 'Revisit our anniversary';
-      revisit.style.marginTop = '0';
-      annivLock.parentNode.insertBefore(revisit, annivLock.nextSibling);
-      revisit.addEventListener('click', openAnnivPage);
     }
 
     const annivRevealObserver = new IntersectionObserver(function(entries) {
