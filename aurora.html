@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Our Sky — Nard & Rezil</title>
+<title>Our Sky</title>
 <meta name="theme-color" content="#0f0828">
-<meta name="description" content="A romantic sky for Nard and Rezil">
+<meta name="description" content="A magical sky for Chikoy">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌌</text></svg>">
 <style>
@@ -411,9 +411,7 @@ function drawRibbons(t){
 }
 
 var characters=[
-  {label:"REZIL",emoji:"\u{1F478}",color:"#ff8fab",x:0,y:0,phaseX:0,phaseY:0,speedX:.5,speedY:.7,ampX:0,ampY:25,bounceAmt:0,bounceSpeed:0,init:function(){this.x=W*.15;this.y=H*.3;this.ampX=W*.25}},
-  {label:"NARD",emoji:"\u{1F9D2}\u200D\u{1F680}",color:"#e8c17e",x:0,y:0,phaseX:2,phaseY:1,speedX:.4,speedY:.6,ampX:0,ampY:20,bounceAmt:0,bounceSpeed:0,init:function(){this.x=W*.7;this.y=H*.45;this.ampX=W*.2}},
-  {label:"CHIKOY",emoji:"\u{1F425}",color:"#7dffb3",x:0,y:0,phaseX:4,phaseY:2,speedX:.6,speedY:.8,ampX:0,ampY:18,bounceAmt:6,bounceSpeed:3,init:function(){this.x=W*.5;this.y=H*.72;this.ampX=W*.35}}
+  {label:"CHIKOY",color:"#7dffb3",x:0,y:0,phaseX:4,phaseY:2,speedX:.6,speedY:.8,ampX:0,ampY:18,bounceAmt:6,bounceSpeed:3,init:function(){this.x=W*.5;this.y=H*.72;this.ampX=W*.35}}
 ];
 characters.forEach(function(c){c.init()});
 
@@ -422,118 +420,10 @@ function initMiniChars(){
   miniChars=[
     {emoji:"\u{1F6F8}",size:24,x:W*.25,y:H*.55,phaseX:1,phaseY:2,speedX:.6,speedY:.4,orbitR:30,glow:"255,255,255"},
     {emoji:"\u{1F6F8}",size:24,x:W*.6,y:H*.2,phaseX:3,phaseY:0,speedX:.5,speedY:.35,orbitR:25,glow:"200,220,255"},
-    {emoji:"\u{1F6F8}",size:24,x:W*.85,y:H*.6,phaseX:5,phaseY:4,speedX:.45,speedY:.3,orbitR:20,glow:"220,200,255"},
-    {emoji:"\u{1F47D}",size:24,x:W*.4,y:H*.4,phaseX:2,phaseY:3,speedX:.5,speedY:.7,ampY:15,glow:"100,255,200"},
-    {emoji:"\u{1F47D}",size:24,x:W*.75,y:H*.3,phaseX:4.5,phaseY:1.5,speedX:.4,speedY:.6,ampY:12,glow:"150,255,180"},
-    {emoji:"\u{1F680}",size:24,x:W*.2,y:H*.7,phaseX:0.5,phaseY:5,speedX:.3,speedY:.5,driftX:30,driftY:20,glow:"255,200,100"},
-    {emoji:"\u{1F680}",size:24,x:W*.55,y:H*.15,phaseX:3.5,phaseY:2.5,speedX:.35,speedY:.45,driftX:25,driftY:15,glow:"255,180,80"}
+    {emoji:"\u{1F6F8}",size:24,x:W*.85,y:H*.6,phaseX:5,phaseY:4,speedX:.45,speedY:.3,orbitR:20,glow:"220,200,255"}
   ];
 }
 initMiniChars();
-
-function drawRezil(px,py,t){
-  ctx.save();
-  ctx.translate(px,py);
-  var glowGrad=ctx.createRadialGradient(0,0,0,0,0,50);
-  glowGrad.addColorStop(0,"rgba(255,143,171,0.18)");
-  glowGrad.addColorStop(1,"rgba(255,143,171,0)");
-  ctx.fillStyle=glowGrad;
-  ctx.beginPath();ctx.arc(0,0,50,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#2a1a0a";
-  ctx.beginPath();ctx.ellipse(-8,-5,22,26,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="rgba(80,50,20,0.35)";
-  ctx.beginPath();ctx.ellipse(-12,-10,8,15,-0.2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(10,-8,6,12,0.2,0,Math.PI*2);ctx.fill();
-  var faceGrad=ctx.createRadialGradient(-4,-6,0,0,0,18);
-  faceGrad.addColorStop(0,"#ffe4c4");faceGrad.addColorStop(0.6,"#f5c6a0");faceGrad.addColorStop(1,"#d4956a");
-  ctx.fillStyle=faceGrad;
-  ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#1a1a2e";
-  ctx.beginPath();ctx.ellipse(-6,-2,3,3.5,0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(6,-2,3,3.5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#fff";
-  ctx.beginPath();ctx.arc(-5,-3.5,1.2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(7,-3.5,1.2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(-6.5,-1,0.6,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(5.5,-1,0.6,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="rgba(255,150,150,0.25)";
-  ctx.beginPath();ctx.ellipse(-10,4,4,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(10,4,4,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="#c06060";ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(0,4,3,0.1,Math.PI-0.1);ctx.stroke();
-  var crownY=-22;
-  ctx.fillStyle="#e8c17e";
-  ctx.beginPath();
-  ctx.moveTo(-14,crownY);ctx.lineTo(-10,crownY-12);ctx.lineTo(-6,crownY);
-  ctx.lineTo(-2,crownY-15);ctx.lineTo(2,crownY);ctx.lineTo(6,crownY-12);
-  ctx.lineTo(10,crownY);ctx.lineTo(14,crownY-10);ctx.lineTo(18,crownY);
-  ctx.closePath();ctx.fill();
-  var crownGrad=ctx.createLinearGradient(-14,crownY-15,18,crownY);
-  crownGrad.addColorStop(0,"rgba(255,220,120,0.4)");crownGrad.addColorStop(0.5,"rgba(255,200,80,0.1)");crownGrad.addColorStop(1,"rgba(180,120,20,0.3)");
-  ctx.fillStyle=crownGrad;ctx.fill();
-  ctx.fillStyle="#fff";
-  ctx.beginPath();ctx.arc(-10,crownY-10,1,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(-2,crownY-13,1.2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(6,crownY-10,1,0,Math.PI*2);ctx.fill();
-  var dressGrad=ctx.createLinearGradient(-18,18,18,48);
-  dressGrad.addColorStop(0,"#ff8fab");dressGrad.addColorStop(0.5,"#e06080");dressGrad.addColorStop(1,"#c04060");
-  ctx.fillStyle=dressGrad;
-  ctx.beginPath();ctx.moveTo(-10,16);ctx.lineTo(-20,48);ctx.lineTo(20,48);ctx.lineTo(10,16);ctx.closePath();ctx.fill();
-  ctx.fillStyle="rgba(255,200,210,0.25)";
-  ctx.beginPath();ctx.moveTo(-8,18);ctx.lineTo(-16,44);ctx.lineTo(-4,44);ctx.closePath();ctx.fill();
-  ctx.restore();
-}
-
-function drawNard(px,py,t){
-  ctx.save();
-  ctx.translate(px,py);
-  var glowGrad=ctx.createRadialGradient(0,0,0,0,0,50);
-  glowGrad.addColorStop(0,"rgba(232,193,126,0.18)");
-  glowGrad.addColorStop(1,"rgba(232,193,126,0)");
-  ctx.fillStyle=glowGrad;
-  ctx.beginPath();ctx.arc(0,0,50,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#888";
-  ctx.beginPath();ctx.rect(-16,-2,10,22);ctx.fill();
-  ctx.fillStyle="rgba(100,100,100,0.4)";
-  ctx.beginPath();ctx.rect(-15,-1,4,20);ctx.fill();
-  var bodyGrad=ctx.createLinearGradient(-12,-5,12,25);
-  bodyGrad.addColorStop(0,"#f0f0f0");bodyGrad.addColorStop(0.5,"#e0e0e0");bodyGrad.addColorStop(1,"#b0b0b0");
-  ctx.fillStyle=bodyGrad;
-  ctx.beginPath();
-  ctx.moveTo(-12,-5);ctx.lineTo(12,-5);ctx.quadraticCurveTo(17,-5,17,0);
-  ctx.lineTo(17,20);ctx.quadraticCurveTo(17,25,12,25);
-  ctx.lineTo(-12,25);ctx.quadraticCurveTo(-17,25,-17,20);
-  ctx.lineTo(-17,0);ctx.quadraticCurveTo(-17,-5,-12,-5);
-  ctx.closePath();ctx.fill();
-  ctx.fillStyle="rgba(80,80,80,0.15)";
-  ctx.beginPath();ctx.rect(-8,8,16,6);ctx.fill();
-  ctx.fillStyle="#d0d0d0";
-  ctx.beginPath();ctx.rect(-9,22,7,12);ctx.fill();
-  ctx.beginPath();ctx.rect(2,22,7,12);ctx.fill();
-  ctx.fillStyle="#999";
-  ctx.beginPath();ctx.rect(-9,29,7,5);ctx.fill();
-  ctx.beginPath();ctx.rect(2,29,7,5);ctx.fill();
-  var helmetGrad=ctx.createRadialGradient(-5,-18,0,0,-14,22);
-  helmetGrad.addColorStop(0,"rgba(180,220,255,0.9)");helmetGrad.addColorStop(0.4,"rgba(100,160,220,0.7)");
-  helmetGrad.addColorStop(0.8,"rgba(60,100,160,0.5)");helmetGrad.addColorStop(1,"rgba(30,60,100,0.3)");
-  ctx.fillStyle=helmetGrad;
-  ctx.beginPath();ctx.arc(0,-14,22,0,Math.PI*2);ctx.fill();
-  var visorGrad=ctx.createRadialGradient(-4,-17,0,0,-14,16);
-  visorGrad.addColorStop(0,"rgba(120,180,255,0.8)");visorGrad.addColorStop(0.5,"rgba(60,120,200,0.6)");visorGrad.addColorStop(1,"rgba(20,60,120,0.3)");
-  ctx.fillStyle=visorGrad;
-  ctx.beginPath();ctx.ellipse(0,-14,16,14,0,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="rgba(255,255,255,0.6)";ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.arc(-6,-20,8,-0.8,0.4);ctx.stroke();
-  ctx.strokeStyle="rgba(255,255,255,0.3)";ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(-4,-18,12,-0.6,0.2);ctx.stroke();
-  ctx.strokeStyle="rgba(200,200,200,0.4)";ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.arc(0,-14,22,0,Math.PI*2);ctx.stroke();
-  ctx.strokeStyle="#aaa";ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(0,-36);ctx.lineTo(0,-44);ctx.stroke();
-  ctx.fillStyle="#ff4444";
-  ctx.beginPath();ctx.arc(0,-44,2,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-}
 
 function drawChikoy(px,py,t){
   var bouncePhase=Math.sin(t*0.009+2);
@@ -542,8 +432,10 @@ function drawChikoy(px,py,t){
   ctx.save();
   ctx.translate(px,py);
   ctx.scale(squash,stretch);
+  ctx.scale(1.75,1.75);
   var glowGrad=ctx.createRadialGradient(0,0,0,0,0,50);
-  glowGrad.addColorStop(0,"rgba(125,255,179,0.14)");
+  glowGrad.addColorStop(0,"rgba(125,255,179,0.22)");
+  glowGrad.addColorStop(0.5,"rgba(125,255,179,0.08)");
   glowGrad.addColorStop(1,"rgba(125,255,179,0)");
   ctx.fillStyle=glowGrad;
   ctx.beginPath();ctx.arc(0,0,50,0,Math.PI*2);ctx.fill();
@@ -605,9 +497,7 @@ function drawCharacters(t){
     var scaleX=1-Math.abs(rotY)*.015;
     var scaleY=1-Math.abs(rotX)*.015;
     ctx.scale(scaleX,scaleY);
-    if(i===0) drawRezil(0,0,t);
-    else if(i===1) drawNard(0,0,t);
-    else drawChikoy(0,0,t);
+    drawChikoy(0,0,t);
     ctx.shadowColor=c.color;
     ctx.shadowBlur=8;
     ctx.font="bold 10px 'Segoe UI',sans-serif";
@@ -615,7 +505,7 @@ function drawCharacters(t){
     ctx.textAlign="center";
     ctx.textBaseline="middle";
     ctx.globalAlpha=0.85;
-    ctx.fillText(c.label,0,38);
+    ctx.fillText(c.label,0,66);
     ctx.shadowBlur=0;
     ctx.globalAlpha=1;
     ctx.restore();
@@ -2049,12 +1939,12 @@ function frame(ts){
   drawWormhole();
 
   if(!prefersReducedMotion){
-    var sparkColors=["255,143,171","232,193,126","125,255,179"];
-    characters.forEach(function(c,ci){
-      var px=c.x+Math.sin(time*.001*c.speedX+c.phaseX)*c.ampX;
-      var py=c.y+Math.sin(time*.001*c.speedY+c.phaseY)*c.ampY;
-      if(Math.random()<.3) addSparkle(px+(Math.random()-.5)*25,py+(Math.random()-.5)*25,"rgb("+sparkColors[ci]+")");
-    });
+    var c=characters[0];
+    var px=c.x+Math.sin(time*.001*c.speedX+c.phaseX)*c.ampX;
+    var py=c.y+Math.sin(time*.001*c.speedY+c.phaseY)*c.ampY;
+    if(Math.random()<.5) addSparkle(px+(Math.random()-.5)*40,py+(Math.random()-.5)*40,"rgb(125,255,179)");
+    if(Math.random()<.3) addSparkle(px+(Math.random()-.5)*40,py+(Math.random()-.5)*40,"rgb(255,255,200)");
+    if(Math.random()<.2) addSparkle(px+(Math.random()-.5)*40,py+(Math.random()-.5)*40,"rgb(200,255,220)");
   }
 
   updateSparkles(dt);
