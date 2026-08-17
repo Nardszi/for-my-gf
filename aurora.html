@@ -1,507 +1,443 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Our Aurora</title>
-<meta name="theme-color" content="#0a0612">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Our Sky — Nard & Rezil</title>
+<meta name="theme-color" content="#0f0828">
+<meta name="description" content="A romantic sky for Nard and Rezil">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/favicon.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Our Aurora - a sky we paint together">
-<meta property="og:description" content="Swipe through the sky and leave traces of us. Made with all my love, Nard.">
-<meta property="og:image" content="og-preview.png">
-<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌌</text></svg>">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --rose:#ff8fab;--rose-deep:#e0567c;
-  --cream:#fff7ee;--gold:#e8c17e;
-  --spring:cubic-bezier(0.34,1.56,0.64,1);
-}
-html,body{width:100%;height:100%;overflow:hidden}
-body{
-  font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
-  background:#050310;color:var(--cream);
-  user-select:none;-webkit-user-select:none;
-  touch-action:none;
-}
-#auroraCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-
-/* topbar */
-.topbar{
-  position:fixed;top:0;left:0;right:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:1rem 1.2rem;
-  background:linear-gradient(180deg,rgba(5,3,16,0.92) 60%,transparent);
-  pointer-events:none;
-}
-.topbar a,.topbar button{
-  pointer-events:all;
-  color:var(--cream);text-decoration:none;font-size:0.8rem;
-  letter-spacing:0.06em;border:1px solid rgba(255,143,171,0.35);
-  padding:0.4rem 0.8rem;border-radius:999px;
-  background:rgba(5,3,16,0.5);backdrop-filter:blur(6px);
-  transition:background 0.3s;cursor:pointer;font-family:inherit;
-}
-.topbar a:hover,.topbar button:hover{background:rgba(224,86,124,0.25)}
-.topbar .brand{font-family:Georgia,serif;letter-spacing:0.14em;color:var(--gold);font-size:0.92rem}
-.topbar .actions{display:flex;gap:0.5rem}
-
-/* hint */
-.hint{
-  position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:20;
-  font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;
-  color:rgba(255,247,238,0.4);pointer-events:none;text-align:center;
-  animation:hintPulse 3s ease-in-out infinite;max-width:90vw;line-height:1.5;
-}
-@keyframes hintPulse{0%,100%{opacity:0.4}50%{opacity:0.75}}
-
-/* color picker */
-.colorPicker{
-  position:fixed;bottom:3.5rem;left:50%;transform:translateX(-50%);z-index:20;
-  display:flex;gap:0.6rem;opacity:0;transition:opacity 0.4s;pointer-events:none;
-}
-.colorPicker.show{opacity:1;pointer-events:all}
-.colorBtn{
-  width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,247,238,0.3);
-  cursor:pointer;transition:transform 0.2s var(--spring),border-color 0.3s;
-}
-.colorBtn:active{transform:scale(0.88)}
-.colorBtn.active{border-color:var(--cream);box-shadow:0 0 14px rgba(255,247,238,0.35)}
-.colorBtn[data-color="rose"]{background:var(--rose)}
-.colorBtn[data-color="gold"]{background:var(--gold)}
-.colorBtn[data-color="cream"]{background:var(--cream)}
-.colorBtn[data-color="blush"]{background:#ffd3e0}
-.colorBtn[data-color="lavender"]{background:#b8a0ff}
-
-/* width slider */
-.widthSlider{
-  position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);z-index:20;
-  display:flex;align-items:center;gap:0.7rem;opacity:0;transition:opacity 0.4s;pointer-events:none;
-}
-.widthSlider.show{opacity:1;pointer-events:all}
-.widthSlider label{font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,247,238,0.4)}
-.widthSlider input[type="range"]{
-  -webkit-appearance:none;appearance:none;width:100px;height:4px;
-  background:rgba(255,143,171,0.25);border-radius:2px;outline:none;
-}
-.widthSlider input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
-  background:var(--rose);cursor:pointer;border:2px solid var(--cream);
-}
-.widthSlider .widthVal{font-size:0.6rem;color:var(--rose);min-width:20px;text-align:center}
-
-/* mode buttons */
-.modeBar{
-  position:fixed;right:1rem;top:50%;transform:translateY(-50%);z-index:20;
-  display:flex;flex-direction:column;gap:0.5rem;opacity:0;transition:opacity 0.4s;pointer-events:none;
-}
-.modeBar.show{opacity:1;pointer-events:all}
-.modeBtn{
-  width:40px;height:40px;border-radius:50%;
-  border:1px solid rgba(255,143,171,0.3);background:rgba(5,3,16,0.6);
-  backdrop-filter:blur(6px);color:var(--cream);font-size:1.1rem;
-  cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;
-}
-.modeBtn:active{transform:scale(0.9)}
-.modeBtn.active{border-color:var(--gold);background:rgba(232,193,126,0.15);box-shadow:0 0 12px rgba(232,193,126,0.3)}
-.modeBtn[title]:hover::after{
-  content:attr(title);position:absolute;right:48px;top:50%;transform:translateY(-50%);
-  font-size:0.65rem;letter-spacing:0.1em;white-space:nowrap;
-  background:rgba(5,3,16,0.8);padding:0.3rem 0.6rem;border-radius:6px;
-  color:var(--cream);pointer-events:none;
-}
-.modeBtn{position:relative}
-
-/* screenshot flash */
-.flash{
-  position:fixed;inset:0;background:white;z-index:200;
-  opacity:0;pointer-events:none;
-  animation:flashAnim 0.5s ease-out forwards;
-}
-@keyframes flashAnim{0%{opacity:0.8}100%{opacity:0}}
-
-/* quote overlay */
-.quoteOverlay{
-  position:fixed;inset:0;z-index:30;
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;opacity:0;transition:opacity 0.8s;
-}
-.quoteOverlay.show{opacity:1}
-.quoteText{
-  font-family:Georgia,serif;font-size:clamp(1rem,4vw,1.6rem);
-  color:var(--cream);text-align:center;max-width:80vw;
-  line-height:1.8;text-shadow:0 0 30px rgba(255,143,171,0.3);
-}
-.quoteAuthor{
-  display:block;margin-top:1rem;font-size:0.7rem;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:var(--gold);font-family:"Segoe UI",sans-serif;
-}
-
-/* saved toast */
-.toast{
-  position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);z-index:50;
-  font-size:0.72rem;letter-spacing:0.12em;
-  background:rgba(232,193,126,0.2);border:1px solid rgba(232,193,126,0.4);
-  padding:0.5rem 1.2rem;border-radius:999px;color:var(--gold);
-  opacity:0;transition:opacity 0.4s;pointer-events:none;
-}
-.toast.show{opacity:1}
-
-@media(max-height:600px){
-  .widthSlider{bottom:4.5rem}
-  .colorPicker{bottom:3rem}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Tahoma,sans-serif;background:#0f0828;color:#fff7ee;touch-action:none;-webkit-user-select:none;user-select:none}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+.topbar{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:20;background:linear-gradient(to bottom,rgba(15,8,40,.85),transparent)}
+.brand{font-family:Georgia,serif;font-size:18px;color:#e8c17e;letter-spacing:2px;font-weight:700}
+.topbar-btns{display:flex;gap:8px}
+.topbar-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,193,126,.3);background:rgba(15,8,40,.6);color:#e8c17e;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+.topbar-btn:hover,.topbar-btn:active{background:rgba(232,193,126,.2)}
+.topbar-btn.active{background:rgba(232,193,126,.35);border-color:#e8c17e}
+.topbar-btn svg{width:18px;height:18px;fill:none;stroke:#e8c17e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.back-link{color:#e8c17e;text-decoration:none;font-size:13px;font-family:Georgia,serif;opacity:.8;transition:opacity .2s}
+.back-link:hover{opacity:1}
+.bottombar{position:fixed;bottom:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:20;background:linear-gradient(to top,rgba(15,8,40,.9),transparent);padding-bottom:env(safe-area-inset-bottom,4px)}
+.pill{padding:6px 18px;border-radius:20px;border:1px solid rgba(255,247,238,.15);background:rgba(15,8,40,.6);color:#fff7ee;font-size:12px;font-family:'Segoe UI',sans-serif;cursor:pointer;transition:all .25s;letter-spacing:.5px;text-transform:capitalize}
+.pill:active{transform:scale(.95)}
+.pill.active{background:rgba(232,193,126,.25);border-color:#e8c17e;color:#e8c17e;font-weight:600}
+.hint{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);z-index:20;font-size:11px;color:rgba(255,247,238,.5);text-align:center;pointer-events:none;transition:opacity 1s;white-space:nowrap}
+.hint.hidden{opacity:0}
+.photo{position:fixed;width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,247,238,.25);object-fit:cover;z-index:10;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 0 8px rgba(255,143,171,.3)}
+.photo:hover{transform:scale(1.15);box-shadow:0 0 14px rgba(255,143,171,.5)}
+.photo:active{transform:scale(1.05)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.show{opacity:1;pointer-events:auto}
+.quote-card{background:linear-gradient(135deg,#1a0e3e,#0f0828);border:1px solid rgba(232,193,126,.3);border-radius:18px;padding:28px 24px;max-width:320px;width:85%;text-align:center;transform:translateY(20px) scale(.95);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.overlay.show .quote-card{transform:translateY(0) scale(1)}
+.quote-emoji{font-size:32px;margin-bottom:10px}
+.quote-text{font-family:Georgia,serif;font-size:16px;line-height:1.55;color:#fff7ee;margin-bottom:12px}
+.quote-author{font-size:12px;color:#e8c17e;letter-spacing:1px}
+@media(max-width:400px){.brand{font-size:15px}.pill{padding:5px 14px;font-size:11px}}
 </style>
 </head>
 <body>
-<canvas id="auroraCanvas"></canvas>
+<canvas id="sky"></canvas>
 
 <div class="topbar">
-  <span class="brand">OUR AURORA</span>
-  <div class="actions">
-    <button id="btnQuote" title="show quote">&#10048;</button>
-    <button id="btnSave" title="save as image">&#128247;</button>
-    <button id="btnClear" title="clear sky">&#128465;</button>
-    <a href="lovepage.html">&#8592; back</a>
+  <a href="lovepage.html" class="back-link">← lovepage</a>
+  <span class="brand">OUR SKY</span>
+  <div class="topbar-btns">
+    <button class="topbar-btn" id="constellationBtn" title="Constellation Mode">✦</button>
+    <button class="topbar-btn" id="windBtn" title="Solar Wind">
+      <svg viewBox="0 0 24 24"><path d="M4 8h10a3 3 0 1 0-3-3"/><path d="M4 12h14a3 3 0 1 1-3 3"/><path d="M4 16h6a3 3 0 1 1-3 3"/></svg>
+    </button>
   </div>
 </div>
 
-<div class="widthSlider" id="widthSlider">
-  <label>size</label>
-  <input type="range" id="widthRange" min="6" max="60" value="20"/>
-  <span class="widthVal" id="widthVal">20</span>
+<div class="bottombar">
+  <button class="pill active" data-theme="aurora">aurora</button>
+  <button class="pill" data-theme="ocean">ocean</button>
+  <button class="pill" data-theme="fireworks">fireworks</button>
+  <button class="pill" data-theme="northern">northern</button>
 </div>
 
-<div class="colorPicker" id="colorPicker">
-  <div class="colorBtn active" data-color="rose"></div>
-  <div class="colorBtn" data-color="gold"></div>
-  <div class="colorBtn" data-color="cream"></div>
-  <div class="colorBtn" data-color="blush"></div>
-  <div class="colorBtn" data-color="lavender"></div>
+<div class="hint" id="hint">tap photos for quotes · press S for solar wind · switch themes below</div>
+
+<div class="overlay" id="overlay">
+  <div class="quote-card">
+    <div class="quote-emoji" id="qEmoji">💕</div>
+    <div class="quote-text" id="qText"></div>
+    <div class="quote-author" id="qAuthor"></div>
+  </div>
 </div>
-
-<div class="modeBar" id="modeBar">
-  <button class="modeBtn active" data-mode="paint" title="paint">&#127912;</button>
-  <button class="modeBtn" data-mode="glow" title="glow">&#10024;</button>
-  <button class="modeBtn" data-mode="rain" title="rain">&#127783;</button>
-</div>
-
-<div class="hint" id="hint">swipe to paint aurora &middot; press S for solar wind &middot; long-press for quote</div>
-
-<div class="quoteOverlay" id="quoteOverlay">
-  <div class="quoteText" id="quoteText"></div>
-</div>
-
-<div class="toast" id="toast">saved to your gallery</div>
 
 <script>
 (function(){
 "use strict";
 
-/* ========== simplex noise ========== */
-var G2=(3-Math.sqrt(3))/6,F2=0.5*(Math.sqrt(3)-1);
-var grad3=[[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
-function SimplexNoise(r){if(!r)r=Math;this.perm=new Uint8Array(512);this.permMod12=new Uint8Array(512);var p=new Uint8Array(256),i,n,q;for(i=0;i<256;i++)p[i]=i;for(i=255;i>0;i--){n=Math.floor((i+1)*r.random());q=p[i];p[i]=p[n];p[n]=q}for(i=0;i<512;i++){this.perm[i]=p[i&255];this.permMod12[i]=this.perm[i]%12}}
-SimplexNoise.prototype.noise2D=function(xin,yin){
-var s=(xin+yin)*F2,i=Math.floor(xin+s),j=Math.floor(yin+s),t=(i+j)*G2,x0=xin-(i-t),y0=yin-(j-t),i1,j1;
-if(x0>y0){i1=1;j1=0}else{i1=0;j1=1}
-var x1=x0-i1+G2,y1=y0-j1+G2,x2=x0-1+2*G2,y2=y0-1+2*G2;
-var ii=i&255,jj=j&255,gi0=this.permMod12[ii+this.perm[jj]],gi1=this.permMod12[ii+i1+this.perm[jj+j1]],gi2=this.permMod12[ii+1+this.perm[jj+1]];
-var n0=0,n1=0,n2=0,t0=0.5-x0*x0-y0*y0;
-if(t0>=0){t0*=t0;n0=t0*t0*(grad3[gi0][0]*x0+grad3[gi0][1]*y0)}
-var t1=0.5-x1*x1-y1*y1;if(t1>=0){t1*=t1;n1=t1*t1*(grad3[gi1][0]*x1+grad3[gi1][1]*y1)}
-var t2=0.5-x2*x2-y2*y2;if(t2>=0){t2*=t2;n2=t2*t2*(grad3[gi2][0]*x2+grad3[gi2][1]*y2)}
-return 70*(n0+n1+n2);
-};
-var simplex=new SimplexNoise();
+var canvas=document.getElementById("sky"),ctx=canvas.getContext("2d");
+var W,H,dpr=window.devicePixelRatio||1;
+var prefersReducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var time=0,lastTime=0,dt=0;
+var activeTheme="aurora";
+var constellationMode=false;
+var constellationStars=[];
+var hintShown=true;
+var solarWind=0;
+var photos=[];
 
-/* ========== state ========== */
-var COLORS={rose:{r:255,g:143,b:171},gold:{r:232,g:193,b:126},cream:{r:255,g:247,b:238},blush:{r:255,g:211,b:224},lavender:{r:184,g:160,b:255}};
-var canvas=document.getElementById("auroraCanvas"),ctx=canvas.getContext("2d");
-var W,H,dpr,t=0;
-var ribbons=[],activeRibbon=null,currentColor="rose",brushWidth=20,pointing=false;
-var bgStars=[],shootingStars=[],solarWind=0;
-var currentMode="paint"; // paint, glow, rain
-var raindrops=[];
-
-/* quotes */
-var QUOTES=[
-  {text:"You are my sun, my moon, and all my stars.",author:"e.e. cummings"},
-  {text:"I have waited for this moment for a lifetime, and I would wait a lifetime more.",author:"Nard"},
-  {text:"In all the world, there is no heart for me like yours.",author:"Maya Angelou"},
-  {text:"Every love story is beautiful, but ours is my favorite.",author:"Nard"},
-  {text:"You are the poem I never knew how to write.",author:"Rupi Kaur"},
-  {text:"I love you not only for what you are, but for what I am when I am with you.",author:"Roy Croft"},
-  {text:"You are the best thing that has ever happened to me.",author:"Nard"},
-  {text:"I wish I could turn back the clock. I would find you sooner and love you longer.",author:"Nard"},
-  {text:"My heart is, and always will be, yours.",author:"Jane Austen"},
-  {text:"You are my heart's desire and my soul's companion.",author:"Nard"}
-];
-var quoteTimer=null,quoteVisible=false;
-
-/* ========== resize ========== */
 function resize(){
-  dpr=Math.min(window.devicePixelRatio||1,2);
   W=window.innerWidth;H=window.innerHeight;
   canvas.width=W*dpr;canvas.height=H*dpr;
-  canvas.style.width=W+"px";canvas.style.height=H+"px";
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  placeBgStars();
+  if(W<500) dpr=1;
 }
-function placeBgStars(){
+resize();
+window.addEventListener("resize",resize);
+
+// Simplex 2D noise (inlined)
+var SimplexNoise=(function(){
+  var F2=0.5*(Math.sqrt(3)-1),G2=(3-Math.sqrt(3))/6;
+  var grad3=[[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+  function SimplexNoise(r){
+    this.perm=new Uint8Array(512);
+    this.perm12=new Uint8Array(512);
+    var p=new Uint8Array(256);
+    for(var i=0;i<256;i++) p[i]=i;
+    for(var i=255;i>0;i--){
+      r=r*16807%2147483647;
+      var j=r%(i+1);
+      var t=p[i];p[i]=p[j];p[j]=t;
+    }
+    for(var i=0;i<512;i++){this.perm[i]=p[i&255];this.perm12[i]=this.perm[i]%12;}
+  }
+  SimplexNoise.prototype.noise2D=function(x,y){
+    var s=(x+y)*F2,i=Math.floor(x+s),j=Math.floor(y+s);
+    var t=(i+j)*G2,X0=x-(i-t),Y0=y-(j-t);
+    var i1,j1;if(X0>Y0){i1=1;j1=0}else{i1=0;j1=1}
+    var x1=X0-i1+G2,y1=Y0-j1+G2,x2=X0-1+2*G2,y2=Y0-1+2*G2;
+    var ii=i&255,jj=j&255;
+    var g0=grad3[this.perm12[ii+this.perm[jj]]%8];
+    var g1=grad3[this.perm12[ii+i1+this.perm[jj+j1]]%8];
+    var g2=grad3[this.perm12[ii+1+this.perm[jj+1]]%8];
+    var n0=0,n1=0,n2=0;
+    var t0=.5-X0*X0-Y0*Y0;if(t0>=0){t0*=t0;n0=t0*t0*(g0[0]*X0+g0[1]*Y0)}
+    var t1=.5-x1*x1-y1*y1;if(t1>=0){t1*=t1;n1=t1*t1*(g1[0]*x1+g1[1]*y1)}
+    var t2=.5-x2*x2-y2*y2;if(t2>=0){t2*=t2;n2=t2*t2*(g2[0]*x2+g2[1]*y2)}
+    return 70*(n0+n1+n2);
+  };
+  return SimplexNoise;
+})();
+var noise=new SimplexNoise(Math.random()*1e6);
+
+// Themes
+var themes={
+  aurora:{bg:"#0f0828",ribbons:[[255,143,171],[232,193,126],[180,120,255],[255,180,200]],stars:"#fff7ee"},
+  ocean:{bg:"#020e1a",ribbons:[[0,230,230],[0,180,200],[50,255,220],[0,150,255]],stars:"#b0e8ff"},
+  fireworks:{bg:"#0a0015",ribbons:[[255,60,60],[255,200,50],[100,255,100],[255,120,80]],stars:"#ffe8d0"},
+  northern:{bg:"#071020",ribbons:[[80,255,160],[60,180,255],[100,255,220],[50,200,180]],stars:"#d0ffe8"}
+};
+
+// Background stars
+var bgStars=[];
+function initStars(){
   bgStars=[];
   for(var i=0;i<220;i++){
-    bgStars.push({x:Math.random()*W,y:Math.random()*H,r:0.3+Math.random()*1.4,a:0.15+Math.random()*0.5,phase:Math.random()*Math.PI*2,speed:0.005+Math.random()*0.012});
+    bgStars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.5+.3,phase:Math.random()*6.28,speed:Math.random()*.3+.1});
   }
 }
+initStars();
 
-/* ========== ribbons ========== */
-function addPoint(x,y){
-  var w=brushWidth;
-  if(currentMode==="rain")w=brushWidth*0.5;
-  if(currentMode==="glow")w=brushWidth*2;
-  if(!activeRibbon){
-    activeRibbon={points:[{x:x,y:y}],color:currentColor,width:w,life:1,opacity:0.7,born:Date.now(),mode:currentMode};
-    ribbons.push(activeRibbon);
-  }else{
-    var pts=activeRibbon.points,last=pts[pts.length-1];
-    if(Math.sqrt((x-last.x)*(x-last.x)+(y-last.y)*(y-last.y))>3){
-      pts.push({x:x,y:y});
-      if(pts.length>100)pts.shift();
-    }
-  }
-}
-function endRibbon(){activeRibbon=null}
-
-/* ========== rain mode ========== */
-function spawnRaindrops(){
-  if(currentMode!=="rain")return;
-  if(Math.random()<0.15){
-    raindrops.push({
-      x:Math.random()*W,y:-10,
-      vy:2+Math.random()*3,vx:(Math.random()-0.5)*0.5,
-      len:8+Math.random()*12,life:1,
-      color:currentColor
+// Aurora ribbons
+var ribbons=[];
+function initRibbons(){
+  var t=themes[activeTheme];
+  ribbons=[];
+  for(var i=0;i<t.ribbons.length;i++){
+    var c=t.ribbons[i];
+    ribbons.push({
+      points:[],color:c,
+      baseY:H*(.15+.2*i),
+      amplitude:30+Math.random()*40,
+      speed:.15+Math.random()*.2,
+      width:60+Math.random()*80,
+      alpha:.12+Math.random()*.08,
+      seed:Math.random()*100,
+      drift:Math.random()*.3+.1
     });
   }
 }
-function drawRain(){
-  var c=COLORS[currentColor]||COLORS.rose;
-  for(var i=raindrops.length-1;i>=0;i--){
-    var d=raindrops[i];
-    d.x+=d.vx;d.y+=d.vy;d.life-=0.004;
-    if(d.life<=0||d.y>H+20){raindrops.splice(i,1);continue}
-    ctx.save();ctx.globalAlpha=d.life*0.6;
-    ctx.strokeStyle="rgba("+c.r+","+c.g+","+c.b+",0.7)";
-    ctx.lineWidth=1.5;ctx.lineCap="round";
-    ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x-d.vx*2,d.y-d.len);
-    ctx.stroke();ctx.restore();
-  }
-}
+initRibbons();
 
-/* ========== drawing ========== */
-function drawBg(){
-  var sky=ctx.createRadialGradient(W/2,H*0.2,0,W/2,H/2,Math.max(W,H));
-  sky.addColorStop(0,"#0f0828");sky.addColorStop(0.5,"#070415");sky.addColorStop(1,"#030210");
-  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-}
-function drawStars(){
-  bgStars.forEach(function(s){
-    s.phase+=s.speed;var a=s.a*(0.55+Math.sin(s.phase)*0.45);
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,247,238,"+a+")";ctx.fill();
-  });
-}
-function drawShootingStars(){
-  var now=Date.now();
-  if(Math.random()<0.003&&shootingStars.length<2){
-    shootingStars.push({x:Math.random()*W*0.7,y:Math.random()*H*0.3,vx:3+Math.random()*4,vy:1+Math.random()*2,len:40+Math.random()*60,life:1,born:now});
-  }
-  for(var i=shootingStars.length-1;i>=0;i--){
-    var s=shootingStars[i],age=(now-s.born)/800;s.life=Math.max(0,1-age);
-    if(s.life<=0){shootingStars.splice(i,1);continue}
-    ctx.save();ctx.globalAlpha=s.life*0.8;ctx.strokeStyle="rgba(255,247,238,0.9)";ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*s.len*0.03,s.y-s.vy*s.len*0.03);ctx.stroke();
-    ctx.restore();s.x+=s.vx;s.y+=s.vy;
-  }
-}
-function drawRibbon(r){
-  var pts=r.points;if(pts.length<2)return;
-  var age=(Date.now()-r.born)/1000,fade=Math.min(1,age/0.5);
-  var c=COLORS[r.color]||COLORS.rose;
-  var windOff=solarWind*Math.sin(t*3+pts[0].x*0.01)*15;
-  ctx.save();ctx.globalAlpha=r.opacity*fade*r.life;
-  ctx.lineCap="round";ctx.lineJoin="round";
-
-  var layers=r.mode==="glow"?6:4;
-  for(var layer=0;layer<layers;layer++){
-    var lw=r.width*(1+layer*0.7),la=(0.08-layer*0.012)*fade;
-    if(r.mode==="glow")la*=1.5;
-    ctx.beginPath();ctx.moveTo(pts[0].x+windOff,pts[0].y);
-    for(var i=1;i<pts.length-1;i++){
-      var xc=(pts[i].x+pts[i+1].x)/2+windOff,yc=(pts[i].y+pts[i+1].y)/2;
-      ctx.quadraticCurveTo(pts[i].x+windOff,pts[i].y,xc,yc);
+function drawRibbons(t){
+  var tc=themes[activeTheme];
+  for(var i=0;i<ribbons.length;i++){
+    var r=ribbons[i];
+    var push=solarWind*200;
+    ctx.beginPath();
+    var steps=12;
+    for(var j=0;j<=steps;j++){
+      var frac=j/steps;
+      var x=frac*W+push;
+      var nx=frac*2+t*0.0001;
+      var ny=r.seed+i*10;
+      var n=noise.noise2D(nx*0.5+r.seed,ny+t*0.00005)*r.amplitude;
+      var y=r.baseY+n+Math.sin(t*0.001*r.speed+frac*6)*20;
+      if(j===0)ctx.moveTo(x,y-r.width/2);
+      else ctx.lineTo(x,y-r.width/2);
     }
-    var last=pts[pts.length-1];ctx.lineTo(last.x+windOff,last.y);
-    ctx.strokeStyle="rgba("+c.r+","+c.g+","+c.b+","+la+")";ctx.lineWidth=lw;
-    ctx.filter="blur("+(8+layer*6)+"px)";ctx.stroke();
+    for(var j=steps;j>=0;j--){
+      var frac=j/steps;
+      var x=frac*W+push;
+      var nx=frac*2+t*0.0001;
+      var ny=r.seed+i*10;
+      var n=noise.noise2D(nx*0.5+r.seed,ny+t*0.00005)*r.amplitude;
+      var y=r.baseY+n+Math.sin(t*0.001*r.speed+frac*6)*20;
+      ctx.lineTo(x,y+r.width/2);
+    }
+    ctx.closePath();
+    var c=r.color;
+    var a=r.alpha+noise.noise2D(i*3,t*0.00003)*.04;
+    ctx.fillStyle="rgba("+c[0]+","+c[1]+","+c[2]+","+a+")";
+    ctx.filter="blur(20px)";
+    ctx.fill();
+    ctx.filter="none";
   }
-  ctx.filter="none";ctx.beginPath();ctx.moveTo(pts[0].x+windOff,pts[0].y);
-  for(var i=1;i<pts.length-1;i++){
-    var xc=(pts[i].x+pts[i+1].x)/2+windOff,yc=(pts[i].y+pts[i+1].y)/2;
-    ctx.quadraticCurveTo(pts[i].x+windOff,pts[i].y,xc,yc);
-  }
-  var last=pts[pts.length-1];ctx.lineTo(last.x+windOff,last.y);
-  ctx.strokeStyle="rgba("+Math.min(255,c.r+40)+","+Math.min(255,c.g+40)+","+Math.min(255,c.b+40)+","+(0.55*fade)+")";
-  ctx.lineWidth=2;ctx.filter="blur(2px)";ctx.stroke();ctx.restore();
 }
-function drawAuroraWash(){
-  var now=Date.now();
-  ribbons.forEach(function(r){
-    if(r.life<=0)return;var c=COLORS[r.color]||COLORS.rose;
-    var pts=r.points;if(pts.length<2)return;
-    var age=(now-r.born)/1000,fade=Math.min(1,age/0.5)*r.life;
-    var mid=pts[Math.floor(pts.length/2)];
-    var grad=ctx.createRadialGradient(mid.x,mid.y,0,mid.x,mid.y,250);
-    grad.addColorStop(0,"rgba("+c.r+","+c.g+","+c.b+","+0.06*fade+")");
-    grad.addColorStop(1,"rgba("+c.r+","+c.g+","+c.b+",0)");
-    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+
+// Characters
+var characters=[
+  {label:"REZIL",emoji:"🚀",color:"#ff8fab",x:0,y:0,phaseX:0,phaseY:0,speedX:.7,speedY:1.1,ampX:0,ampY:25,init:function(){this.x=W*.15;this.y=H*.3;this.ampX=W*.25}},
+  {label:"NARD",emoji:"👽",color:"#e8c17e",x:0,y:0,phaseX:2,phaseY:1,speedX:.5,speedY:.8,ampX:0,ampY:20,init:function(){this.x=W*.7;this.y=H*.45;this.ampX=W*.2}},
+  {label:"CHIKOY",emoji:"🦕",color:"#7dffb3",x:0,y:0,phaseX:4,phaseY:2,speedX:.4,speedY:.6,ampX:0,ampY:18,init:function(){this.x=W*.5;this.y=H*.72;this.ampX=W*.35}}
+];
+characters.forEach(function(c){c.init()});
+
+function drawCharacters(t){
+  characters.forEach(function(c){
+    var px=c.x+Math.sin(t*.001*c.speedX+c.phaseX)*c.ampX;
+    var py=c.y+Math.sin(t*.001*c.speedY+c.phaseY)*c.ampY;
+    px=((px%W)+W)%W;
+    py=Math.max(40,Math.min(H-60,py));
+    ctx.font="32px serif";
+    ctx.textAlign="center";
+    ctx.fillText(c.emoji,px,py);
+    ctx.font="bold 10px 'Segoe UI',sans-serif";
+    ctx.fillStyle=c.color;
+    ctx.globalAlpha=.85;
+    ctx.fillText(c.label,px,py+18);
+    ctx.globalAlpha=1;
   });
 }
-function decay(){
-  var now=Date.now();
-  for(var i=ribbons.length-1;i>=0;i--){
-    var r=ribbons[i],age=(now-r.born)/1000;
-    if(age>12)r.life-=0.008;
-    if(r.life<=0)ribbons.splice(i,1);
+
+// Sparkle trail
+var sparkles=[];
+function addSparkle(x,y,color){
+  sparkles.push({x:x,y:y,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2,life:1,color:color,r:Math.random()*2+1});
+}
+function updateSparkles(dt){
+  for(var i=sparkles.length-1;i>=0;i--){
+    var s=sparkles[i];
+    s.x+=s.vx*dt;s.y+=s.vy*dt;
+    s.life-=dt*.02;
+    if(s.life<=0)sparkles.splice(i,1);
   }
 }
+function drawSparkles(){
+  sparkles.forEach(function(s){
+    ctx.globalAlpha=s.life*.6;
+    ctx.fillStyle=s.color;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+  });
+  ctx.globalAlpha=1;
+}
 
-/* ========== solar wind ========== */
-function triggerSolarWind(){solarWind=1;if(navigator.vibrate)navigator.vibrate([30,40,60,30,100])}
+// Floating photos
+function initPhotos(){
+  var container=document.body;
+  for(var i=0;i<10;i++){
+    var img=document.createElement("img");
+    img.className="photo";
+    img.src="float-photos/"+(i+1)+".jpg";
+    img.alt="memory "+(i+1);
+    img.style.width="44px";img.style.height="44px";
+    img.dataset.idx=i;
+    var p={el:img,x:Math.random()*W,y:Math.random()*H,speedX:.15+Math.random()*.3,speedY:.1+Math.random()*.25,phaseX:Math.random()*6.28,phaseY:Math.random()*6.28,ampX:40+Math.random()*80,ampY:30+Math.random()*60,baseX:Math.random()*W,baseY:Math.random()*H};
+    photos.push(p);
+    container.appendChild(img);
+    img.addEventListener("click",showQuote);
+    img.addEventListener("touchend",function(e){e.preventDefault();showQuote.call(this,e)});
+  }
+}
+initPhotos();
 
-/* ========== quotes ========== */
+function updatePhotos(t){
+  photos.forEach(function(p){
+    var px=p.baseX+Math.sin(t*.0003*p.speedX+p.phaseX)*p.ampX;
+    var py=p.baseY+Math.sin(t*.00025*p.speedY+p.phaseY)*p.ampY;
+    p.el.style.left=px+"px";
+    p.el.style.top=py+"px";
+  });
+}
+
+// Quotes
+var quotes=[
+  {text:"I fell in love the way you fall asleep: slowly, and then all at once.",author:"John Green"},
+  {text:"You are my sun, my moon, and all my stars.",author:"E.E. Cummings"},
+  {text:"In all the world, there is no heart for me like yours.",author:"Maya Angelou"},
+  {text:"Every love story is beautiful, but ours is my favorite.",author:"Nard"},
+  {text:"You are the answer to every prayer I've ever whispered.",author:"Nard"},
+  {text:"I choose you. And I'll choose you over and over.",author:"Nard"},
+  {text:"My heart is, and always will be, yours.",author:"Jane Austen"},
+  {text:"I knew the moment I met you that there was something about you I needed.",author:"Nard"},
+  {text:"You make me want to be a better man.",author:"Nard"},
+  {text:"I am who I am because of you.",author:"Nard"},
+  {text:"You are my heart, my life, my one and only thought.",author:"Arthur Conan Doyle"},
+  {text:"Whatever our souls are made of, yours and mine are the same.",author:"Emily Brontë"},
+  {text:"I would rather spend one lifetime with you, than face all the ages of this world alone.",author:"J.R.R. Tolkien"},
+  {text:"You are my forever and always.",author:"Nard"},
+  {text:"I love you more than yesterday, less than tomorrow.",author:"Edmond Rostand"},
+  {text:"If I know what love is, it is because of you.",author:"Hermann Hesse"},
+  {text:"You are my greatest adventure.",author:"Nard"},
+  {text:"I have waited for this opportunity to tell you how much you mean to me.",author:"Nard"},
+  {text:"Being with you is the easiest thing I've ever done.",author:"Nard"},
+  {text:"You are the poem I never knew how to write.",author:"Nard"},
+  {text:"My love for you grows deeper with every passing moment.",author:"Nard"},
+  {text:"You light up my world like nobody else.",author:"Nard"},
+  {text:"I am endlessly grateful for every moment we share.",author:"Nard"},
+  {text:"You are the reason I believe in love.",author:"Nard"},
+  {text:"With you, I am home.",author:"Nard"},
+  {text:"I didn't choose you. My heart did.",author:"Nard"},
+  {text:"You are the best thing that has ever happened to me.",author:"Nard"},
+  {text:"I love you not only for who you are, but for who I am when I am with you.",author:"Roy Croft"},
+  {text:"You are my today and all of my tomorrows.",author:"Leo Christopher"},
+  {text:"I wish I could turn back the clock. I'd find you sooner and love you longer.",author:"Nard"},
+  {text:"You are the first thing I think of in the morning and the last thing I think of at night.",author:"Nard"},
+  {text:"I never want to stop making memories with you.",author:"Nard"},
+  {text:"You are the missing piece I never knew I needed.",author:"Nard"},
+  {text:"Together is my favorite place to be.",author:"Nard"},
+  {text:"You make my heart smile.",author:"Nard"},
+  {text:"I am so in love with you and I don't know how it happened.",author:"Nard"},
+  {text:"You are the sunshine that lights up my life.",author:"Nard"},
+  {text:"I fall in love with you a little bit more every day.",author:"Nard"},
+  {text:"You are everything I never knew I always wanted.",author:"Nard"},
+  {text:"I never dreamed that love could feel this way.",author:"Nard"},
+  {text:"You are the dream I didn't know I was dreaming.",author:"Nard"},
+  {text:"I will love you until the stars fall from the sky.",author:"Nard"},
+  {text:"You are the reason I look down at my phone and smile.",author:"Nard"},
+  {text:"I love you with every beat of my heart.",author:"Nard"},
+  {text:"You are my once in a lifetime.",author:"Nard"},
+  {text:"I would find you in any lifetime.",author:"Nard"},
+  {text:"You make the world a better place just by being in it.",author:"Nard"},
+  {text:"I am complete when I am with you.",author:"Nard"},
+  {text:"You are the love of my life, my best friend, my soulmate.",author:"Nard"},
+  {text:"I love you more than words can express.",author:"Nard"},
+  {text:"You are my everything.",author:"Nard"}
+];
 function showQuote(){
-  if(quoteVisible)return;
-  var q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  document.getElementById("quoteText").innerHTML=q.text+"<span class='quoteAuthor'>"+q.author+"</span>";
-  document.getElementById("quoteOverlay").classList.add("show");
-  quoteVisible=true;
-  quoteTimer=setTimeout(function(){hideQuote()},5000);
+  if(hintShown){hintShown=false;document.getElementById("hint").classList.add("hidden")}
+  var q=quotes[Math.floor(Math.random()*quotes.length)];
+  var emojis=["💕","💗","💖","✨","🌸","💫","🦋","🌺","💝","🌙","⭐","🎆","🎇","🌠","❤️"];
+  document.getElementById("qEmoji").textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  document.getElementById("qText").textContent=q.text;
+  document.getElementById("qAuthor").textContent="— "+q.author;
+  document.getElementById("overlay").classList.add("show");
 }
-function hideQuote(){
-  document.getElementById("quoteOverlay").classList.remove("show");
-  quoteVisible=false;clearTimeout(quoteTimer);
-}
+document.getElementById("overlay").addEventListener("click",function(){this.classList.remove("show")});
 
-/* ========== save as image ========== */
-function saveImage(){
-  var flash=document.createElement("div");flash.className="flash";
-  document.body.appendChild(flash);
-  setTimeout(function(){flash.remove()},600);
-  if(navigator.vibrate)navigator.vibrate(20);
-  canvas.toBlob(function(blob){
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;
-    a.download="our-aurora-"+Date.now()+".png";
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast("saved to your gallery");
-  },"image/png");
-}
-function showToast(msg){
-  var toast=document.getElementById("toast");
-  toast.textContent=msg;toast.classList.add("show");
-  setTimeout(function(){toast.classList.remove("show")},2500);
-}
+// Constellation
+document.getElementById("constellationBtn").addEventListener("click",function(){
+  constellationMode=!constellationMode;
+  this.classList.toggle("active",constellationMode);
+  if(!constellationMode) constellationStars=[];
+});
 
-/* ========== main loop ========== */
-function draw(){
-  t+=0.016;solarWind*=0.96;decay();
-  drawBg();drawStars();drawShootingStars();
-  drawAuroraWash();ribbons.forEach(drawRibbon);
-  spawnRaindrops();drawRain();
-  requestAnimationFrame(draw);
-}
+canvas.addEventListener("click",function(e){
+  if(!constellationMode) return;
+  var rect=canvas.getBoundingClientRect();
+  constellationStars.push({x:e.clientX-rect.left,y:e.clientY-rect.top});
+});
 
-/* ========== input: mouse ========== */
-canvas.addEventListener("mousedown",function(e){pointing=true;addPoint(e.clientX,e.clientY)});
-canvas.addEventListener("mousemove",function(e){if(pointing)addPoint(e.clientX,e.clientY)});
-canvas.addEventListener("mouseup",function(){pointing=false;endRibbon()});
-
-/* ========== input: touch ========== */
-canvas.addEventListener("touchstart",function(e){e.preventDefault();pointing=true;addPoint(e.touches[0].clientX,e.touches[0].clientY)},{passive:false});
-canvas.addEventListener("touchmove",function(e){e.preventDefault();if(pointing)addPoint(e.touches[0].clientX,e.touches[0].clientY)},{passive:false});
-canvas.addEventListener("touchend",function(e){e.preventDefault();pointing=false;endRibbon()});
-
-/* long press for quote */
-var pressTimer=null;
-canvas.addEventListener("mousedown",function(e){pressTimer=setTimeout(showQuote,800)});
-canvas.addEventListener("mouseup",function(){clearTimeout(pressTimer)});
-canvas.addEventListener("touchstart",function(e){pressTimer=setTimeout(showQuote,800)},{passive:true});
-canvas.addEventListener("touchend",function(){clearTimeout(pressTimer)});
-
-/* shake detection */
-var shakeLast=0;
-if(window.DeviceMotionEvent){
-  window.addEventListener("devicemotion",function(e){
-    var a=e.accelerationIncludingGravity;if(!a)return;
-    if(Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z)>25){
-      var now=Date.now();if(now-shakeLast>1500){shakeLast=now;triggerSolarWind()}
+function drawConstellations(){
+  if(!constellationMode) return;
+  ctx.fillStyle="#fff7ee";
+  constellationStars.forEach(function(s,i){
+    ctx.beginPath();ctx.arc(s.x,s.y,3,0,Math.PI*2);ctx.fill();
+    for(var j=i+1;j<constellationStars.length;j++){
+      var dx=s.x-constellationStars[j].x;var dy=s.y-constellationStars[j].y;
+      var d=Math.sqrt(dx*dx+dy*dy);
+      if(d<200){
+        ctx.strokeStyle="rgba(232,193,126,"+(1-d/200)*.5+")";
+        ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(constellationStars[j].x,constellationStars[j].y);ctx.stroke();
+      }
     }
   });
 }
+
+// Solar wind
+function triggerSolarWind(){
+  solarWind=1;
+  if(navigator.vibrate) navigator.vibrate(50);
+  if(hintShown){hintShown=false;document.getElementById("hint").classList.add("hidden")}
+}
+document.getElementById("windBtn").addEventListener("click",triggerSolarWind);
 document.addEventListener("keydown",function(e){if(e.key==="s"||e.key==="S")triggerSolarWind()});
 
-/* color picker */
-document.querySelectorAll(".colorBtn").forEach(function(btn){
+// Theme switch
+document.querySelectorAll(".pill").forEach(function(btn){
   btn.addEventListener("click",function(){
-    document.querySelectorAll(".colorBtn").forEach(function(b){b.classList.remove("active")});
-    btn.classList.add("active");currentColor=btn.getAttribute("data-color");
+    var theme=this.dataset.theme;
+    if(theme===activeTheme) return;
+    activeTheme=theme;
+    document.querySelectorAll(".pill").forEach(function(b){b.classList.remove("active")});
+    this.classList.add("active");
+    document.body.style.background=themes[theme].bg;
+    document.querySelector('meta[name="theme-color"]').content=themes[theme].bg;
+    initRibbons();
   });
 });
 
-/* width slider */
-var widthRange=document.getElementById("widthRange"),widthVal=document.getElementById("widthVal");
-widthRange.addEventListener("input",function(){brushWidth=parseInt(this.value);widthVal.textContent=this.value});
+// Main loop
+function frame(ts){
+  if(!lastTime) lastTime=ts;
+  dt=ts-lastTime;lastTime=ts;
+  time=ts;
 
-/* mode buttons */
-document.querySelectorAll(".modeBtn").forEach(function(btn){
-  btn.addEventListener("click",function(){
-    document.querySelectorAll(".modeBtn").forEach(function(b){b.classList.remove("active")});
-    btn.classList.add("active");currentMode=btn.getAttribute("data-mode");
+  if(solarWind>0) solarWind=Math.max(0,solarWind-dt*0.0008);
+
+  ctx.clearRect(0,0,W,H);
+
+  // Stars
+  var tc=themes[activeTheme];
+  bgStars.forEach(function(s){
+    var a=.3+noise.noise2D(s.x*10+s.phase,s.y*10+time*0.0001*s.speed)*.35+.35;
+    ctx.fillStyle=tc.stars;
+    ctx.globalAlpha=a;
+    ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);ctx.fill();
   });
-});
+  ctx.globalAlpha=1;
 
-/* topbar buttons */
-document.getElementById("btnSave").addEventListener("click",saveImage);
-document.getElementById("btnClear").addEventListener("click",function(){ribbons.length=0;raindrops.length=0});
-document.getElementById("btnQuote").addEventListener("click",function(){if(quoteVisible)hideQuote();else showQuote()});
+  drawRibbons(time);
+  drawConstellations();
+  drawCharacters(time);
 
-/* hint fade */
-var hintFaded=false;
-function fadeHint(){if(hintFaded)return;hintFaded=true;document.getElementById("hint").style.transition="opacity 1.2s";document.getElementById("hint").style.opacity="0"}
-canvas.addEventListener("click",fadeHint);canvas.addEventListener("touchstart",fadeHint);
+  if(!prefersReducedMotion){
+    var rc=themes[activeTheme].ribbons[0];
+    characters.forEach(function(c){
+      var px=c.x+Math.sin(time*.001*c.speedX+c.phaseX)*c.ampX;
+      if(Math.random()<.3) addSparkle(px+(Math.random()-.5)*20,c.y+Math.sin(time*.001*c.speedY+c.phaseY)*c.ampY,"rgb("+rc[0]+","+rc[1]+","+rc[2]+")");
+    });
+  }
 
-/* show controls */
-setTimeout(function(){
-  document.getElementById("colorPicker").classList.add("show");
-  document.getElementById("widthSlider").classList.add("show");
-  document.getElementById("modeBar").classList.add("show");
-},600);
+  updateSparkles(dt);
+  drawSparkles();
+  updatePhotos(time);
 
-/* init */
-window.addEventListener("resize",resize);resize();draw();
-window.scrollTo(0,0);window.addEventListener("pageshow",function(){window.scrollTo(0,0)});
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 })();
 </script>
-<script src="app.js"></script>
 </body>
 </html>
