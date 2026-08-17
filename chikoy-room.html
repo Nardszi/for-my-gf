@@ -32,12 +32,21 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%}
 <script>
 (function(){
 "use strict";
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(typeof r==="number")r=[r,r,r,r];
+    this.moveTo(x+r[0],y);this.lineTo(x+w-r[1],y);this.quadraticCurveTo(x+w,y,x+w,y+r[1]);
+    this.lineTo(x+w,y+h-r[2]);this.quadraticCurveTo(x+w,y+h,x+w-r[2],y+h);
+    this.lineTo(x+r[3],y+h);this.quadraticCurveTo(x,y+h,x,y+h-r[3]);
+    this.lineTo(x,y+r[0]);this.quadraticCurveTo(x,y,x+r[0],y);this.closePath();return this;
+  };
+}
 var canvas=document.getElementById("roomCanvas"),rc=canvas.getContext("2d");
 var dpr=Math.min(window.devicePixelRatio||1,2);
 var W,H;
 var time=0,lastTime=0,dt=0;
 var CW=360,CH=500;
-var room={lampBright:true,chikoyWave:false,waveTimer:0,shootStar:null,dust:[],touchStartY:0,touchStartX:0,hintShown:true};
+var room={lampBright:true,chikoyWave:false,waveTimer:0,shootStar:null,dust:[],touchStartY:0,touchStartX:0,hintShown:true,letterOpen:false,letterZoom:0};
 function resize(){
   W=window.innerWidth;H=window.innerHeight;
   canvas.width=W*dpr;canvas.height=H*dpr;
@@ -64,18 +73,22 @@ canvas.addEventListener("touchend",function(e){
   if(e.changedTouches.length===0)return;
   var touch=e.changedTouches[0];
   var dy=touch.clientY-room.touchStartY;
+  if(room.letterOpen){room.letterOpen=false;if(navigator.vibrate)navigator.vibrate(10);return;}
   if(dy>60){history.back();return;}
   var p=screenToRoom(touch.clientX,touch.clientY);
   if(p.x>=60&&p.x<=110&&p.y>=210&&p.y<=280){room.lampBright=!room.lampBright;if(navigator.vibrate)navigator.vibrate(15);return;}
   if(p.x>=20&&p.x<=120&&p.y>=55&&p.y<=200){room.shootStar={x:35+Math.random()*50,y:70,vx:2+Math.random()*2,vy:1+Math.random()*1.5,life:1};if(navigator.vibrate)navigator.vibrate(15);return;}
-  if(Math.abs(p.x-170)<35&&Math.abs(p.y-240)<45){room.chikoyWave=true;room.waveTimer=0;if(navigator.vibrate)navigator.vibrate([10,30,10]);}
+  if(Math.abs(p.x-170)<35&&Math.abs(p.y-240)<45){room.chikoyWave=true;room.waveTimer=0;if(navigator.vibrate)navigator.vibrate([10,30,10]);return;}
+  if(p.x>=125&&p.x<=205&&p.y>=278&&p.y<=310){room.letterOpen=true;room.letterZoom=0;if(navigator.vibrate)navigator.vibrate(20);}
 });
 canvas.addEventListener("click",function(e){
   fadeHint();
   var p=screenToRoom(e.clientX,e.clientY);
+  if(room.letterOpen){room.letterOpen=false;return;}
   if(p.x>=60&&p.x<=110&&p.y>=210&&p.y<=280){room.lampBright=!room.lampBright;return;}
   if(p.x>=20&&p.x<=120&&p.y>=55&&p.y<=200){room.shootStar={x:35+Math.random()*50,y:70,vx:2+Math.random()*2,vy:1+Math.random()*1.5,life:1};return;}
-  if(Math.abs(p.x-170)<35&&Math.abs(p.y-240)<45){room.chikoyWave=true;room.waveTimer=0;}
+  if(Math.abs(p.x-170)<35&&Math.abs(p.y-240)<45){room.chikoyWave=true;room.waveTimer=0;return;}
+  if(p.x>=125&&p.x<=205&&p.y>=278&&p.y<=310){room.letterOpen=true;room.letterZoom=0;}
 });
 function drawRoom(t){
   if(!rc)return;
@@ -187,6 +200,48 @@ function drawRoom(t){
     rc.beginPath();rc.arc(dx_,dy_,d.sz*scale*0.5,0,Math.PI*2);rc.fill();
   }
   rc.globalAlpha=1;
+
+  if(room.letterOpen){
+    room.letterZoom=Math.min(1,room.letterZoom+0.06);
+    var lz=room.letterZoom;
+    rc.save();
+    rc.setTransform(dpr,0,0,dpr,0,0);
+    rc.fillStyle="rgba(10,6,16,"+(0.85*lz)+")";rc.fillRect(0,0,W,H);
+    var cx=W/2,cy=H/2;
+    var lw=Math.min(340,W*0.88)*lz;
+    var lh=Math.min(420,H*0.75)*lz;
+    var lx=cx-lw/2,ly=cy-lh/2;
+    rc.shadowColor="rgba(255,180,80,0.3)";rc.shadowBlur=30*lz;
+    rc.fillStyle="#1a0f14";rc.beginPath();
+    rc.roundRect(lx,ly,lw,lh,12*lz);rc.fill();
+    rc.shadowBlur=0;
+    rc.strokeStyle="rgba(232,193,126,"+(0.4*lz)+")";rc.lineWidth=1;
+    rc.beginPath();rc.roundRect(lx,ly,lw,lh,12*lz);rc.stroke();
+    if(lz>0.5){
+      var fa=(lz-0.5)*2;
+      rc.globalAlpha=fa;
+      rc.fillStyle="rgba(232,193,126,0.9)";rc.font="bold "+Math.round(14*lz)+"px Georgia,serif";rc.textAlign="center";
+      rc.fillText("\u2764\uFE0F",cx,ly+30*lz);
+      rc.fillStyle="rgba(232,193,126,0.6)";rc.font=Math.round(8*lz)+"px 'Segoe UI',sans-serif";
+      rc.fillText("A letter from Chikoy",cx,ly+44*lz);
+      rc.textAlign="left";
+      var tx=lx+24*lz,ty=ly+70*lz;
+      var lineH=18*lz;
+      rc.fillStyle="rgba(255,247,238,0.85)";rc.font="italic "+Math.round(11*lz)+"px Georgia,serif";
+      var lines=["Dear Rezil,","","I know I'm just a little chick,","but I wanted you to know","how special you are.","","Every star in the sky","reminds me of your smile.","Every sunset reminds me","of the warmth you bring.","","Nard made this sky for you,","and I just live in it.","But I'm happy here,","because you visit sometimes.","","Thank you for being","the most beautiful person","in this whole universe.","","With all my tiny feathers,","Chikoy \uD83D\uDC25"];
+      for(var li=0;li<lines.length;li++){
+        if(ty+li*lineH>ly+lh-30*lz)break;
+        rc.fillText(lines[li],tx,ty+li*lineH);
+      }
+      rc.textAlign="center";
+      rc.fillStyle="rgba(232,193,126,0.4)";rc.font=Math.round(7*lz)+"px 'Segoe UI',sans-serif";
+      rc.fillText("tap anywhere to close",cx,ly+lh-14*lz);
+      rc.globalAlpha=1;
+    }
+    rc.restore();
+  }else{
+    room.letterZoom=0;
+  }
 }
 function noise(x){return Math.sin(x*12.9898+x*78.233)*0.5+0.5;}
 function frame(ts){
