@@ -113,7 +113,7 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .chikoy-room{position:fixed;inset:0;z-index:58;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
 .chikoy-room.show{opacity:1;pointer-events:auto}
-.chikoy-room canvas{border-radius:12px;max-width:90vw;max-height:80vh}
+.chikoy-room canvas{border-radius:0;width:100vw;height:100vh}
 .room-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,193,126,.3);background:rgba(15,8,40,.8);color:#e8c17e;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:59;transition:background .2s}
 .room-close:hover,.room-close:active{background:rgba(232,193,126,.2)}
 @media(max-width:400px){.brand{font-size:15px}.pill{padding:5px 14px;font-size:11px}.topbar-btn{width:32px;height:32px;font-size:14px}}
@@ -1540,7 +1540,7 @@ function openRoom(){
   room.open=true;room.lampBright=true;room.chikoyWave=false;room.waveTimer=0;room.shootStar=null;
   document.getElementById("chikoyRoom").classList.add("show");
   var rc=document.getElementById("roomCanvas");
-  room.W=Math.min(360,W*0.9);room.H=Math.min(500,H*0.8);
+  room.W=W;room.H=H;
   rc.width=room.W*dpr;rc.height=room.H*dpr;
   rc.style.width=room.W+"px";rc.style.height=room.H+"px";
   room.ctx=rc.getContext("2d");room.ctx.setTransform(dpr,0,0,dpr,0,0);
