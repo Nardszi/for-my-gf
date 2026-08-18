@@ -1,4 +1,4 @@
-var CACHE_NAME = 'for-my-gf-v10';
+var CACHE_NAME = 'for-my-gf-v11';
 var CORE = [
   'lovepage.html',
   'finale.html',
