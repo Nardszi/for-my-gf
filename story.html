@@ -254,19 +254,15 @@
 
 <script>
   var RELATIONSHIP_START_DATE = "2024-09-10";
-  var PHOTOS = [
-    'float-photos/1.jpg','float-photos/2.jpg','float-photos/3.jpg','float-photos/4.jpg',
-    'float-photos/5.jpg','float-photos/6.jpg','float-photos/7.jpg','float-photos/8.jpg',
-    'float-photos/9.jpg','float-photos/10.jpg','float-photos/11.jpg','float-photos/12.jpg',
-    'float-photos/13.jpg','float-photos/14.jpg','float-photos/15.jpg','float-photos/16.jpg',
-    'float-photos/17.jpg','float-photos/18.jpg','float-photos/19.jpg','float-photos/20.jpg'
-  ];
+  var PHOTOS = [];
+  for (var i = 1; i <= 63; i++) PHOTOS.push('story-photos/' + i + '.jpg');
 
   var MILESTONES = {
     '2024-09': { title: 'The Day We Met', text: 'Our souls found each other. Everything changed.' },
     '2024-10': { title: 'Our First Date', text: 'Nervous laughs, shy smiles, the start of it all.' },
     '2024-12': { title: 'Said "I Love You"', text: 'Three words that changed everything.' },
-    '2025-05': { title: 'Our 2nd Meet', text: 'A day of love, laughter, and celebration.' }
+    '2025-05': { title: 'Our 2nd Meet', text: 'A day of love, laughter, and celebration.' },
+    '2026-08': { title: 'Adventures Together', text: 'Walking side by side, making memories everywhere we go.' }
   };
 
   var GENERIC_TITLES = [
