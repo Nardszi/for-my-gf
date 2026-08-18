@@ -1,337 +1,80 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#0d0812"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Chikoy's Chicken House</title>
-<meta name="theme-color" content="#2d1810">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--wood:#8B5E3C;--wood-dk:#5C3D2E;--wood-lt:#A67C52;--green:#4a7c59;--green-dk:#2d5a3a;--sky:#87CEEB;--sky-top:#4A90D9;--dirt:#6B4423;--rose:#ff8fab;--gold:#e8c17e;--cream:#fff7ee;--spring:cubic-bezier(.34,1.56,.64,1)}
-html,body{height:100%;overflow:hidden}
-body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(--cream);user-select:none;-webkit-user-select:none}
-
-/* ===== SCENE ===== */
-.scene{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;background:linear-gradient(180deg,var(--sky-top),var(--sky) 35%,#c8e6c9 60%,var(--green) 100%)}
-
-/* sky */
-.sun{position:absolute;top:4%;right:6%;width:clamp(30px,7vw,50px);height:clamp(30px,7vw,50px);border-radius:50%;background:radial-gradient(circle,#fff9c4 20%,#ffd54f 60%,transparent 100%);box-shadow:0 0 50px 15px rgba(255,213,79,.35);z-index:1;animation:sunGlow 4s ease-in-out infinite}
-@keyframes sunGlow{0%,100%{box-shadow:0 0 50px 15px rgba(255,213,79,.35)}50%{box-shadow:0 0 70px 25px rgba(255,213,79,.5)}}
-.cloud{position:absolute;background:#fff;border-radius:40px;z-index:1;opacity:.7}
-.cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
-.cloud.a{width:70px;height:24px;top:7%;left:-80px;animation:drift 20s linear infinite}
-.cloud.a::before{width:35px;height:30px;top:-14px;left:10px}.cloud.a::after{width:45px;height:26px;top:-10px;left:28px}
-.cloud.b{width:55px;height:20px;top:13%;left:-65px;animation:drift 28s linear infinite 6s;opacity:.5}
-.cloud.b::before{width:28px;height:24px;top:-10px;left:7px}.cloud.b::after{width:36px;height:20px;top:-7px;left:22px}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 100px))}}
-
-/* ground */
-.ground{position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(180deg,var(--green) 0%,var(--green-dk) 15%,var(--dirt) 40%,#3e2210 100%);z-index:2}
-.ground::before{content:"";position:absolute;top:-3px;left:0;right:0;height:18px;background:linear-gradient(180deg,var(--green),transparent);border-radius:50% 50% 0 0 / 100% 100% 0 0}
-
-/* ===== 3D COOP ===== */
-.coop-3d{position:absolute;bottom:14%;left:50%;transform:translateX(-50%);perspective:500px;z-index:5}
-.coop{position:relative;width:min(82vw,340px);transform-style:preserve-3d;transform:rotateX(2deg) rotateY(-3deg)}
-.coop-face{position:absolute;backface-visibility:hidden}
-
-/* roof */
-.roof{position:relative;width:110%;left:-5%;height:50px;transform-style:preserve-3d;transform:translateZ(20px)}
-.roof-top{position:absolute;inset:0;background:linear-gradient(135deg,var(--wood-dk),var(--wood),var(--wood-lt));clip-path:polygon(8% 100%,0 0,100% 0,92% 100%);box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.roof-side{position:absolute;bottom:-8px;left:0;right:0;height:12px;background:var(--wood-dk);clip-path:polygon(5% 0,0 100%,100% 100%,95% 0)}
-
-/* body */
-.coop-main{position:relative;height:clamp(110px,26vw,160px);margin-top:8px;background:rgba(139,94,60,.12);border:3px solid var(--wood);border-radius:4px;overflow:hidden;transform:translateZ(10px);box-shadow:inset 0 0 30px rgba(0,0,0,.08)}
-.coop-main::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 14px,rgba(100,60,30,.15) 14px,rgba(100,60,30,.15) 16px),repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(100,60,30,.15) 14px,rgba(100,60,30,.15) 16px)}
-
-/* door */
-.door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(55px,12vw,70px);height:clamp(70px,16vw,90px);background:linear-gradient(180deg,var(--wood-dk),#2a1508);border:3px solid var(--wood);border-bottom:none;border-radius:30px 30px 0 0;box-shadow:inset 0 0 15px rgba(0,0,0,.3)}
-.door::after{content:"";position:absolute;top:50%;right:6px;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(232,193,126,.6)}
-
-/* nests */
-.nest{position:absolute;bottom:6px;width:44px;height:30px;background:var(--wood-dk);border:2px solid var(--wood);border-radius:4px 4px 0 0;box-shadow:inset 0 0 8px rgba(0,0,0,.2)}
-.nest::before{content:"";position:absolute;bottom:2px;left:3px;right:3px;height:8px;background:#d4a574;border-radius:50%}
-.nest.n1{left:8px}.nest.n2{left:55px}.nest.n3{right:8px}
-
-/* eggs */
-.egg{position:absolute;bottom:8px;width:13px;height:16px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;cursor:pointer;transition:transform .3s var(--spring),opacity .3s;box-shadow:inset -2px -2px 4px rgba(0,0,0,.1),0 2px 5px rgba(0,0,0,.2);z-index:4}
-.egg:hover{transform:scale(1.15) translateY(-3px)}
-.egg.got{transform:scale(0) translateY(-25px);opacity:0;pointer-events:none}
-.egg.w{background:radial-gradient(ellipse at 35% 30%,#fff,#f0e6d2)}.egg.b{background:radial-gradient(ellipse at 35% 30%,#c9956a,#a07040)}
-.e1{left:6px}.e2{left:18px;bottom:5px}.e3{right:6px}
-
-/* ===== 3D SIGN ===== */
-.sign-3d{position:absolute;bottom:24%;left:5%;perspective:300px;z-index:7;cursor:pointer;transition:transform .3s var(--spring)}
-.sign-3d:hover{transform:rotateY(5deg) scale(1.05)}
-.sign-box{width:clamp(80px,18vw,110px);transform-style:preserve-3d;transform:rotateY(-8deg);position:relative}
-.sign-front{background:linear-gradient(135deg,var(--wood),var(--wood-lt));border:3px solid var(--wood-dk);border-radius:5px;padding:6px 4px;text-align:center;box-shadow:4px 4px 12px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1);position:relative;z-index:2}
-.sign-front h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(.4rem,1.2vw,.55rem);font-weight:600;color:var(--cream);line-height:1.3}
-.sign-front .ci{font-size:clamp(.55rem,1.6vw,.8rem)}
-.sign-edge{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--wood-dk);border-radius:5px;transform:translateZ(-6px)}
-.sign-post{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:8px;height:55px;background:linear-gradient(180deg,var(--wood-dk),#2a1508);border-radius:3px;box-shadow:2px 0 5px rgba(0,0,0,.2)}
-
-/* ===== 3D CHIKOY ===== */
-.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring)}
-.chikoy-3d:hover{transform:scale(1.08) rotateY(5deg)}
-.chikoy-3d.bounce{animation:cBounce .5s var(--spring)}
-@keyframes cBounce{0%{transform:translateY(0)}40%{transform:translateY(-14px)}100%{transform:translateY(0)}}
-.chikoy{transform-style:preserve-3d;transform:rotateY(-5deg);position:relative}
-.c-head{position:absolute;top:0;left:50%;transform:translateX(-50%) translateZ(14px);width:clamp(32px,8vw,44px);height:clamp(32px,8vw,44px);border-radius:50%;background:radial-gradient(circle at 38% 30%,#ffe0b2,#ffb74d);box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 -3px 6px rgba(0,0,0,.05);z-index:2}
-.c-hair{position:absolute;top:-5px;left:50%;transform:translateX(-50%) translateZ(16px);width:clamp(24px,6vw,34px);height:14px;background:linear-gradient(180deg,#1a0a00,#2d1a0a);border-radius:50% 50% 0 0;z-index:3}
-.c-hair::before{content:"";position:absolute;top:-4px;left:5px;width:9px;height:10px;background:#1a0a00;border-radius:50% 50% 0 0;transform:rotate(-15deg)}
-.c-eyes{position:absolute;top:34%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(7px,2vw,11px);z-index:4}
-.c-eye{width:5px;height:5px;border-radius:50%;background:#1a0a00;animation:cBlink 4s ease-in-out infinite;position:relative}
-.c-eye::after{content:"";position:absolute;top:1px;left:1.5px;width:2px;height:2px;border-radius:50%;background:#fff}
-@keyframes cBlink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(.1)}}
-.c-mouth{position:absolute;top:55%;left:50%;transform:translateX(-50%);width:9px;height:5px;border-radius:0 0 8px 8px;background:#e57373;z-index:4}
-.c-cheek{position:absolute;top:42%;width:7px;height:4px;background:rgba(255,138,128,.5);border-radius:50%;z-index:4}
-.c-cheek.l{left:2px}.c-cheek.r{right:2px}
-.c-body{position:absolute;top:clamp(28px,7vw,38px);left:50%;transform:translateX(-50%) translateZ(8px);width:clamp(30px,7.5vw,40px);height:clamp(28px,7vw,38px);background:linear-gradient(180deg,#FFD700,#FFB300);border-radius:6px 6px 3px 3px;box-shadow:0 4px 10px rgba(0,0,0,.2),inset 0 2px 6px rgba(255,255,255,.25);z-index:1}
-.c-body::before{content:"CHOOSE FEAR";position:absolute;top:28%;left:50%;transform:translateX(-50%);font-size:clamp(.16rem,.55vw,.28rem);font-weight:700;color:#1a0a00;white-space:nowrap;border:1.5px solid #1a0a00;padding:1px 3px}
-.c-arm{position:absolute;top:clamp(32px,8vw,44px);width:14px;height:5px;background:#FFD700;border-radius:3px;z-index:0;transition:transform .3s var(--spring);box-shadow:0 1px 3px rgba(0,0,0,.15)}
-.c-arm.l{left:0;transform:rotateY(-20deg) rotateZ(15deg);transform-origin:right center}
-.c-arm.r{right:0;transform:rotateY(20deg) rotateZ(-15deg);transform-origin:left center}
-.chikoy-3d.feeding .c-arm.r{animation:fArm .6s ease-in-out 3}
-@keyframes fArm{0%,100%{transform:rotateY(20deg) rotateZ(-15deg)}50%{transform:rotateY(20deg) rotateZ(-55deg) translateZ(10px)}}
-.c-leg{position:absolute;bottom:-10px;width:9px;height:12px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0}
-.c-leg.l{left:12px}.c-leg.r{right:12px}
-
-/* ===== 3D BUCKET ===== */
-.bucket-3d{position:absolute;bottom:17%;left:28%;perspective:300px;z-index:8;cursor:pointer;transition:transform .2s var(--spring)}
-.bucket-3d:hover{transform:scale(1.12)}
-.bucket-3d.shake{animation:bShake .4s ease-in-out}
-@keyframes bShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
-.bucket{transform-style:preserve-3d;transform:rotateX(8deg);position:relative}
-.b-body{position:absolute;bottom:0;left:3px;right:3px;height:26px;background:linear-gradient(135deg,var(--wood),var(--wood-lt));border-radius:0 0 5px 5px;border:2.5px solid var(--wood-dk);box-shadow:inset 0 -4px 8px rgba(0,0,0,.15),0 4px 10px rgba(0,0,0,.2)}
-.b-rim{position:absolute;top:0;left:0;right:0;height:7px;background:var(--wood-dk);border-radius:3px}
-.b-handle{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:22px;height:12px;border:2.5px solid var(--wood-dk);border-bottom:none;border-radius:10px 10px 0 0}
-.b-feed{position:absolute;top:5px;left:5px;right:5px;height:12px;background:radial-gradient(ellipse,#f5deb3,#daa520);border-radius:2px}
-
-/* ===== 3D CHICKENS ===== */
-.chicken{position:absolute;cursor:pointer;transition:transform .3s var(--spring);z-index:6;perspective:200px}
-.chicken:hover{transform:scale(1.12)}
-.chicken.peck{animation:cPeck .4s ease-in-out 3}
-@keyframes cPeck{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg) translateY(3px)}}
-.chicken.happy{animation:cHappy .5s var(--spring)}
-@keyframes cHappy{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.1)}100%{transform:translateY(0) scale(1)}}
-
-.ch{transform-style:preserve-3d;position:relative}
-.ch-body{position:relative;width:clamp(30px,7.5vw,40px);height:clamp(24px,6vw,32px);border-radius:50% 50% 45% 45%;box-shadow:0 4px 8px rgba(0,0,0,.2);transform:translateZ(5px)}
-.ch-head{position:absolute;top:-8px;left:18px;width:clamp(14px,3.5vw,18px);height:clamp(14px,3.5vw,18px);border-radius:50%;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.15);transform:translateZ(8px)}
-.ch-comb{position:absolute;top:-10px;left:14px;width:8px;height:6px;background:#e53935;border-radius:50% 50% 0 0;z-index:3}
-.ch-comb::before{content:"";position:absolute;top:-3px;left:2px;width:5px;height:5px;background:#e53935;border-radius:50% 50% 0 0}
-.ch-eye{position:absolute;top:5px;left:10px;width:2.5px;height:2.5px;border-radius:50%;background:#1a0a00;z-index:3}
-.ch-eye::after{content:"";position:absolute;top:.5px;left:.5px;width:1px;height:1px;border-radius:50%;background:#fff}
-.ch-beak{position:absolute;top:7px;left:12px;width:5px;height:3px;background:#ff8f00;border-radius:0 4px 4px 0;z-index:3}
-.ch-wattle{position:absolute;top:10px;left:10px;width:3px;height:3.5px;background:#e53935;border-radius:50%;z-index:2}
-.ch-tail{position:absolute;top:1px;left:-5px;width:9px;height:12px;border-radius:50% 0 0 50%;transform:rotate(8deg) translateZ(3px)}
-.ch-wing{position:absolute;top:6px;left:3px;width:11px;height:9px;border-radius:50% 0 0 50%;opacity:.8;transform:translateZ(4px)}
-.ch-legs{position:absolute;bottom:-4px;left:10px;display:flex;gap:6px;transform:translateZ(2px)}
-.ch-leg{width:2px;height:6px;background:#ff8f00;border-radius:0 0 2px 2px}
-
-.chicken.br .ch-body{background:linear-gradient(135deg,#8B4513,#A0522D,#8B4513)}.chicken.br .ch-head{background:linear-gradient(135deg,#A0522D,#8B4513)}.chicken.br .ch-tail{background:#6B3410}.chicken.br .ch-wing{background:#7A4420}
-.chicken.wh .ch-body{background:linear-gradient(135deg,#f5f5f5,#e0e0e0,#f5f5f5)}.chicken.wh .ch-head{background:#f0f0f0}.chicken.wh .ch-tail{background:#ddd}.chicken.wh .ch-wing{background:#e8e8e8}
-.chicken.bl .ch-body{background:linear-gradient(135deg,#2a2a2a,#1a1a1a,#2a2a2a)}.chicken.bl .ch-head{background:#222}.chicken.bl .ch-tail{background:#111}.chicken.bl .ch-wing{background:#1a1a1a}
-.chicken.walk{animation:cWalk 2s ease-in-out infinite}
-@keyframes cWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-
-/* ===== EFFECTS ===== */
-.feed-p{position:absolute;width:5px;height:5px;background:radial-gradient(circle,#f5deb3,#daa520);border-radius:50%;pointer-events:none;z-index:15;animation:feedFall .7s ease-in forwards}
-@keyframes feedFall{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(.3)}}
-.egg-pop{position:absolute;pointer-events:none;z-index:25;font-size:1.2rem;animation:ePop .6s var(--spring) forwards}
-@keyframes ePop{0%{opacity:1;transform:scale(.3)}50%{opacity:1;transform:scale(1.3) translateY(-18px)}100%{opacity:0;transform:scale(.8) translateY(-35px)}}
-.heart-pop{position:absolute;pointer-events:none;z-index:20;font-size:.9rem;animation:hPop .7s ease-out forwards}
-@keyframes hPop{0%{opacity:1;transform:translate(0,0) scale(.5)}100%{opacity:0;transform:translate(var(--hx),var(--hy)) scale(1.1)}}
-
-/* ===== UI ===== */
-.top-ui{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:.45rem .7rem;background:linear-gradient(180deg,rgba(13,8,18,.7),transparent)}
-.top-ui .bk{color:var(--cream);text-decoration:none;font-size:.62rem;padding:.25rem .5rem;border-radius:999px;border:1px solid rgba(255,143,171,.3);background:rgba(13,8,18,.4);backdrop-filter:blur(6px)}
-.top-ui .tt{font-family:"Cormorant Garamond",Georgia,serif;font-size:.78rem;font-weight:600;color:var(--gold);background:rgba(13,8,18,.4);backdrop-filter:blur(6px);padding:.2rem .65rem;border-radius:999px;border:1px solid rgba(232,193,126,.2)}
-
-.bot-ui{position:absolute;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;padding:.4rem .5rem;background:linear-gradient(0deg,rgba(13,8,18,.8),transparent)}
-.ct{display:flex;align-items:center;gap:.15rem;font-size:.62rem}.ct .v{color:var(--gold);font-weight:600}
-.fbtn{padding:.4rem 1rem;border-radius:999px;border:none;background:linear-gradient(135deg,var(--rose),#e0567c);color:#fff;font-family:inherit;font-size:.68rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(224,86,124,.4);transition:all .2s}
-.fbtn:active{transform:scale(.95)}
-
-/* photo card */
-.pic{position:absolute;top:46px;right:6px;z-index:30;width:min(42vw,160px);border-radius:10px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.45),0 0 0 2px rgba(139,94,60,.5);background:var(--wood-dk);cursor:pointer;transition:transform .3s var(--spring)}
-.pic:hover{transform:scale(1.03)}
-.pic img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:linear-gradient(135deg,var(--wood),var(--wood-dk))}
-.pic-cap{padding:.3rem .5rem;text-align:center;background:linear-gradient(135deg,var(--wood-dk),#2a1508)}
-.pic-cap h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:.68rem;font-weight:600}
-.pic-tag{position:absolute;top:4px;right:4px;padding:.15rem .35rem;border-radius:999px;background:rgba(13,8,18,.7);backdrop-filter:blur(6px);font-size:.42rem;color:var(--gold);border:1px solid rgba(232,193,126,.3)}
-
-.toast{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);padding:.45rem .9rem;border-radius:10px;background:rgba(13,8,18,.92);border:1px solid rgba(232,193,126,.3);backdrop-filter:blur(12px);font-size:.72rem;z-index:200;white-space:nowrap;pointer-events:none;animation:tPop .3s var(--spring)}
-@keyframes tPop{from{opacity:0;transform:translate(-50%,-50%) scale(.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-
-.hint{position:absolute;bottom:2.8rem;left:50%;transform:translateX(-50%);padding:.3rem .7rem;border-radius:999px;background:rgba(13,8,18,.7);backdrop-filter:blur(8px);font-size:.58rem;color:rgba(255,247,238,.6);z-index:40;animation:hFade 3.5s ease forwards;white-space:nowrap}
-@keyframes hFade{0%,70%{opacity:.8}100%{opacity:0}}
-
-@media(max-width:360px){.pic{width:48vw}.sign-3d{left:2%}.chikoy-3d{left:4%}.bucket-3d{left:22%}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-</style>
+<link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="chickenhouse.css">
 </head>
 <body>
 <div class="scene" id="scene">
-  <div class="sun"></div>
+  <div class="stars" id="stars"></div>
+  <div class="sun" id="sun"></div>
+  <div class="moon" id="moon"></div>
   <div class="cloud a"></div><div class="cloud b"></div>
-
-  <div class="top-ui">
-    <a class="bk" href="lovepage.html">&#8592;</a>
-    <span class="tt">CHIKOY'S CHICKEN HOUSE</span>
-  </div>
-
-  <!-- PHOTO -->
-  <div class="pic" id="pic">
-    <span class="pic-tag">CHIKOY'S FARM</span>
-    <img id="bannerImg" alt="Chikoy at the Chicken House">
-    <div class="pic-cap"><h2>Welcome to My Chicken House</h2></div>
-  </div>
-
-  <!-- 3D COOP -->
+  <div class="butterfly" style="top:20%;left:10%;animation-delay:0s">&#x1F98B;</div>
+  <div class="butterfly" style="top:25%;left:50%;animation-delay:2s">&#x1F98B;</div>
+  <div class="butterfly" style="top:15%;left:75%;animation-delay:4s">&#x1F98B;</div>
+  <div class="flower" style="bottom:28%;left:15%">&#x1F338;</div>
+  <div class="flower" style="bottom:26%;left:35%">&#x1F33C;</div>
+  <div class="flower" style="bottom:27%;left:60%">&#x1F338;</div>
+  <div class="flower" style="bottom:25%;left:80%">&#x1F33C;</div>
+  <div class="flower" style="bottom:29%;left:45%">&#x1F338;</div>
+  <div class="flower" style="bottom:24%;left:70%">&#x1F33C;</div>
+  <div class="flower" style="bottom:28%;left:22%">&#x1F338;</div>
+  <div class="flower" style="bottom:26%;left:90%">&#x1F33C;</div>
+  <div class="baby-chick bc1" id="bc1"><div class="bc-body"><div class="bc-head"><div class="bc-eye"></div><div class="bc-beak"></div><div class="bc-cheek"></div></div></div></div>
+  <div class="baby-chick bc2" id="bc2"><div class="bc-body"><div class="bc-head"><div class="bc-eye"></div><div class="bc-beak"></div><div class="bc-cheek"></div></div></div></div>
+  <div class="baby-chick bc3" id="bc3"><div class="bc-body"><div class="bc-head"><div class="bc-eye"></div><div class="bc-beak"></div><div class="bc-cheek"></div></div></div></div>
   <div class="coop-3d">
-    <div class="coop">
+    <div class="coop" id="coop">
       <div class="roof"><div class="roof-top"></div><div class="roof-side"></div></div>
       <div class="coop-main">
         <div class="door"></div>
-        <div class="nest n1"><div class="egg w e1" data-e="1"></div><div class="egg b e2" data-e="2"></div></div>
-        <div class="nest n2"><div class="egg w e1" data-e="3"></div></div>
-        <div class="nest n3"><div class="egg b e1" data-e="4"></div><div class="egg w e2" data-e="5"></div></div>
+        <div class="nest n1"><div class="egg w e1" data-id="0"></div><div class="egg b e2" data-id="1"></div></div>
+        <div class="nest n2"><div class="egg w e1" data-id="2"></div></div>
+        <div class="nest n3"><div class="egg b e1" data-id="3"></div><div class="egg w e2" data-id="4"></div></div>
       </div>
     </div>
   </div>
-
-  <!-- 3D SIGN -->
-  <div class="sign-3d" id="sign">
+  <div class="sign-3d" id="signBtn">
     <div class="sign-box">
-      <div class="sign-front"><div class="ci">🐔</div><h3>WELCOME TO<br>MY CHICKEN<br>HOUSE</h3><div class="ci">🐔</div></div>
+      <div class="sign-front"><h3>Welcome to<br>My Chicken House</h3><div class="ci">&#x1F425;</div></div>
       <div class="sign-edge"></div>
     </div>
     <div class="sign-post"></div>
   </div>
-
-  <!-- 3D CHIKOY -->
   <div class="chikoy-3d" id="chikoy">
-    <div class="chikoy">
-      <div class="c-hair"></div>
-      <div class="c-head">
-        <div class="c-eyes"><div class="c-eye"></div><div class="c-eye"></div></div>
-        <div class="c-mouth"></div>
-        <div class="c-cheek l"></div><div class="c-cheek r"></div>
-      </div>
+    <div class="chikoy" id="chBody">
+      <div class="c-head"><div class="c-hair"></div><div class="c-eyes"><div class="c-eye"></div><div class="c-eye"></div></div><div class="c-cheek l"></div><div class="c-cheek r"></div><div class="c-mouth"></div></div>
       <div class="c-body"></div>
       <div class="c-arm l"></div><div class="c-arm r"></div>
       <div class="c-leg l"></div><div class="c-leg r"></div>
     </div>
   </div>
-
-  <!-- 3D BUCKET -->
-  <div class="bucket-3d" id="bucket">
-    <div class="bucket">
-      <div class="b-handle"></div><div class="b-rim"></div>
-      <div class="b-body"><div class="b-feed"></div></div>
-    </div>
-  </div>
-
+  <div class="bucket-3d" id="bucket"><div class="bucket"><div class="b-rim"></div><div class="b-handle"></div><div class="b-body"><div class="b-feed"></div></div></div></div>
   <div class="ground"></div>
-
-  <div class="bot-ui">
-    <div class="ct">🥚 <span class="v" id="eggs">0</span></div>
-    <div class="ct">🌾 <span class="v" id="feeds">0</span></div>
-    <button class="fbtn" id="feedBtn">FEED ALL!</button>
-    <div class="ct">🐔 <span class="v" id="chickCt">0</span></div>
-    <div class="ct">❤️ <span class="v" id="loveCt">0</span></div>
+  <div id="chickens"></div>
+  <div class="top-ui">
+    <a href="lovepage.html" class="bk">← Back</a>
+    <div class="tt">&#x1F425; Chikoy's Coop</div>
   </div>
+  <button class="day-toggle" id="dayToggle">&#x2600;&#xFE0F;</button>
+  <div class="pic" id="picCard">
+    <img id="picImg" src="chickenhouse-photos/1.jpg" alt="Chikoy" loading="lazy">
+    <div class="pic-cap"><h2>Chikoy the Farmer</h2></div>
+    <div class="pic-tag">&#x1F331; Farmer</div>
+  </div>
+  <div class="bot-ui">
+    <div class="ct">&#x1F423; <span class="v" id="eggC">0</span></div>
+    <div class="ct">&#x2B50; <span class="v" id="goldC">0</span></div>
+    <button class="fbtn" id="feedBtn">&#x1F33E; Feed All</button>
+  </div>
+  <div class="hint" id="hint">Tap chickens to pet them</div>
 </div>
-
-<script>
-var scene=document.getElementById('scene'),chikoy=document.getElementById('chikoy'),bucket=document.getElementById('bucket');
-var feedN=0,loveN=0,eggN=0,chickens=[];
-
-/* load image */
-(function(){
-  var img=document.getElementById('bannerImg');
-  var sources=['chickenhouse-banner.jpg','chickenhouse-photos/1.jpg','chickenhouse-photos/1.png'];
-  var i=0;
-  function tryNext(){if(i>=sources.length){img.style.background='linear-gradient(135deg,var(--wood),var(--wood-dk))';return}img.src=sources[i];i++}
-  img.onerror=tryNext;img.onload=function(){img.style.aspectRatio='1/1'};
-  tryNext();
-})();
-
-/* eggs */
-document.querySelectorAll('.egg').forEach(function(el){
-  el.addEventListener('click',function(e){
-    e.stopPropagation();if(el.classList.contains('got'))return;
-    el.classList.add('got');eggN++;
-    document.getElementById('eggs').textContent=eggN;
-    var p=document.createElement('div');p.className='egg-pop';p.textContent='🥚';
-    var r=el.getBoundingClientRect(),s=scene.getBoundingClientRect();
-    p.style.left=(r.left-s.left+r.width/2)+'px';p.style.top=(r.top-s.top)+'px';
-    scene.appendChild(p);setTimeout(function(){p.remove()},600);
-    if(eggN===1)toast("First egg!");else if(eggN===5)toast("5 eggs!");else if(eggN===10)toast("10 eggs!");else if(eggN===20)toast("20 eggs!");
-  });
-});
-setInterval(function(){document.querySelectorAll('.egg.got').forEach(function(e){if(Math.random()>.5){e.classList.remove('got');e.style.transform='';e.style.opacity=''}})},8000);
-
-/* chickens */
-var cData=[
-  {c:'br',x:35,b:12},{c:'br',x:50,b:10},{c:'wh',x:65,b:13},{c:'br',x:28,b:11},
-  {c:'bl',x:78,b:12},{c:'wh',x:45,b:14},{c:'br',x:58,b:9},{c:'bl',x:22,b:13}
-];
-function mkChicken(d,i){
-  var el=document.createElement('div');el.className='chicken '+d.c+' walk';
-  el.style.left=d.x+'%';el.style.bottom=d.b+'%';el.style.animationDelay=(i*.3)+'s';
-  el.innerHTML='<div class="ch"><div class="ch-tail"></div><div class="ch-body"><div class="ch-wing"></div><div class="ch-comb"></div><div class="ch-head"><div class="ch-eye"></div><div class="ch-beak"></div><div class="ch-wattle"></div></div></div><div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div></div>';
-  el.addEventListener('click',function(e){e.stopPropagation();petCh(el)});
-  scene.appendChild(el);chickens.push({el:el,d:d});
-  setInterval(function(){if(Math.random()>.6){var dx=(Math.random()-.5)*14;d.x=Math.max(8,Math.min(88,d.x+dx));el.style.left=d.x+'%';el.style.transform=dx>0?'scaleX(1)':'scaleX(-1)'}},3000+i*500);
-}
-cData.forEach(function(c,i){mkChicken(c,i)});
-document.getElementById('chickCt').textContent=chickens.length;
-
-/* feed */
-function doFeed(){
-  chikoy.classList.add('feeding');setTimeout(function(){chikoy.classList.remove('feeding')},1800);
-  bucket.classList.add('shake');setTimeout(function(){bucket.classList.remove('shake')},400);
-  var r=bucket.getBoundingClientRect(),s=scene.getBoundingClientRect(),sx=r.left-s.left+r.width/2,sy=r.top-s.top;
-  for(var i=0;i<8;i++){var p=document.createElement('div');p.className='feed-p';p.style.left=sx+'px';p.style.top=sy+'px';p.style.setProperty('--fx',((Math.random()-.5)*55)+'px');p.style.setProperty('--fy',(Math.random()*30+8)+'px');scene.appendChild(p);setTimeout(function(q){q.remove()}.bind(null,p),700)}
-  feedN+=chickens.length;document.getElementById('feeds').textContent=feedN;
-  chickens.forEach(function(c,i){setTimeout(function(){c.el.classList.add('peck');setTimeout(function(){c.el.classList.remove('peck')},1200)},i*80)});
-  if(feedN%50===0)toast("Fed "+feedN+" chickens!");
-}
-bucket.addEventListener('click',function(e){e.stopPropagation();doFeed()});
-document.getElementById('feedBtn').addEventListener('click',doFeed);
-
-/* pet */
-function petCh(el){
-  el.classList.add('happy');setTimeout(function(){el.classList.remove('happy')},500);
-  loveN++;document.getElementById('loveCt').textContent=loveN;
-  for(var i=0;i<2;i++){var h=document.createElement('div');h.className='heart-pop';h.textContent=['❤️','💕','💗'][Math.floor(Math.random()*3)];var r=el.getBoundingClientRect(),s=scene.getBoundingClientRect();h.style.left=(r.left-s.left+r.width/2+(Math.random()-.5)*15)+'px';h.style.top=(r.top-s.top-5)+'px';h.style.setProperty('--hx',((Math.random()-.5)*30)+'px');h.style.setProperty('--hy',(-22-Math.random()*18)+'px');scene.appendChild(h);setTimeout(function(x){x.remove()}.bind(null,h),700)}
-}
-
-/* chikoy */
-chikoy.addEventListener('click',function(){
-  chikoy.classList.add('bounce');setTimeout(function(){chikoy.classList.remove('bounce')},500);
-  var h=document.createElement('div');h.className='heart-pop';h.textContent='💛';
-  var r=chikoy.getBoundingClientRect(),s=scene.getBoundingClientRect();
-  h.style.left=(r.left-s.left+r.width/2)+'px';h.style.top=(r.top-s.top)+'px';
-  h.style.setProperty('--hx','0px');h.style.setProperty('--hy','-28px');
-  scene.appendChild(h);setTimeout(function(){h.remove()},700);
-});
-
-/* sign */
-document.getElementById('sign').addEventListener('click',function(){
-  toast(["Welcome!","Bawk bawk!","Fresh eggs!","Chicken king!"][Math.floor(Math.random()*4)]);
-});
-
-function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;scene.appendChild(t);setTimeout(function(){t.remove()},2000)}
-document.addEventListener('keydown',function(e){if(e.key==='f'||e.key==='F')doFeed()});
-
-setTimeout(function(){var h=document.createElement('div');h.className='hint';h.textContent='Tap eggs to collect! Tap bucket to feed!';scene.appendChild(h);setTimeout(function(){h.remove()},4000)},500);
-window.scrollTo(0,0);
-</script>
 <script src="app.js"></script>
+<script src="chickenhouse.js"></script>
 </body>
 </html>
