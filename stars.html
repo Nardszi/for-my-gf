@@ -200,9 +200,11 @@
   }
 
   function placeStars() {
-    var margin = 80;
+    var margin = 60;
+    var scale = Math.min(W, H) < 500 ? 1.4 : 1;
     stars = STARS_DATA.map(function(data, i) {
-      var baseSize = data.size === 'large' ? 11 : data.size === 'medium' ? 7 : 4.5;
+      var baseSize = data.size === 'large' ? 13 : data.size === 'medium' ? 8 : 5.5;
+      baseSize *= scale;
       var depth = 0.3 + Math.random() * 0.7;
       return {
         baseX: margin + Math.random() * (W - margin * 2),
@@ -212,14 +214,16 @@
         depth: depth,
         data: data,
         phase: Math.random() * Math.PI * 2,
-        phaseSpeed: 0.015 + Math.random() * 0.025,
-        pulseAmp: 0.18 + Math.random() * 0.22,
+        phaseSpeed: 0.02 + Math.random() * 0.03,
+        pulseAmp: 0.2 + Math.random() * 0.25,
         hoverScale: 1,
-        idx: i
+        idx: i,
+        driftX: (Math.random() - 0.5) * 0.15,
+        driftY: (Math.random() - 0.5) * 0.1,
+        driftPhase: Math.random() * Math.PI * 2
       };
     });
 
-    // place R-N constellation stars in good positions
     stars[0].baseX = W * 0.35; stars[0].baseY = H * 0.38;
     stars[19].baseX = W * 0.62; stars[19].baseY = H * 0.55;
   }
@@ -286,19 +290,22 @@
   function drawStar(s) {
     var t = Date.now();
     s.phase += s.phaseSpeed;
+    s.driftPhase += 0.012;
     var pulse = 1 + Math.sin(s.phase) * s.pulseAmp;
     var r = s.r * pulse * s.hoverScale;
-    s.x = s.baseX + gyroX * s.depth * 2;
-    s.y = s.baseY + gyroY * s.depth * 2;
+    var drift = Math.sin(s.driftPhase) * 12;
+    var drift2 = Math.cos(s.driftPhase * 0.7) * 8;
+    s.x = s.baseX + gyroX * s.depth * 2 + drift;
+    s.y = s.baseY + gyroY * s.depth * 2 + drift2;
     var isActive = s.idx === activeIdx;
     var isHovered = !isActive && Math.hypot(s.x - mouseX, s.y - mouseY) < s.r * 3.5;
 
     // outer glow
-    var glowR = r * (isHovered || isActive ? 4.5 : 3.2);
+    var glowR = r * (isHovered || isActive ? 5 : 3.5);
     var glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
     var col = s.data.color;
-    glow.addColorStop(0, hexToRgba(col, isActive ? 0.7 : 0.5));
-    glow.addColorStop(0.4, hexToRgba(col, isHovered ? 0.22 : 0.14));
+    glow.addColorStop(0, hexToRgba(col, isActive ? 0.8 : 0.6));
+    glow.addColorStop(0.35, hexToRgba(col, isHovered ? 0.3 : 0.2));
     glow.addColorStop(1, hexToRgba(col, 0));
     ctx.beginPath();
     ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
@@ -306,10 +313,11 @@
     ctx.fill();
 
     // core
-    var core = ctx.createRadialGradient(s.x - r * 0.2, s.y - r * 0.2, 0, s.x, s.y, r);
+    var core = ctx.createRadialGradient(s.x - r * 0.15, s.y - r * 0.15, 0, s.x, s.y, r * 1.2);
     core.addColorStop(0, '#fff');
-    core.addColorStop(0.4, hexToRgba(col, 1));
-    core.addColorStop(1, hexToRgba(col, 0.7));
+    core.addColorStop(0.3, '#fff');
+    core.addColorStop(0.5, hexToRgba(col, 1));
+    core.addColorStop(1, hexToRgba(col, 0.6));
     ctx.beginPath();
     ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
     ctx.fillStyle = core;
@@ -348,11 +356,9 @@
     /* smooth gyro + auto-rotate */
     gyroX += (targetGyroX - gyroX) * 0.06;
     gyroY += (targetGyroY - gyroY) * 0.06;
-    if (Math.abs(targetGyroX) < 1 && Math.abs(targetGyroY) < 1) {
-      autoRotatePhase += 0.003;
-      gyroX += Math.sin(autoRotatePhase) * 0.3;
-      gyroY += Math.cos(autoRotatePhase * 0.7) * 0.2;
-    }
+    autoRotatePhase += 0.004;
+    gyroX += Math.sin(autoRotatePhase) * 0.4;
+    gyroY += Math.cos(autoRotatePhase * 0.7) * 0.3;
 
     // deep sky gradient
     var sky = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H/2, Math.max(W,H));
