@@ -566,12 +566,12 @@
       }, 300);
     }
 
-    // tap jar
+    // tap jar to open (single tap)
     var lastJarTap = 0;
     jar.addEventListener('click', function(e) {
       var now = Date.now();
       if (now - lastJarTap < 350) {
-        // double tap — force open
+        // double tap — force open with shake animation
         jar.classList.remove('shake');
         void jar.offsetWidth;
         jar.classList.add('shake');
@@ -580,20 +580,13 @@
         lastJarTap = 0;
       } else {
         lastJarTap = now;
-      }
-    });
-    jar.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      var now = Date.now();
-      if (now - lastJarTap < 350) {
-        jar.classList.remove('shake');
-        void jar.offsetWidth;
-        jar.classList.add('shake');
-        if (navigator.vibrate) try { navigator.vibrate([15, 30, 15]); } catch(e) {}
-        setTimeout(function() { if (!overlay.classList.contains('active')) showNote(); }, 200);
-        lastJarTap = 0;
-      } else {
-        lastJarTap = now;
+        // single tap — just open
+        setTimeout(function() {
+          if (lastJarTap !== 0 && Date.now() - lastJarTap >= 340) {
+            lastJarTap = 0;
+            if (!overlay.classList.contains('active')) showNote();
+          }
+        }, 360);
       }
     });
 
@@ -663,7 +656,6 @@
 
     function onDeviceMotion(e) {
       var ax, ay, az;
-      // try acceleration (without gravity) first, fallback to includingGravity
       if (e.acceleration && e.acceleration.x !== null) {
         ax = e.acceleration.x; ay = e.acceleration.y; az = e.acceleration.z;
       } else if (e.accelerationIncludingGravity) {
@@ -680,13 +672,12 @@
       prevAx = ax; prevAy = ay; prevAz = az;
 
       var total = dx + dy + dz;
-      if (total > 12) {
+      if (total > 10) {
         var now = Date.now();
-        if (now - lastShakeTime > 250) {
+        if (now - lastShakeTime > 300) {
           lastShakeTime = now;
           shakeCount++;
 
-          // jar wiggles on each shake
           jar.classList.remove('shake');
           void jar.offsetWidth;
           jar.classList.add('shake');
@@ -700,35 +691,28 @@
           }
         }
       }
-      // reset after 1.5s idle
       if (Date.now() - lastShakeTime > 1500) shakeCount = 0;
     }
 
-    function startMotion() {
+    // iOS requires this to be called DIRECTLY from a user gesture handler
+    // Do NOT call it on page load — only on tap
+    jar.addEventListener('click', function enableMotionOnTap() {
       if (motionListening) return;
-      motionListening = true;
-      window.addEventListener('devicemotion', onDeviceMotion, true);
-    }
 
-    // iOS 13+ requires permission request from user gesture
-    function requestMotionPermission() {
       if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
         DeviceMotionEvent.requestPermission().then(function(state) {
-          if (state === 'granted') startMotion();
+          if (state === 'granted') {
+            motionListening = true;
+            window.addEventListener('devicemotion', onDeviceMotion, true);
+          }
         }).catch(function() {});
-      } else {
-        startMotion();
+      } else if (typeof DeviceMotionEvent !== 'undefined') {
+        motionListening = true;
+        window.addEventListener('devicemotion', onDeviceMotion, true);
       }
-    }
 
-    // on first touch, request permission and start
-    document.addEventListener('touchstart', function firstTouch() {
-      requestMotionPermission();
-      document.removeEventListener('touchstart', firstTouch);
-    }, { once: true, passive: true });
-
-    // try immediately (works on Android)
-    requestMotionPermission();
+      jar.removeEventListener('click', enableMotionOnTap);
+    });
 
     // keyboard: space to open, esc to close
     document.addEventListener('keydown', function(e) {
