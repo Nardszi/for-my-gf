@@ -8,7 +8,7 @@ const chickensEl = $("#chickens");
 
 const state = {
   eggs: 0, gold: 0, day: true, earned: {},
-  chicks: [{el:$("#bc1"),x:20,bY:72},{el:$("#bc2"),x:70,bY:74},{el:$("#bc3"),x:45,bY:76}]
+  chicks: [{el:$("#bc1"),x:20,bY:31},{el:$("#bc2"),x:70,bY:32},{el:$("#bc3"),x:45,bY:30}]
 };
 
 const ACHS = [
@@ -27,8 +27,8 @@ for(let i=0;i<60;i++){const s=document.createElement("div");s.className="star";s
 
 // Chickens
 const chickenDefs = [
-  {type:"br",x:35,y:68},{type:"wh",x:55,y:70},{type:"bl",x:72,y:67},{type:"dk",x:18,y:71},
-  {type:"br",x:48,y:73},{type:"wh",x:82,y:69},{type:"bl",x:12,y:74},{type:"dk",x:62,y:72}
+  {type:"br",x:35,y:31},{type:"wh",x:55,y:32},{type:"bl",x:72,y:30},{type:"dk",x:18,y:33},
+  {type:"br",x:48,y:31},{type:"wh",x:82,y:32},{type:"bl",x:12,y:30},{type:"dk",x:62,y:33}
 ];
 
 function buildChicken(c,i){
@@ -49,7 +49,7 @@ function roam(){
       const dx=(Math.random()-.5)*8;
       const dy=(Math.random()-.5)*4;
       const x=parseFloat(c.style.left)+dx;
-      const y=Math.max(64,Math.min(78,parseFloat(c.style.bottom)+dy));
+      const y=Math.max(29,Math.min(35,parseFloat(c.style.bottom)+dy));
       c.style.left=Math.max(5,Math.min(92,x))+"%";
       c.style.bottom=y+"%";
       c.classList.add("walk");
@@ -73,7 +73,7 @@ function moveChicks(){
     ch.x+=((Math.random()-.5)*15);
     ch.x=Math.max(10,Math.min(80,ch.x));
     ch.el.style.left=ch.x+"%";
-    ch.el.style.bottom=ch.bY+"%";
+    ch.el.style.bottom=(ch.bY+(Math.random()-.5)*3)+"%";
   });
 }
 setInterval(moveChicks,4000);
@@ -110,7 +110,7 @@ $$(".egg").forEach(e=>{
 
 // Feed All
 const feedLocations=[
-  {x:30,y:68},{x:42,y:70},{x:58,y:69},{x:75,y:71},{x:20,y:73},{x:50,y:72},{x:65,y:67},{x:38,y:75}
+  {x:30,y:31},{x:42,y:32},{x:58,y:31},{x:75,y:33},{x:20,y:30},{x:50,y:32},{x:65,y:31},{x:38,y:33}
 ];
 
 function feedAll(){
