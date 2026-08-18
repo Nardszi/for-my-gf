@@ -597,4 +597,235 @@
       lastTap=now;
     });
   })();
+
+  /* ---- SWIPE NAVIGATION BETWEEN PAGES ---- */
+  (function(){
+    var pages=['lovepage.html','aurora.html','chikoy-room.html','letters.html','diary.html','stars.html','reasons.html','scratch.html','story.html','timecapsule.html','photovault.html','finale.html','hidden.html','visitors.html'];
+    var idx=pages.indexOf(PAGE);
+    if(idx===-1)return;
+    var startX=0,startY=0,swiping=false,toast=null;
+    var hint=document.createElement('div');
+    hint.style.cssText='position:fixed;bottom:12px;right:12px;font-size:0.65rem;color:rgba(255,247,238,0.35);z-index:99995;pointer-events:none;font-family:Georgia,serif;transition:opacity 1s';
+    hint.textContent='\u2190 swipe to navigate \u2192';
+    document.body.appendChild(hint);
+    setTimeout(function(){hint.style.opacity='0';setTimeout(function(){hint.remove()},1200);},4000);
+
+    document.addEventListener('touchstart',function(e){
+      if(e.touches.length!==1)return;
+      startX=e.touches[0].clientX;
+      startY=e.touches[0].clientY;
+      swiping=true;
+    },{passive:true});
+
+    document.addEventListener('touchend',function(e){
+      if(!swiping)return;
+      swiping=false;
+      var dx=e.changedTouches[0].clientX-startX;
+      var dy=e.changedTouches[0].clientY-startY;
+      if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.8)return;
+      var dir=dx<0?1:-1;
+      var next=idx+dir;
+      if(next<0||next>=pages.length)return;
+      var overlay=document.createElement('div');
+      overlay.style.cssText='position:fixed;inset:0;z-index:99997;display:flex;align-items:center;justify-content:center;background:rgba(10,6,18,0.85);opacity:0;transition:opacity 0.25s';
+      overlay.innerHTML='<div style="text-align:center;color:#e8c17e;font-family:Georgia,serif"><div style="font-size:0.7rem;opacity:0.5;margin-bottom:0.4rem">'+(dir<0?'swipe right':'swipe left')+'</div><div style="font-size:1.1rem">'+pages[next].replace('.html','')+'</div></div>';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function(){overlay.style.opacity='1';});
+      if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+      setTimeout(function(){window.location.href=pages[next];},400);
+    },{passive:true});
+  })();
+
+  /* ---- PULL DOWN TO REVEAL SECRET ---- */
+  (function(){
+    var pulled=false,started=false,startY=0;
+    var msg=document.createElement('div');
+    msg.style.cssText='position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,143,171,0.15),transparent);z-index:99996;pointer-events:none;opacity:0;transition:opacity 0.3s;font-family:Georgia,serif;font-size:0.8rem;color:#e8c17e';
+    msg.textContent='\u2193 pull down for a secret \u2193';
+    document.body.appendChild(msg);
+
+    document.addEventListener('touchstart',function(e){
+      if(window.scrollY<=0&&e.touches.length===1){
+        startY=e.touches[0].clientY;
+        started=true;
+      }
+    },{passive:true});
+
+    document.addEventListener('touchmove',function(e){
+      if(!started)return;
+      var dy=e.touches[0].clientY-startY;
+      if(dy>40&&window.scrollY<=0){
+        msg.style.opacity='1';
+        msg.style.transform='translateY('+Math.min(dy-40,40)+'px)';
+      }
+    },{passive:true});
+
+    document.addEventListener('touchend',function(){
+      if(!started)return;
+      started=false;
+      if(msg.style.opacity==='1'&&!pulled){
+        pulled=true;
+        var loveMessages=[
+          'Nard loves you more than words can say',
+          'You are the reason I smile every day',
+          'My heart beats only for you',
+          'Forever and always, Rezil',
+          'You are my today and all of my tomorrows'
+        ];
+        var secret=document.createElement('div');
+        secret.textContent=loveMessages[Math.floor(Math.random()*loveMessages.length)];
+        secret.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(26,15,20,0.96);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;font-size:0.85rem;z-index:99997;text-align:center;max-width:80vw;border:1px solid rgba(232,193,126,0.4);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+        document.body.appendChild(secret);
+        requestAnimationFrame(function(){secret.style.opacity='1';secret.style.transform='translate(-50%,-50%) scale(1)';});
+        if(navigator.vibrate)try{navigator.vibrate([20,30,20])}catch(e){}
+        setTimeout(function(){secret.style.opacity='0';secret.style.transform='translate(-50%,-50%) scale(0.8)';setTimeout(function(){secret.remove()},400);},3000);
+      }
+      msg.style.opacity='0';
+      msg.style.transform='';
+      setTimeout(function(){pulled=false;},3000);
+    },{passive:true});
+  })();
+
+  /* ---- RANDOM TOAST NOTIFICATIONS ---- */
+  (function(){
+    var messages=[
+      'Nard is thinking of you right now...',
+      'You are loved more than you know',
+      'This moment, this breath, I love you',
+      'You make everything better just by existing',
+      'I fall in love with you more every day',
+      'You are my favorite notification',
+      'Missing you is my full-time job',
+      'You are the best thing that ever happened to me',
+      'Can\'t wait to see you again',
+      'You are my sunshine on a cloudy day',
+      'My heart is always where you are',
+      'You are enough, always have been, always will be',
+      'Just a reminder: you are amazing',
+      'I choose you, today and every day',
+      'You are my favorite place to be'
+    ];
+    function showToast(){
+      var t=document.createElement('div');
+      t.textContent=messages[Math.floor(Math.random()*messages.length)];
+      t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(26,15,20,0.95);color:#e8c17e;padding:0.7rem 1.4rem;border-radius:999px;font-family:Georgia,serif;font-size:0.75rem;z-index:99998;border:1px solid rgba(232,193,126,0.3);opacity:0;transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none';
+      document.body.appendChild(t);
+      requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+      setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(-20px)';setTimeout(function(){t.remove();},600);},3500);
+      if(navigator.vibrate)try{navigator.vibrate(10)}catch(e){}
+    }
+    function scheduleNext(){
+      var delay=300000+Math.random()*300000;
+      setTimeout(function(){
+        if(document.visibilityState==='visible')showToast();
+        scheduleNext();
+      },delay);
+    }
+    scheduleNext();
+  })();
+
+  /* ---- LONG PRESS MENU ---- */
+  (function(){
+    var pressTimer=null,menuOpen=false;
+    var menu=document.createElement('div');
+    menu.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(26,15,20,0.97);border:1px solid rgba(255,143,171,0.3);border-radius:18px;padding:0.6rem;z-index:99999;display:flex;gap:0.3rem;opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;backdrop-filter:blur(10px)';
+    menu.innerHTML='<button class="lp-btn" data-action="love" style="background:none;border:none;font-size:1.5rem;padding:0.5rem 0.7rem;cursor:pointer;border-radius:12px;transition:background 0.2s">\uD83D\uDC95</button><button class="lp-btn" data-action="share" style="background:none;border:none;font-size:1.5rem;padding:0.5rem 0.7rem;cursor:pointer;border-radius:12px;transition:background 0.2s">\uD83D\uDCE4</button><button class="lp-btn" data-action="home" style="background:none;border:none;font-size:1.5rem;padding:0.5rem 0.7rem;cursor:pointer;border-radius:12px;transition:background 0.2s">\uD83C\uDFE0</button><button class="lp-btn" data-action="top" style="background:none;border:none;font-size:1.5rem;padding:0.5rem 0.7rem;cursor:pointer;border-radius:12px;transition:background 0.2s">\u2B06\uFE0F</button><button class="lp-btn" data-action="close" style="background:none;border:none;font-size:1rem;padding:0.5rem 0.7rem;cursor:pointer;border-radius:12px;transition:background 0.2s;color:#ff8fab">\u2715</button>';
+    document.body.appendChild(menu);
+    var btns=menu.querySelectorAll('.lp-btn');
+    btns.forEach(function(b){
+      b.addEventListener('touchstart',function(){b.style.background='rgba(255,143,171,0.15)';},{passive:true});
+      b.addEventListener('touchend',function(){b.style.background='none';},{passive:true});
+    });
+
+    document.addEventListener('touchstart',function(e){
+      if(e.touches.length!==1)return;
+      if(e.target.closest('button,a,input,.lp-btn'))return;
+      pressTimer=setTimeout(function(){
+        if(navigator.vibrate)try{navigator.vibrate(20)}catch(e){}
+        menu.style.opacity='1';
+        menu.style.transform='translateX(-50%) translateY(0)';
+        menu.style.pointerEvents='auto';
+        menuOpen=true;
+      },500);
+    },{passive:true});
+
+    document.addEventListener('touchend',function(){
+      if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}
+    },{passive:true});
+
+    document.addEventListener('touchmove',function(){
+      if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}
+    },{passive:true});
+
+    function closeMenu(){
+      menu.style.opacity='0';
+      menu.style.transform='translateX(-50%) translateY(80px)';
+      menu.style.pointerEvents='none';
+      menuOpen=false;
+    }
+
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        var action=b.getAttribute('data-action');
+        closeMenu();
+        if(action==='love'){
+          var heart=document.createElement('div');
+          heart.textContent='\u2764\uFE0F';
+          heart.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:4rem;z-index:99999;transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+          document.body.appendChild(heart);
+          requestAnimationFrame(function(){heart.style.transform='translate(-50%,-50%) scale(1)';});
+          setTimeout(function(){heart.style.transform='translate(-50%,-50%) scale(0)';setTimeout(function(){heart.remove();},500);},1500);
+          if(navigator.vibrate)try{navigator.vibrate([30,50,30])}catch(e){}
+        }else if(action==='share'){
+          var url=location.href;
+          if(navigator.share)navigator.share({title:'Our Love Story',text:'I love you \u2764\uFE0F',url:url}).catch(function(){});
+          else{window.open('https://wa.me/?text='+encodeURIComponent('I love you \u2764\uFE0F '+url));}
+        }else if(action==='home'){
+          window.location.href='lovepage.html';
+        }else if(action==='top'){
+          window.scrollTo({top:0,behavior:'smooth'});
+        }
+      });
+    });
+
+    document.addEventListener('click',function(e){
+      if(menuOpen&&!e.target.closest('.lp-btn'))closeMenu();
+    });
+  })();
+
+  /* ---- DOUBLE TAP ANY PHOTO -> FLOATING HEART ---- */
+  (function(){
+    var lastTap=0;
+    document.addEventListener('dblclick',function(e){
+      var img=e.target;
+      if(!img.matches('img,.photo,.gallery-item img,[style*="background-image"]'))return;
+      var rect=img.getBoundingClientRect();
+      var heart=document.createElement('div');
+      heart.textContent='\u2764\uFE0F';
+      heart.style.cssText='position:fixed;font-size:2rem;z-index:99999;pointer-events:none;left:'+(rect.left+rect.width/2-16)+'px;top:'+(rect.top+rect.height/2-16)+'px;transform:scale(0);transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+      document.body.appendChild(heart);
+      requestAnimationFrame(function(){heart.style.transform='scale(1) translateY(-40px)';heart.style.opacity='0';});
+      setTimeout(function(){heart.remove();},700);
+      if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+    });
+    var lastTouch=0;
+    document.addEventListener('touchend',function(e){
+      var now=Date.now();
+      if(now-lastTouch<300){
+        var t=e.target;
+        if(!t.matches('img,.photo,.gallery-item img,[style*="background-image"]'))return;
+        var rect=t.getBoundingClientRect();
+        var heart=document.createElement('div');
+        heart.textContent='\u2764\uFE0F';
+        heart.style.cssText='position:fixed;font-size:2rem;z-index:99999;pointer-events:none;left:'+(rect.left+rect.width/2-16)+'px;top:'+(rect.top+rect.height/2-16)+'px;transform:scale(0);transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+        document.body.appendChild(heart);
+        requestAnimationFrame(function(){heart.style.transform='scale(1) translateY(-40px)';heart.style.opacity='0';});
+        setTimeout(function(){heart.remove();},700);
+        if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+      }
+      lastTouch=now;
+    },{passive:true});
+  })();
+
+})();
 })();
