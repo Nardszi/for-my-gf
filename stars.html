@@ -287,6 +287,19 @@
     ctx.fillText('R ✦ N', (s1.x + s2.x) / 2, my - 8);
   }
 
+  function drawStarShape(cx, cy, outerR, innerR, points, rotation) {
+    ctx.beginPath();
+    for (var i = 0; i < points * 2; i++) {
+      var r = i % 2 === 0 ? outerR : innerR;
+      var angle = (Math.PI * i / points) - Math.PI / 2 + rotation;
+      var x = cx + Math.cos(angle) * r;
+      var y = cy + Math.sin(angle) * r;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+
   function drawStar(s) {
     var t = Date.now();
     s.phase += s.phaseSpeed;
@@ -299,34 +312,54 @@
     s.y = s.baseY + gyroY * s.depth * 2 + drift2;
     var isActive = s.idx === activeIdx;
     var isHovered = !isActive && Math.hypot(s.x - mouseX, s.y - mouseY) < s.r * 3.5;
+    var col = s.data.color;
+    var rotation = t * 0.0003 + s.phase;
 
     // outer glow
-    var glowR = r * (isHovered || isActive ? 5 : 3.5);
+    var glowR = r * (isHovered || isActive ? 5.5 : 4);
     var glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
-    var col = s.data.color;
-    glow.addColorStop(0, hexToRgba(col, isActive ? 0.8 : 0.6));
-    glow.addColorStop(0.35, hexToRgba(col, isHovered ? 0.3 : 0.2));
+    glow.addColorStop(0, hexToRgba(col, isActive ? 0.8 : 0.55));
+    glow.addColorStop(0.3, hexToRgba(col, isHovered ? 0.25 : 0.15));
     glow.addColorStop(1, hexToRgba(col, 0));
     ctx.beginPath();
     ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
     ctx.fillStyle = glow;
     ctx.fill();
 
-    // core
-    var core = ctx.createRadialGradient(s.x - r * 0.15, s.y - r * 0.15, 0, s.x, s.y, r * 1.2);
-    core.addColorStop(0, '#fff');
-    core.addColorStop(0.3, '#fff');
-    core.addColorStop(0.5, hexToRgba(col, 1));
-    core.addColorStop(1, hexToRgba(col, 0.6));
+    // 3D star body — shadow layer (bottom-right)
+    drawStarShape(s.x + 1.5, s.y + 1.5, r, r * 0.42, 5, rotation);
+    ctx.fillStyle = hexToRgba('#000000', 0.3);
+    ctx.fill();
+
+    // 3D star body — main shape
+    drawStarShape(s.x, s.y, r, r * 0.42, 5, rotation);
+    var bodyGrad = ctx.createLinearGradient(s.x - r, s.y - r, s.x + r, s.y + r);
+    bodyGrad.addColorStop(0, '#ffffff');
+    bodyGrad.addColorStop(0.25, hexToRgba(col, 1));
+    bodyGrad.addColorStop(0.6, hexToRgba(col, 0.9));
+    bodyGrad.addColorStop(1, hexToRgba(col, 0.6));
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // 3D highlight — top-left shine
+    drawStarShape(s.x - r * 0.12, s.y - r * 0.12, r * 0.75, r * 0.32, 5, rotation);
+    var shine = ctx.createRadialGradient(s.x - r * 0.3, s.y - r * 0.3, 0, s.x, s.y, r * 0.8);
+    shine.addColorStop(0, 'rgba(255,255,255,0.6)');
+    shine.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+    shine.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = shine;
+    ctx.fill();
+
+    // bright center sparkle
     ctx.beginPath();
-    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = core;
+    ctx.arc(s.x, s.y, r * 0.18, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
     ctx.fill();
 
     // active ring
     if (isActive) {
       ctx.beginPath();
-      ctx.arc(s.x, s.y, r + 5 + Math.sin(t / 300) * 2, 0, Math.PI * 2);
+      ctx.arc(s.x, s.y, r + 6 + Math.sin(t / 300) * 2, 0, Math.PI * 2);
       ctx.strokeStyle = hexToRgba(col, 0.7);
       ctx.lineWidth = 1.5;
       ctx.stroke();
@@ -334,10 +367,10 @@
 
     // name label for large stars
     if (s.data.size === 'large' || isHovered) {
-      ctx.font = '500 9px "Segoe UI",sans-serif';
-      ctx.fillStyle = isHovered ? 'rgba(255,247,238,0.9)' : 'rgba(255,247,238,0.45)';
+      ctx.font = '500 10px "Segoe UI",sans-serif';
+      ctx.fillStyle = isHovered ? 'rgba(255,247,238,0.95)' : 'rgba(255,247,238,0.5)';
       ctx.textAlign = 'center';
-      ctx.fillText(s.data.title, s.x, s.y + r + 14);
+      ctx.fillText(s.data.title, s.x, s.y + r + 16);
     }
   }
 
