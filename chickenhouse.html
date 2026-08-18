@@ -253,7 +253,7 @@ var feedN=0,loveN=0,eggN=0,chickens=[];
 /* load image */
 (function(){
   var img=document.getElementById('bannerImg');
-  var sources=['chickenhouse-photos/1.jpg','chickenhouse-photos/1.png','chickenhouse-photos/chikoy-chickens.jpg','chickenhouse-photos/chikoy-chickens.png'];
+  var sources=['chickenhouse-banner.jpg','chickenhouse-photos/1.jpg','chickenhouse-photos/1.png'];
   var i=0;
   function tryNext(){if(i>=sources.length){img.style.background='linear-gradient(135deg,var(--wood),var(--wood-dk))';return}img.src=sources[i];i++}
   img.onerror=tryNext;img.onload=function(){img.style.aspectRatio='1/1'};
