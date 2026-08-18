@@ -187,6 +187,8 @@
   var activeIdx = -1;
   var mouseX = -999, mouseY = -999;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var gyroX = 0, gyroY = 0;
+  var targetGyroX = 0, targetGyroY = 0;
 
   function resize() {
     W = window.innerWidth; H = window.innerHeight;
@@ -201,10 +203,13 @@
     var margin = 80;
     stars = STARS_DATA.map(function(data, i) {
       var baseSize = data.size === 'large' ? 11 : data.size === 'medium' ? 7 : 4.5;
+      var depth = 0.3 + Math.random() * 0.7;
       return {
-        x: margin + Math.random() * (W - margin * 2),
-        y: margin + Math.random() * (H - margin * 2),
+        baseX: margin + Math.random() * (W - margin * 2),
+        baseY: margin + Math.random() * (H - margin * 2),
+        x: 0, y: 0,
         r: baseSize,
+        depth: depth,
         data: data,
         phase: Math.random() * Math.PI * 2,
         phaseSpeed: 0.015 + Math.random() * 0.025,
@@ -223,13 +228,17 @@
   function placeBgStars() {
     bgStars = [];
     for (var i = 0; i < 180; i++) {
+      var depth = Math.random();
       bgStars.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
+        baseX: Math.random() * W,
+        baseY: Math.random() * H,
+        x: 0, y: 0,
         r: 0.4 + Math.random() * 1.2,
         alpha: 0.15 + Math.random() * 0.5,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.006 + Math.random() * 0.012
+        speed: 0.006 + Math.random() * 0.012,
+        depth: depth,
+        parallaxFactor: 0.5 + depth * 1.5
       });
     }
   }
@@ -237,6 +246,8 @@
   function drawBgStars() {
     bgStars.forEach(function(s) {
       s.phase += s.speed;
+      s.x = s.baseX + gyroX * s.parallaxFactor;
+      s.y = s.baseY + gyroY * s.parallaxFactor;
       var a = s.alpha * (0.6 + Math.sin(s.phase) * 0.4);
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
@@ -278,6 +289,8 @@
     s.phase += s.phaseSpeed;
     var pulse = 1 + Math.sin(s.phase) * s.pulseAmp;
     var r = s.r * pulse * s.hoverScale;
+    s.x = s.baseX + gyroX * s.depth * 2;
+    s.y = s.baseY + gyroY * s.depth * 2;
     var isActive = s.idx === activeIdx;
     var isHovered = !isActive && Math.hypot(s.x - mouseX, s.y - mouseY) < s.r * 3.5;
 
@@ -330,8 +343,18 @@
     return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
   }
 
+  var autoRotatePhase = 0;
   function draw() {
     ctx.clearRect(0, 0, W, H);
+
+    /* smooth gyro + auto-rotate */
+    gyroX += (targetGyroX - gyroX) * 0.06;
+    gyroY += (targetGyroY - gyroY) * 0.06;
+    if (Math.abs(targetGyroX) < 1 && Math.abs(targetGyroY) < 1) {
+      autoRotatePhase += 0.003;
+      gyroX += Math.sin(autoRotatePhase) * 0.3;
+      gyroY += Math.cos(autoRotatePhase * 0.7) * 0.2;
+    }
 
     // deep sky gradient
     var sky = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H/2, Math.max(W,H));
@@ -420,9 +443,19 @@
     var rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
+    targetGyroX = (mouseX - W / 2) * 0.03;
+    targetGyroY = (mouseY - H / 2) * 0.03;
     var idx = hitTest(mouseX, mouseY);
     canvas.style.cursor = idx >= 0 ? 'pointer' : 'crosshair';
   });
+
+  /* gyroscope for mobile */
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', function(e) {
+      if (e.gamma !== null) targetGyroX = Math.max(-30, Math.min(30, e.gamma)) * 0.5;
+      if (e.beta !== null) targetGyroY = Math.max(-30, Math.min(30, e.beta - 45)) * 0.5;
+    });
+  }
 
   // hint fade after first tap
   var hintFaded = false;
@@ -438,6 +471,100 @@
   window.addEventListener('resize', resize);
   resize();
   draw();
+
+  /* ---- PINCH TO FORM "I LOVE YOU" ---- */
+  (function(){
+    var pinchActive=false;
+    var pinchStartDist=0;
+    var iLoveYouStars=[];
+    var pinchThreshold=120;
+
+    function getDistance(t1,t2){
+      return Math.sqrt(Math.pow(t2.clientX-t1.clientX,2)+Math.pow(t2.clientY-t1.clientY,2));
+    }
+
+    function spawnILoveYou(){
+      if(pinchActive)return;
+      pinchActive=true;
+      iLoveYouStars=[];
+      var text='I LOVE YOU';
+      var charPositions={
+        'I':[[0.15,0.3],[0.15,0.35],[0.15,0.4],[0.15,0.45],[0.15,0.5]],
+        'L':[[0.25,0.3],[0.25,0.35],[0.25,0.4],[0.25,0.45],[0.25,0.5],[0.3,0.5],[0.35,0.5]],
+        'O':[[0.45,0.35],[0.5,0.3],[0.55,0.35],[0.55,0.45],[0.5,0.5],[0.45,0.45],[0.45,0.35]],
+        'V':[[0.65,0.3],[0.7,0.4],[0.75,0.5],[0.8,0.4],[0.85,0.3]],
+        'E':[[0.15,0.6],[0.15,0.65],[0.15,0.7],[0.15,0.75],[0.15,0.8],[0.2,0.6],[0.2,0.7],[0.2,0.8]],
+        'Y':[[0.3,0.6],[0.35,0.65],[0.4,0.7],[0.45,0.65],[0.5,0.6],[0.4,0.75],[0.4,0.8]],
+        'O2':[[0.55,0.65],[0.6,0.6],[0.65,0.65],[0.65,0.75],[0.6,0.8],[0.55,0.75],[0.55,0.65]],
+        'U':[[0.75,0.6],[0.75,0.65],[0.75,0.7],[0.75,0.75],[0.8,0.8],[0.85,0.75],[0.85,0.7],[0.85,0.65],[0.85,0.6]]
+      };
+      Object.values(charPositions).forEach(function(pts){
+        pts.forEach(function(p){
+          iLoveYouStars.push({x:p[0]*W,y:p[1]*H,targetX:p[0]*W,targetY:p[1]*H,r:2+Math.random()*2,phase:Math.random()*Math.PI*2});
+        });
+      });
+      /* animate stars moving into position */
+      var startTime=Date.now();
+      var duration=1500;
+      function animateStars(){
+        var elapsed=Date.now()-startTime;
+        var progress=Math.min(1,elapsed/duration);
+        var ease=1-Math.pow(1-progress,3);
+        iLoveYouStars.forEach(function(s,i){
+          s.x=s.targetX+Math.cos(s.phase+elapsed*0.003)*3*(1-ease);
+          s.y=s.targetY+Math.sin(s.phase+elapsed*0.002)*3*(1-ease);
+        });
+        if(progress<1)requestAnimationFrame(animateStars);
+        else{
+          setTimeout(function(){pinchActive=false;iLoveYouStars=[];},3000);
+        }
+      }
+      animateStars();
+      if(navigator.vibrate)try{navigator.vibrate([20,30,20])}catch(e){}
+    }
+
+    canvas.addEventListener('touchstart',function(e){
+      if(e.touches.length===2){
+        pinchStartDist=getDistance(e.touches[0],e.touches[1]);
+      }
+    },{passive:true});
+
+    canvas.addEventListener('touchmove',function(e){
+      if(e.touches.length===2){
+        var dist=getDistance(e.touches[0],e.touches[1]);
+        if(dist<pinchStartDist-pinchThreshold){
+          spawnILoveYou();
+        }
+      }
+    },{passive:true});
+
+    /* desktop: press I key */
+    document.addEventListener('keydown',function(e){
+      if(e.key==='i'||e.key==='I')spawnILoveYou();
+    });
+
+    /* hook into draw loop to render the text stars */
+    var origDraw=draw;
+    var _frame=function(){
+      origDraw();
+      if(iLoveYouStars.length>0){
+        iLoveYouStars.forEach(function(s){
+          ctx.save();
+          ctx.globalAlpha=0.8+Math.sin(s.phase+Date.now()*0.003)*0.2;
+          ctx.fillStyle='#ff8fab';
+          ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+          var glow=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3);
+          glow.addColorStop(0,'rgba(255,143,171,0.4)');
+          glow.addColorStop(1,'transparent');
+          ctx.fillStyle=glow;
+          ctx.beginPath();ctx.arc(s.x,s.y,s.r*3,0,Math.PI*2);ctx.fill();
+          ctx.restore();
+        });
+      }
+    };
+    /* replace draw with enhanced version */
+    draw=_frame;
+  })();
 
   window.scrollTo(0, 0);
 </script>

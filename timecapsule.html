@@ -29,6 +29,19 @@ header p{font-size:0.86rem;font-style:italic;color:rgba(255,247,238,0.62);margin
 .locked{text-align:center;padding:3rem 1rem}
 .locked .big{font-size:3rem;margin-bottom:0.6rem}
 .locked p{font-size:0.86rem;font-style:italic;color:rgba(255,247,238,0.4)}
+
+/* 3D Chest */
+.chest-scene{perspective:600px;display:inline-block;margin:0 auto 1.5rem;width:120px;height:100px}
+.chest{width:100%;height:100%;position:relative;transform-style:preserve-3d;transform:rotateX(-5deg) rotateY(-10deg);animation:chestFloat 3s ease-in-out infinite}
+@keyframes chestFloat{0%,100%{transform:rotateX(-5deg) rotateY(-10deg) translateY(0)}50%{transform:rotateX(-5deg) rotateY(-10deg) translateY(-6px)}}
+.chest-body{position:absolute;bottom:0;width:100%;height:65%;background:linear-gradient(135deg,#8a5020,#6a3818);border-radius:6px;border:2px solid rgba(232,193,126,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.5),inset 0 0 15px rgba(0,0,0,0.3);transform:translateZ(10px)}
+.chest-body::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:18px;background:radial-gradient(circle at 40% 40%,#ffd700,#b8860b);border-radius:4px;border:1px solid rgba(255,215,0,0.6);box-shadow:0 2px 8px rgba(255,215,0,0.4)}
+.chest-lid{position:absolute;top:0;width:100%;height:40%;background:linear-gradient(135deg,#9a6030,#7a4820);border-radius:6px 6px 0 0;border:2px solid rgba(232,193,126,0.5);border-bottom:none;transform-origin:top center;transform:rotateX(0deg);transition:transform 0.8s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 -2px 12px rgba(0,0,0,0.3)}
+.chest.open .chest-lid{transform:rotateX(-110deg)}
+.chest-shake{animation:chestShake 0.5s ease-in-out infinite}
+@keyframes chestShake{0%,100%{transform:rotateX(-5deg) rotateY(-10deg) rotateZ(0)}25%{transform:rotateX(-5deg) rotateY(-10deg) rotateZ(-2deg)}75%{transform:rotateX(-5deg) rotateY(-10deg) rotateZ(2deg)}}
+.chest-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:40px;background:radial-gradient(ellipse,rgba(255,215,0,0.3),transparent);border-radius:50%;filter:blur(8px);opacity:0;transition:opacity 0.5s}
+.chest.open .chest-glow{opacity:1}
 .countdown{display:flex;justify-content:center;gap:1rem;margin:2rem 0}
 .countdown .unit{text-align:center}
 .countdown .num{font-family:Georgia,serif;font-size:2.2rem;font-weight:500;color:var(--gold)}
@@ -59,7 +72,13 @@ header p{font-size:0.86rem;font-style:italic;color:rgba(255,247,238,0.62);margin
 <div class="counter" id="statusCounter">locked</div>
 </header>
 <div class="locked" id="lockedView">
-<div class="big">&#128233;</div>
+<div class="chest-scene" id="chestScene">
+  <div class="chest" id="chest3d">
+    <div class="chest-lid"></div>
+    <div class="chest-body"></div>
+    <div class="chest-glow"></div>
+  </div>
+</div>
 <p>this capsule opens on <strong id="unlockDate"></strong></p>
 <div class="countdown" id="countdown">
 <div class="unit"><div class="num" id="cdDays">0</div><div class="lbl">days</div></div>
@@ -82,14 +101,22 @@ var unlockedView=document.getElementById('unlockedView');
 var letterBody=document.getElementById('letterBody');
 unlockDateEl.textContent=UNLOCK_DATE.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 var letterText='My love,\n\nThis is a letter I wrote on a quiet day, not knowing when you would read it. I put it in this capsule because some words are too big to say out loud, and some feelings need a moment to land.\n\nI want you to know that every day with you is a page I never want to end. The way you laugh, the way you look at me when you think I\'m not watching, the way your hand finds mine without asking \u2014 these are the things I carry with me everywhere.\n\nWhen you open this, I hope you\'re smiling. I hope you\'re wrapped in a blanket or sitting in a park or standing somewhere beautiful. I hope you feel exactly how much I love you.\n\nThis capsule holds more than words. It holds every moment I\'ve ever imagined with you \u2014 the quiet mornings, the loud laughs, the trips we haven\'t taken yet, the home we\'re building, the future we\'re writing together.\n\nHappy anniversary, my love. Here\'s to all the ones still to come.\n\nAlways yours,\nNard';
+var chest3d=document.getElementById('chest3d');
+var chestShaking=false;
 function updateCountdown(){
 var now=new Date();
 var diff=UNLOCK_DATE-now;
 if(diff<=0){
+if(chest3d){
+  chest3d.classList.add('open');
+  chest3d.classList.remove('chest-shake');
+}
+setTimeout(function(){
 lockedView.style.display='none';
 unlockedView.classList.add('show');
 statusCounter.textContent='opened';
 typeLetter();
+},900);
 return;
 }
 var d=Math.floor(diff/86400000);
@@ -100,6 +127,11 @@ document.getElementById('cdDays').textContent=d;
 document.getElementById('cdHours').textContent=h;
 document.getElementById('cdMins').textContent=m;
 document.getElementById('cdSecs').textContent=s;
+/* shake chest on last 10 seconds */
+if(d===0&&h===0&&m===0&&s<=10&&chest3d&&!chestShaking){
+  chestShaking=true;
+  chest3d.classList.add('chest-shake');
+}
 }
 function typeLetter(){
 if(letterBody.getAttribute('data-typed'))return;

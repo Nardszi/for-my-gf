@@ -82,6 +82,14 @@
 
     .page-container { max-width: 440px; margin: 0 auto; position: relative; }
 
+    #heartsCanvas {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .background-decor {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -4370,6 +4378,7 @@
   </style>
 </head>
 <body>
+  <canvas id="heartsCanvas"></canvas>
   <div class="noise-overlay"></div>
   <div class="scroll-progress" id="scrollProgress"></div>
     <div class="intro-screen" id="introScreen">
@@ -7078,6 +7087,292 @@
         window.addEventListener('load', function() { setTimeout(go, 50); });
       }
     }
+
+    /* ---- Floating Hearts Parallax ---- */
+    (function(){
+      var c=document.getElementById('heartsCanvas');
+      if(!c)return;
+      var ctx=c.getContext('2d');
+      var W,H;
+      var hearts=[];
+      var scrollY=0;
+      var dpr=Math.min(window.devicePixelRatio||1,2);
+      var prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function resize(){W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+      resize();
+      window.addEventListener('resize',resize);
+      window.addEventListener('scroll',function(){scrollY=window.scrollY},{passive:true});
+
+      var heartColors=['rgba(255,143,171,','rgba(224,86,124,','rgba(255,93,143,','rgba(255,200,210,','rgba(232,193,126,'];
+      function spawnHeart(){
+        var depth=Math.random();
+        hearts.push({
+          x:Math.random()*W,
+          y:H+20+Math.random()*40,
+          size:6+Math.random()*14*(0.5+depth*0.5),
+          speed:0.15+Math.random()*0.35*(0.4+depth*0.6),
+          depth:depth,
+          wobblePhase:Math.random()*Math.PI*2,
+          wobbleSpeed:0.003+Math.random()*0.004,
+          wobbleAmp:15+Math.random()*25,
+          rotPhase:Math.random()*Math.PI*2,
+          rotSpeed:0.002+Math.random()*0.003,
+          alpha:0.15+depth*0.35,
+          color:heartColors[Math.floor(Math.random()*heartColors.length)]
+        });
+      }
+      for(var i=0;i<18;i++) spawnHeart();
+
+      function drawHeart(x,y,size,rot,alpha,color){
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(rot);
+        ctx.globalAlpha=alpha;
+        ctx.beginPath();
+        var s=size;
+        ctx.moveTo(0,s*0.3);
+        ctx.bezierCurveTo(-s*0.5,-s*0.1,-s*0.5,-s*0.6,0,-s*0.35);
+        ctx.bezierCurveTo(s*0.5,-s*0.6,s*0.5,-s*0.1,0,s*0.3);
+        ctx.fillStyle=color+alpha+')';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function frame(){
+        ctx.clearRect(0,0,W,H);
+        var parallax=scrollY*0.15;
+        for(var i=hearts.length-1;i>=0;i--){
+          var h=hearts[i];
+          h.y-=h.speed;
+          h.rotPhase+=h.rotSpeed;
+          var wx=Math.sin(h.wobblePhase)*h.wobbleAmp;
+          h.wobblePhase+=h.wobbleSpeed;
+          var drawX=h.x+wx;
+          var drawY=h.y+h.depth*parallax;
+          if(drawY<-40){
+            hearts.splice(i,1);
+            spawnHeart();
+            continue;
+          }
+          drawHeart(drawX,drawY,h.size,h.rotPhase,h.alpha,h.color);
+        }
+        ctx.globalAlpha=1;
+        requestAnimationFrame(frame);
+      }
+      if(!prefersReduced) requestAnimationFrame(frame);
+    })();
+
+    /* ---- SHAKE TO CONFETTI ---- */
+    (function(){
+      var lastX=0,lastY=0,lastZ=0;
+      var shakeCount=0;
+      var lastShake=0;
+      var confettiCanvas=document.createElement('canvas');
+      confettiCanvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+      document.body.appendChild(confettiCanvas);
+      var cctx=confettiCanvas.getContext('2d');
+      var cW,cH;
+      var confettiParts=[];
+      var dpr=Math.min(window.devicePixelRatio||1,2);
+      function cResize(){cW=window.innerWidth;cH=window.innerHeight;confettiCanvas.width=cW*dpr;confettiCanvas.height=cH*dpr;cctx.setTransform(dpr,0,0,dpr,0,0);}
+      cResize();window.addEventListener('resize',cResize);
+
+      var cColors=['#ff8fab','#e0567c','#e8c17e','#fff','#ffd3e0','#ff5d8f','#b8a0ff','#a0e8c0','#ffe9a8'];
+      function spawnConfetti(cx,cy){
+        for(var i=0;i<60;i++){
+          var ang=Math.random()*Math.PI*2;
+          var spd=3+Math.random()*8;
+          confettiParts.push({
+            x:cx,y:cy,
+            vx:Math.cos(ang)*spd,
+            vy:Math.sin(ang)*spd-3-Math.random()*4,
+            w:4+Math.random()*8,h:3+Math.random()*5,
+            rot:Math.random()*Math.PI*2,
+            rotSpd:(Math.random()-0.5)*0.25,
+            color:cColors[Math.floor(Math.random()*cColors.length)],
+            grav:0.1+Math.random()*0.05,
+            drag:0.97+Math.random()*0.02,
+            life:1,decay:0.004+Math.random()*0.004,
+            swing:Math.random()*Math.PI*2,
+            swingSpd:0.04+Math.random()*0.06
+          });
+        }
+      }
+      function drawConfetti(){
+        cctx.clearRect(0,0,cW,cH);
+        for(var i=confettiParts.length-1;i>=0;i--){
+          var p=confettiParts[i];
+          p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.vx*=p.drag;
+          p.rot+=p.rotSpd;p.swing+=p.swingSpd;p.vx+=Math.sin(p.swing)*0.12;
+          p.life-=p.decay;
+          if(p.life<=0||p.y>cH+60){confettiParts.splice(i,1);continue;}
+          cctx.save();cctx.translate(p.x,p.y);cctx.rotate(p.rot);
+          cctx.globalAlpha=p.life;cctx.fillStyle=p.color;
+          cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cctx.restore();
+        }
+        cctx.globalAlpha=1;
+        if(confettiParts.length>0)requestAnimationFrame(drawConfetti);
+      }
+
+      if(window.DeviceMotionEvent){
+        window.addEventListener('devicemotion',function(e){
+          var a=e.accelerationIncludingGravity;
+          if(!a)return;
+          var dx=Math.abs(a.x-lastX);
+          var dy=Math.abs(a.y-lastY);
+          var dz=Math.abs(a.z-lastZ);
+          if(dx+dy+dz>30){
+            var now=Date.now();
+            if(now-lastShake>400){
+              shakeCount++;lastShake=now;
+              if(shakeCount>=3){
+                shakeCount=0;
+                spawnConfetti(cW/2,cH/2);
+                requestAnimationFrame(drawConfetti);
+                var toast=document.createElement('div');
+                toast.textContent='You shook the love out of me!';
+                toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.9);color:#e8c17e;padding:1rem 2rem;border-radius:999px;font-family:Georgia,serif;font-size:0.9rem;z-index:10000;border:1px solid rgba(232,193,126,0.4);animation:fadeUpIn 0.5s ease';
+                document.body.appendChild(toast);
+                setTimeout(function(){toast.remove()},2500);
+              }
+            }
+          }
+          lastX=a.x;lastY=a.y;lastZ=a.z;
+        });
+      }
+      /* desktop: press S key */
+      document.addEventListener('keydown',function(e){
+        if(e.key==='s'||e.key==='S'){
+          spawnConfetti(cW/2,cH/2);
+          requestAnimationFrame(drawConfetti);
+        }
+      });
+    })();
+
+    /* ---- STAR CATCHER GAME ---- */
+    (function(){
+      var gameActive=false;
+      var gameCanvas=document.createElement('canvas');
+      gameCanvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:9998;display:none;cursor:crosshair;touch-action:none';
+      document.body.appendChild(gameCanvas);
+      var gctx=gameCanvas.getContext('2d');
+      var gW,gH;
+      var dpr=Math.min(window.devicePixelRatio||1,2);
+      var catcherX=0;
+      var stars=[];
+      var score=0;
+      var quotes=[
+        'You are my sunshine','I love you more','Forever yours','My heart is yours',
+        'You complete me','Always & forever','My one & only','You are my world',
+        'Best thing ever','You & me always','Endlessly yours','My sweet love'
+      ];
+      var gQuotes=[];
+      var prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function gResize(){gW=window.innerWidth;gH=window.innerHeight;gameCanvas.width=gW*dpr;gameCanvas.height=gH*dpr;gctx.setTransform(dpr,0,0,dpr,0,0);}
+      gResize();window.addEventListener('resize',gResize);
+
+      function startGame(){
+        if(prefersReduced)return;
+        gameActive=true;gameCanvas.style.display='block';score=0;gQuotes=[];
+        stars=[];catcherX=gW/2;
+        for(var i=0;i<6;i++)spawnGameStar();
+        gFrame();
+      }
+      function endGame(){
+        gameActive=false;gameCanvas.style.display='none';
+        var toast=document.createElement('div');
+        toast.innerHTML='<div style="font-size:1.5rem;margin-bottom:0.3rem">&#11088;</div><div style="font-size:0.85rem;margin-bottom:0.4rem">Caught '+score+' stars!</div><div style="font-size:0.7rem;opacity:0.6">tap to close</div>';
+        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.5rem 2rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center;cursor:pointer';
+        toast.addEventListener('click',function(){toast.remove()});
+        document.body.appendChild(toast);
+        setTimeout(function(){toast.remove()},4000);
+      }
+
+      function spawnGameStar(){
+        var q=quotes[Math.floor(Math.random()*quotes.length)];
+        stars.push({
+          x:40+Math.random()*(gW-80),
+          y:-20,
+          r:8+Math.random()*6,
+          speed:0.8+Math.random()*1.2,
+          phase:Math.random()*Math.PI*2,
+          wobble:0.5+Math.random()*1,
+          color:cColors2[Math.floor(Math.random()*cColors2.length)],
+          quote:q
+        });
+      }
+      var cColors2=['#ff8fab','#e8c17e','#ffd3e0','#b8a0ff','#a0e8c0'];
+
+      function gFrame(){
+        if(!gameActive)return;
+        gctx.clearRect(0,0,gW,gH);
+        gctx.fillStyle='rgba(10,6,18,0.85)';gctx.fillRect(0,0,gW,gH);
+
+        /* catcher */
+        gctx.save();
+        gctx.translate(catcherX,gH-50);
+        gctx.fillStyle='#e8c17e';
+        gctx.beginPath();gctx.arc(0,0,16,0,Math.PI*2);gctx.fill();
+        gctx.fillStyle='#fff';
+        gctx.font='16px serif';gctx.textAlign='center';gctx.fillText('\u2B50',0,6);
+        gctx.restore();
+
+        /* stars */
+        for(var i=stars.length-1;i>=0;i--){
+          var s=stars[i];
+          s.y+=s.speed;
+          s.phase+=0.02;
+          s.x+=Math.sin(s.phase)*s.wobble;
+
+          /* catch check */
+          var dx=s.x-catcherX;
+          var dy=s.y-(gH-50);
+          if(Math.sqrt(dx*dx+dy*dy)<s.r+18){
+            score++;
+            gQuotes.push(s.quote);
+            stars.splice(i,1);
+            spawnGameStar();
+            if(score>=10){endGame();return;}
+            continue;
+          }
+
+          if(s.y>gH+30){stars.splice(i,1);spawnGameStar();continue;}
+
+          /* draw star */
+          gctx.save();
+          var glow=gctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*2);
+          glow.addColorStop(0,s.color);
+          glow.addColorStop(1,'transparent');
+          gctx.fillStyle=glow;
+          gctx.beginPath();gctx.arc(s.x,s.y,s.r*2,0,Math.PI*2);gctx.fill();
+          gctx.fillStyle='#fff';
+          gctx.beginPath();gctx.arc(s.x,s.y,s.r*0.4,0,Math.PI*2);gctx.fill();
+          gctx.restore();
+        }
+
+        /* score */
+        gctx.fillStyle='#e8c17e';gctx.font='bold 14px Georgia,serif';gctx.textAlign='left';
+        gctx.fillText('\u2B50 '+score+'/10',16,30);
+
+        requestAnimationFrame(gFrame);
+      }
+
+      gameCanvas.addEventListener('mousemove',function(e){catcherX=e.clientX;});
+      gameCanvas.addEventListener('touchmove',function(e){e.preventDefault();catcherX=e.touches[0].clientX;},{passive:false});
+
+      /* triple-tap scroll indicator to start */
+      var tapCount=0;
+      var tapTimer=null;
+      document.addEventListener('click',function(e){
+        if(e.target.closest('.scroll-progress')||e.target.id==='scrollProgress'){
+          tapCount++;
+          if(tapCount===1)tapTimer=setTimeout(function(){tapCount=0},600);
+          else if(tapCount>=3){clearTimeout(tapTimer);tapCount=0;startGame();}
+        }
+      });
+    })();
   </script>
   <script src="app.js"></script>
 </body>

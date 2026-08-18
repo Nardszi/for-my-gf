@@ -2055,6 +2055,127 @@ function drawSpaceWeather(t){
   }
 }
 
+/* ===== FALLING ROSE PETALS ===== */
+var rosePetals=[];
+var petalColors=["#ff6b8a","#ff8fab","#ffb3c1","#ff4d6d","#e0567c","#ff758f","#ff99ac"];
+function spawnRosePetal(){
+  rosePetals.push({
+    x:Math.random()*W*1.2-W*0.1,
+    y:-20-Math.random()*40,
+    vx:(Math.random()-0.5)*0.5,
+    vy:0.4+Math.random()*0.6,
+    rotX:Math.random()*Math.PI*2,
+    rotY:Math.random()*Math.PI*2,
+    rotSpeedX:(Math.random()-0.5)*0.02,
+    rotSpeedY:(Math.random()-0.5)*0.03,
+    size:6+Math.random()*6,
+    color:petalColors[Math.floor(Math.random()*petalColors.length)],
+    swayPhase:Math.random()*Math.PI*2,
+    swaySpeed:0.8+Math.random()*0.5,
+    swayAmp:15+Math.random()*20,
+    life:1,
+    alpha:0.7+Math.random()*0.3
+  });
+}
+function updateRosePetals(dt){
+  for(var i=rosePetals.length-1;i>=0;i--){
+    var p=rosePetals[i];
+    p.y+=p.vy*dt*0.06;
+    p.x+=p.vx*dt*0.06+Math.sin(time*0.001*p.swaySpeed+p.swayPhase)*p.swayAmp*0.001;
+    p.rotX+=p.rotSpeedX;
+    p.rotY+=p.rotSpeedY;
+    if(p.y>H+30) rosePetals.splice(i,1);
+  }
+  if(rosePetals.length<25&&Math.random()<0.03) spawnRosePetal();
+}
+function drawRosePetals(){
+  for(var i=0;i<rosePetals.length;i++){
+    var p=rosePetals[i];
+    var perspectiveScale=0.5+Math.cos(p.rotX)*0.5;
+    var scaleX=Math.abs(Math.cos(p.rotY));
+    var scaleY=0.6+Math.sin(p.rotX)*0.4;
+    var w=p.size*scaleX;
+    var h=p.size*scaleY;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rotY*0.5);
+    ctx.globalAlpha=p.alpha*(0.6+perspectiveScale*0.4);
+    ctx.beginPath();
+    ctx.moveTo(0,-h*0.5);
+    ctx.bezierCurveTo(w*0.6,-h*0.4,w*0.5,h*0.2,0,h*0.5);
+    ctx.bezierCurveTo(-w*0.5,h*0.2,-w*0.6,-h*0.4,0,-h*0.5);
+    var grad=ctx.createRadialGradient(0,-h*0.2,0,0,0,h*0.6);
+    grad.addColorStop(0,p.color);
+    grad.addColorStop(1,"rgba(0,0,0,0.2)");
+    ctx.fillStyle=grad;
+    ctx.fill();
+    ctx.strokeStyle="rgba(0,0,0,0.08)";ctx.lineWidth=0.3;
+    ctx.beginPath();ctx.moveTo(0,-h*0.4);ctx.lineTo(0,h*0.4);ctx.stroke();
+    ctx.restore();
+  }
+  ctx.globalAlpha=1;
+}
+
+/* ===== HEART CLOUD ===== */
+var heartCloudParticles=[];
+var heartCloudActive=false;
+var heartCloudTimer=0;
+function initHeartCloud(){
+  heartCloudParticles=[];
+  heartCloudActive=true;
+  heartCloudTimer=0;
+  for(var i=0;i<120;i++){
+    var t2=i/120*Math.PI*2;
+    var hx=16*Math.pow(Math.sin(t2),3);
+    var hy=-(13*Math.cos(t2)-5*Math.cos(2*t2)-2*Math.cos(3*t2)-Math.cos(4*t2));
+    var spread=2.5;
+    heartCloudParticles.push({
+      baseX:W/2+hx*spread*(W/100),
+      baseY:H*0.38+hy*spread*(H/120),
+      x:0,y:0,
+      targetX:W/2+hx*spread*(W/100),
+      targetY:H*0.38+hy*spread*(H/120),
+      phase:Math.random()*Math.PI*2,
+      driftX:(Math.random()-0.5)*0.3,
+      driftY:(Math.random()-0.5)*0.3,
+      size:8+Math.random()*5,
+      life:0,
+      maxLife:3000+Math.random()*2000
+    });
+  }
+}
+function updateHeartCloud(dt){
+  if(!heartCloudActive) return;
+  heartCloudTimer+=dt;
+  var progress=Math.min(1,heartCloudTimer/2000);
+  for(var i=0;i<heartCloudParticles.length;i++){
+    var p=heartCloudParticles[i];
+    p.life+=dt;
+    var appear=progress>0.1?(Math.min(1,(progress-0.1)*3)):0;
+    var drift=Math.sin(time*0.0008+p.phase)*8;
+    p.x=p.targetX+drift+p.driftX*Math.sin(time*0.001+p.phase);
+    p.y=p.targetY+Math.cos(time*0.001+p.phase)*5+p.driftY;
+    if(p.life>p.maxLife) appear*=Math.max(0,1-(p.life-p.maxLife)/1000);
+    p.displayAlpha=appear*0.8;
+  }
+  if(heartCloudTimer>8000){heartCloudActive=false;}
+}
+function drawHeartCloud(){
+  if(!heartCloudActive) return;
+  for(var i=0;i<heartCloudParticles.length;i++){
+    var p=heartCloudParticles[i];
+    if(p.displayAlpha<=0) continue;
+    ctx.save();
+    ctx.globalAlpha=p.displayAlpha;
+    ctx.font=p.size+"px serif";
+    ctx.fillStyle="rgba(255,143,171,"+p.displayAlpha+")";
+    ctx.textAlign="center";
+    ctx.fillText("\u{1F495}",p.x,p.y);
+    ctx.restore();
+  }
+  ctx.globalAlpha=1;
+}
+
 initSolarSystem();
 window.addEventListener("resize",function(){
   initSolarSystem();
@@ -2134,6 +2255,17 @@ function frame(ts){
   updateSparkles(dt);
   drawSparkles();
 
+  updateRosePetals(dt);
+  drawRosePetals();
+
+  heartCloudTimer2+=dt;
+  if(heartCloudTimer2>15000+Math.random()*10000){
+    heartCloudTimer2=0;
+    if(!heartCloudActive) initHeartCloud();
+  }
+  updateHeartCloud(dt);
+  drawHeartCloud();
+
   drawVignette();
   drawScanlines();
 
@@ -2141,6 +2273,7 @@ function frame(ts){
 }
 var meteorTimer=0;
 var shootingStarTimer=0;
+var heartCloudTimer2=0;
 requestAnimationFrame(frame);
 })();
 </script>

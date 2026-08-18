@@ -50,6 +50,34 @@ var CW=360,CH=500;
 var photos=[];
 for(var i=0;i<5;i++){photos[i]=new Image();photos[i].src="float-photos/"+(i+1)+".jpg";}
 
+var polaroidPhotos=[];
+for(var i=0;i<5;i++){
+  polaroidPhotos.push(new Image());
+  polaroidPhotos[i].src="float-photos/"+(i+1)+".jpg";
+}
+var floatingPolaroids=[];
+function initFloatingPolaroids(){
+  floatingPolaroids=[];
+  for(var i=0;i<5;i++){
+    floatingPolaroids.push({
+      angle:i*Math.PI*2/5,
+      orbitR:55+Math.random()*15,
+      speed:0.0003+Math.random()*0.0002,
+      bobPhase:Math.random()*Math.PI*2,
+      bobSpeed:0.0008+Math.random()*0.0004,
+      bobAmp:6+Math.random()*4,
+      tiltPhase:Math.random()*Math.PI*2,
+      tiltAmp:0.15+Math.random()*0.1,
+      baseX:170,
+      baseY:160,
+      photoIdx:i,
+      size:28+Math.random()*6
+    });
+  }
+}
+initFloatingPolaroids();
+var polaroidHoverIdx=-1;
+
 var loveMessages=[
 "You make every day worth waking up for",
 "I fall in love with you more each day",
@@ -149,6 +177,41 @@ canvas.addEventListener("click",function(e){
   if(p.x>=240&&p.x<=256&&p.y>=270&&p.y<=296){room.candleOn=!room.candleOn;}
 });
 function noise(x){return Math.sin(x*12.9898+x*78.233)*0.5+0.5;}
+
+function drawFloatingPolaroids(t){
+  for(var i=0;i<floatingPolaroids.length;i++){
+    var fp=floatingPolaroids[i];
+    var angle=fp.angle+t*fp.speed;
+    var px=fp.baseX+Math.cos(angle)*fp.orbitR;
+    var py=fp.baseY+Math.sin(angle)*fp.orbitR*0.4+Math.sin(t*fp.bobSpeed+fp.bobPhase)*fp.bobAmp;
+    var depth=Math.sin(angle);
+    var scale=0.6+depth*0.3;
+    var tilt=Math.sin(t*0.001+fp.tiltPhase)*fp.tiltAmp;
+    var sz=fp.size*scale;
+    var alpha=0.5+depth*0.35;
+    rc.save();
+    rc.translate(px,py);
+    rc.rotate(tilt);
+    rc.globalAlpha=alpha;
+    var borderW=sz*0.12;
+    rc.fillStyle="#f5f0e0";
+    rc.shadowColor="rgba(0,0,0,0.25)";rc.shadowBlur=4*scale;rc.shadowOffsetY=2*scale;
+    rc.fillRect(-sz/2-borderW,-sz/2-borderW,sz+borderW*2,sz+borderW*2+borderW*1.5);
+    rc.shadowBlur=0;rc.shadowOffsetY=0;
+    var img=polaroidPhotos[fp.photoIdx];
+    if(img&&img.complete&&img.naturalWidth>0){
+      var imgScale=Math.min(sz/img.width,sz/img.height);
+      var dW=img.width*imgScale,dH=img.height*imgScale;
+      rc.drawImage(img,-dW/2,-dH/2,dW,dH);
+    }else{
+      rc.fillStyle="#ddd";rc.fillRect(-sz/2,-sz/2,sz,sz);
+    }
+    rc.strokeStyle="rgba(200,180,150,0.3)";rc.lineWidth=0.5;
+    rc.strokeRect(-sz/2-borderW,-sz/2-borderW,sz+borderW*2,sz+borderW*2+borderW*1.5);
+    rc.restore();
+  }
+  rc.globalAlpha=1;
+}
 
 function drawRoom(t){
   if(!rc)return;
@@ -390,6 +453,8 @@ function drawRoom(t){
     rc.fillStyle="#ffe040";rc.beginPath();rc.ellipse(14,0,4,9,0.3,0,Math.PI*2);rc.fill();
   }
   rc.restore();
+
+  drawFloatingPolaroids(t);
 
   for(var di=0;di<room.dust.length;di++){
     var d=room.dust[di];

@@ -134,6 +134,78 @@
 
   .footer-note { text-align: center; margin-top: 2rem; font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.45); }
 
+  /* ---- 3D Book ---- */
+  .book-scene {
+    perspective: 900px;
+    display: flex; justify-content: center;
+    margin: 1rem auto 1.5rem;
+    width: 200px; height: 130px;
+    cursor: pointer;
+  }
+  .book {
+    width: 160px; height: 120px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(-8deg) rotateX(5deg);
+    transition: transform 0.6s var(--spring);
+  }
+  .book-scene:hover .book {
+    transform: rotateY(-15deg) rotateX(8deg);
+  }
+  .book-page {
+    position: absolute;
+    width: 100%; height: 100%;
+    border-radius: 4px 12px 12px 4px;
+    backface-visibility: hidden;
+    transform-origin: left center;
+    transition: transform 0.7s var(--spring);
+  }
+  .book-cover {
+    background: linear-gradient(135deg, #5a2040, #3a1028);
+    border: 2px solid rgba(232,193,126,0.5);
+    box-shadow: 4px 4px 16px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,143,171,0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px;
+    z-index: 3;
+  }
+  .book-cover .book-heart {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 8px rgba(255,143,171,0.6));
+    animation: softBeat 2s ease-in-out infinite;
+  }
+  .book-cover .book-title {
+    font-family: Georgia, serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .book-page-inner {
+    background: linear-gradient(135deg, #f5f0e0, #ebe5d0);
+    border: 1px solid rgba(180,160,120,0.4);
+    padding: 12px 14px;
+    font-family: Georgia, serif;
+    font-size: 0.55rem;
+    line-height: 1.6;
+    color: #4a3020;
+    z-index: 2;
+    transform: rotateY(0deg);
+  }
+  .book-page-inner.flipped {
+    transform: rotateX(-180deg);
+  }
+  .book-spine {
+    position: absolute;
+    left: -6px; top: 0;
+    width: 12px; height: 100%;
+    background: linear-gradient(90deg, #4a1830, #5a2040, #4a1830);
+    border-radius: 4px 0 0 4px;
+    transform: rotateY(-90deg);
+    transform-origin: right center;
+    z-index: 4;
+  }
+  @keyframes softBeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+
   @keyframes shimmer { to { background-position: 250% center; } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -156,6 +228,21 @@
     <p>a diary we both write in &mdash; our little forever notebook</p>
     <div class="counter" id="entryCounter">0 pages so far</div>
   </header>
+
+  <div class="book-scene" id="bookScene" title="tap to flip pages">
+    <div class="book" id="book3d">
+      <div class="book-spine"></div>
+      <div class="book-page book-page-inner" id="bookPage1">
+        <div style="text-align:center;margin-bottom:6px;color:var(--rose);font-size:0.7rem;">&#10084;</div>
+        <div>Our story began on a Tuesday...</div>
+        <div style="margin-top:4px;font-style:italic;opacity:0.6;">Every page, a little forever.</div>
+      </div>
+      <div class="book-page book-cover" id="bookCover">
+        <div class="book-heart">&#128152;</div>
+        <div class="book-title">Our Diary</div>
+      </div>
+    </div>
+  </div>
 
   <div class="composer">
     <div class="row">
@@ -265,6 +352,30 @@
   });
 
   render();
+
+  /* ---- 3D Book Flip ---- */
+  var bookScene=document.getElementById('bookScene');
+  var bookCover=document.getElementById('bookCover');
+  var bookPage1=document.getElementById('bookPage1');
+  var bookFlipped=false;
+  if(bookScene){
+    bookScene.addEventListener('click',function(){
+      bookFlipped=!bookFlipped;
+      if(bookFlipped){
+        bookCover.style.transform='rotateX(-180deg)';
+        bookCover.style.transition='transform 0.7s cubic-bezier(0.34,1.56,0.64,1)';
+        bookPage1.classList.add('flipped');
+        bookPage1.style.zIndex='1';
+        bookCover.style.zIndex='1';
+      }else{
+        bookCover.style.transform='rotateX(0deg)';
+        bookPage1.classList.remove('flipped');
+        bookPage1.style.zIndex='2';
+        bookCover.style.zIndex='3';
+      }
+      if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+    });
+  }
 
   window.scrollTo(0, 0);
   window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });

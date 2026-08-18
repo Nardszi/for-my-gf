@@ -155,13 +155,42 @@
     border: 2px solid rgba(255,143,171,0.5);
     box-shadow: 0 18px 44px rgba(0,0,0,0.55), inset 0 0 50px rgba(255,143,171,0.07);
     padding: 1.8rem 1.6rem;
-    animation: letterOpen 0.6s var(--spring) forwards;
+    animation: letterOpen3D 0.7s var(--spring) forwards;
+    transform-origin: top center;
   }
   .envelope.open .env-letter { display: block; }
 
-  @keyframes letterOpen {
-    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+  /* 3D envelope flap */
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(150deg, #3a1828, #2a1420);
+    border-radius: 18px 18px 0 0;
+    border: 2px solid rgba(232,193,126,0.4);
+    border-bottom: none;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    z-index: 2;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+  .envelope.open .env-flap {
+    transform: rotateX(180deg);
+  }
+  .env-flap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,143,171,0.08), transparent 60%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  @keyframes letterOpen3D {
+    0% { opacity: 0; transform: perspective(800px) rotateX(-15deg) translateY(-20px) scale(0.95); }
+    50% { opacity: 0.8; transform: perspective(800px) rotateX(3deg) translateY(-4px) scale(1.01); }
+    100% { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0) scale(1); }
   }
 
   .letter-header {
@@ -310,6 +339,7 @@
     wrap.className = 'env-wrap';
     wrap.innerHTML =
       '<div class="envelope" id="env' + idx + '">' +
+        '<div class="env-flap"></div>' +
         '<div class="env-sealed" id="envSealed' + idx + '">' +
           '<div class="wax-seal">' + letter.emoji + '</div>' +
           '<div class="env-meta">' +
@@ -381,6 +411,102 @@
     if (env) env.classList.remove('open');
     openIdx = -1;
   });
+
+  /* ---- WAX SEAL RUB SECRET ---- */
+  (function(){
+    var rubCount=0;
+    var lastRubX=0;
+    var lastRubDir=0;
+    var rubTimer=null;
+    var hiddenLetter={
+      emoji:'&#10024;',
+      label:'the hidden one',
+      title:'The Letter I Never Sent',
+      hint:'found by the curious ones',
+      body:'I wrote this letter at 3 AM, when the world was quiet and my heart was loud.\n\nI don\'t know if you\'ll ever find this. Maybe that\'s what makes it special — the fact that it exists without expectation.\n\nI want you to know that even in my sleep, even in my dreams, even in the spaces between my thoughts — you are there. Always.\n\nThere is no version of my life that doesn\'t include you. There is no morning I wake up that you aren\'t my first thought. There is no night I fall asleep that you aren\'t my last.\n\nThis is the letter I wrote when I realized that loving you wasn\'t something I chose. It was something that happened to me, like sunrise, like breathing, like gravity.\n\nAnd I would let it happen again. Every single time.\n\nAlways,\nNard'
+    };
+
+    document.querySelectorAll('.wax-seal').forEach(function(seal){
+      seal.addEventListener('mousemove',function(e){
+        var dx=e.clientX-lastRubX;
+        if(lastRubDir!==0&&((dx>0&&lastRubDir<0)||(dx<0&&lastRubDir>0))){
+          rubCount++;
+          if(dx>0)lastRubDir=1;else lastRubDir=-1;
+        }else{
+          if(dx>0)lastRubDir=1;else if(dx<0)lastRubDir=-1;
+        }
+        lastRubX=e.clientX;
+        clearTimeout(rubTimer);
+        rubTimer=setTimeout(function(){rubCount=0;lastRubDir=0},800);
+        if(rubCount>=20){
+          rubCount=0;lastRubDir=0;
+          seal.style.boxShadow='0 0 30px rgba(255,215,0,0.8)';
+          seal.style.borderColor='rgba(255,215,0,0.8)';
+          setTimeout(function(){
+            seal.style.boxShadow='';seal.style.borderColor='';
+          },1500);
+          /* add hidden letter */
+          var wrap=document.createElement('div');
+          wrap.className='env-wrap';
+          wrap.innerHTML=
+            '<div class="envelope" id="envHidden">'+
+              '<div class="env-flap"></div>'+
+              '<div class="env-sealed" id="envSealedHidden">'+
+                '<div class="wax-seal" style="background:radial-gradient(circle at 35% 35%,#ffd700,#b8860b);border-color:rgba(255,215,0,0.6)">'+hiddenLetter.emoji+'</div>'+
+                '<div class="env-meta">'+
+                  '<div class="env-label">'+hiddenLetter.label+'</div>'+
+                  '<div class="env-title">'+hiddenLetter.title+'</div>'+
+                  '<div class="env-hint">'+hiddenLetter.hint+'</div>'+
+                '</div>'+
+                '<span class="env-arrow">&#8594;</span>'+
+              '</div>'+
+              '<div class="env-letter" id="envLetterHidden">'+
+                '<div class="letter-header">'+
+                  '<div class="letter-wax-open" style="background:radial-gradient(circle at 35% 35%,#ffd700,#b8860b)">'+hiddenLetter.emoji+'</div>'+
+                  '<div class="letter-title-wrap">'+
+                    '<div class="letter-label">'+hiddenLetter.label+'</div>'+
+                    '<div class="letter-title">'+hiddenLetter.title+'</div>'+
+                  '</div>'+
+                  '<button class="letter-close" data-close="hidden" aria-label="close letter">&times;</button>'+
+                '</div>'+
+                '<div class="letter-body" id="letterBodyHidden"></div>'+
+                '<div class="letter-signature">&mdash; always yours, Nard</div>'+
+              '</div>'+
+            '</div>';
+          list.insertBefore(wrap,list.firstChild);
+          setTimeout(function(){wrap.classList.add('visible')},100);
+          document.getElementById('envSealedHidden').addEventListener('click',function(){
+            var env=document.getElementById('envHidden');
+            if(env.classList.contains('open'))return;
+            if(openIdx>=0){var other=document.getElementById('env'+openIdx);if(other)other.classList.remove('open');}
+            openIdx='hidden';env.classList.add('open');
+            var bodyEl=document.getElementById('letterBodyHidden');
+            if(!bodyEl.getAttribute('data-typed')){bodyEl.setAttribute('data-typed','1');typeLetter(bodyEl,hiddenLetter.body,12);}
+            if(navigator.vibrate)try{navigator.vibrate([20,30,20])}catch(e){}
+          });
+          /* toast */
+          var toast=document.createElement('div');
+          toast.textContent='You found a hidden letter!';
+          toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#ffd700;padding:1rem 2rem;border-radius:999px;font-family:Georgia,serif;font-size:0.85rem;z-index:10000;border:1px solid rgba(255,215,0,0.4)';
+          document.body.appendChild(toast);
+          setTimeout(function(){toast.remove()},2500);
+        }
+      });
+      /* touch support */
+      var lastTouchX=0;
+      seal.addEventListener('touchmove',function(e){
+        var touch=e.touches[0];
+        var dx=touch.clientX-lastTouchX;
+        if(lastRubDir!==0&&((dx>0&&lastRubDir<0)||(dx<-0&&lastRubDir>0))){
+          rubCount++;
+        }
+        if(dx>0)lastRubDir=1;else if(dx<0)lastRubDir=-1;
+        lastTouchX=touch.clientX;
+        clearTimeout(rubTimer);
+        rubTimer=setTimeout(function(){rubCount=0;lastRubDir=0},800);
+      },{passive:true});
+    });
+  })();
 
   window.scrollTo(0, 0);
   window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });

@@ -454,4 +454,133 @@
       }, 100);
     }
   };
+
+  /* ---- 3:33 AM MIDNIGHT MODE ---- */
+  (function(){
+    var now=new Date();
+    var h=now.getHours();
+    var m=now.getMinutes();
+    if(h===3&&m>=30&&m<=36){
+      var style=document.createElement('style');
+      style.textContent=''+
+        'body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(100,120,200,0.15),transparent 70%);pointer-events:none;z-index:99999}'+
+        '.page,.page-container,.screen,.finale-inner{position:relative;z-index:1}'+
+        '@keyframes moonGlow{0%,100%{box-shadow:0 0 40px rgba(200,210,255,0.3)}50%{box-shadow:0 0 80px rgba(200,210,255,0.5)}}'+
+        'header h1,.finale-title{animation:moonGlow 4s ease-in-out infinite!important}';
+      document.head.appendChild(style);
+      var moon=document.createElement('div');
+      moon.textContent='\uD83C\uDF19';
+      moon.style.cssText='position:fixed;top:20px;right:20px;font-size:2rem;z-index:100000;animation:moonGlow 3s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(200,210,255,0.6))';
+      document.body.appendChild(moon);
+      var msg=document.createElement('div');
+      msg.textContent='3:33 \u2014 the moon is watching over us';
+      msg.style.cssText='position:fixed;bottom:40px;left:50%;transform:translateX(-50%);font-family:Georgia,serif;font-size:0.75rem;color:rgba(200,210,255,0.7);z-index:100000;letter-spacing:0.12em;text-align:center;white-space:nowrap';
+      document.body.appendChild(msg);
+      setTimeout(function(){msg.style.transition='opacity 2s';msg.style.opacity='0';setTimeout(function(){msg.remove()},2500)},5000);
+    }
+  })();
+
+  /* ---- TILT UPSIDE DOWN SECRET (timecapsule) ---- */
+  (function(){
+    if(PAGE!=='timecapsule.html')return;
+    var revealed=false;
+    function checkTilt(){
+      if(revealed)return;
+      if(window.DeviceOrientationEvent&&window.DeviceOrientationEvent.requestPermission){
+        window.DeviceOrientationEvent.requestPermission().then(function(state){
+          if(state==='granted')window.addEventListener('deviceorientation',handleOrientation);
+        }).catch(function(){});
+      }else if(window.DeviceOrientationEvent){
+        window.addEventListener('deviceorientation',handleOrientation);
+      }
+    }
+    function handleOrientation(e){
+      if(revealed)return;
+      if(e.beta!==null&&Math.abs(e.beta)>150){
+        revealed=true;
+        var chest=document.getElementById('chest3d');
+        if(chest){chest.classList.add('chest-shake');}
+        var toast=document.createElement('div');
+        toast.innerHTML='<div style="font-size:1.2rem;margin-bottom:0.4rem">\uD83D\uDD2E</div><div style="font-size:0.8rem">The capsule trembles...</div><div style="font-size:0.65rem;margin-top:0.3rem;opacity:0.6">something stirs inside</div>';
+        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center';
+        document.body.appendChild(toast);
+        setTimeout(function(){toast.remove()},3500);
+        if(navigator.vibrate)try{navigator.vibrate([30,50,30,50,30])}catch(e){}
+      }
+    }
+    checkTilt();
+    /* also trigger on desktop: press U key */
+    document.addEventListener('keydown',function(e){
+      if((e.key==='u'||e.key==='U')&&!revealed){
+        revealed=true;
+        var chest=document.getElementById('chest3d');
+        if(chest)chest.classList.add('chest-shake');
+        var toast=document.createElement('div');
+        toast.innerHTML='<div style="font-size:1.2rem;margin-bottom:0.4rem">\uD83D\uDD2E</div><div style="font-size:0.8rem">The capsule trembles...</div><div style="font-size:0.65rem;margin-top:0.3rem;opacity:0.6">something stirs inside</div>';
+        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center';
+        document.body.appendChild(toast);
+        setTimeout(function(){toast.remove()},3500);
+      }
+    });
+  })();
+
+  /* ---- TAP HEART 50X SECRET (finale) ---- */
+  (function(){
+    if(PAGE!=='finale.html')return;
+    var tapCount=0;
+    var tapTimer=null;
+    var heart=document.getElementById('foreverHeart');
+    if(!heart)return;
+    heart.addEventListener('click',function(){
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer=setTimeout(function(){tapCount=0},2000);
+      if(tapCount>=50){
+        tapCount=0;
+        var hidden=document.createElement('div');
+        hidden.innerHTML='<div style="max-width:400px;text-align:center;padding:2rem"><div style="font-size:2rem;margin-bottom:0.8rem">\uD83D\uDC95</div><div style="font-family:Georgia,serif;font-size:1.3rem;color:#e8c17e;margin-bottom:1rem">You found it.</div><div style="font-size:0.9rem;line-height:1.8;color:rgba(255,247,238,0.85);font-family:Georgia,serif">This is the secret ending. The one only the most persistent heart finds.<br><br>If you tapped 50 times, it means you care enough to keep going. That\'s the kind of love I have for you \u2014 relentless, patient, and always worth the effort.<br><br>You are my forever, Rezil. And I\'ll keep tapping for you, every single day.</div><div style="margin-top:1.2rem;font-size:0.75rem;color:rgba(255,143,171,0.6);font-style:italic">\u2014 Nard, to the girl who never gives up</div><button onclick="this.closest(\'div\').parentElement.remove()" style="margin-top:1.5rem;background:linear-gradient(135deg,#ff8fab,#e0567c);border:none;color:#fff;padding:0.6rem 1.5rem;border-radius:999px;font-size:0.85rem;cursor:pointer;font-family:inherit">close with love</button></div>';
+        hidden.style.cssText='position:fixed;inset:0;background:rgba(10,6,18,0.92);z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem';
+        document.body.appendChild(hidden);
+        /* confetti burst */
+        for(var i=0;i<80;i++){
+          (function(delay){
+            setTimeout(function(){
+              var p=document.createElement('div');
+              p.textContent=['\u2665','\u2661','\u2726','\u2B50'][Math.floor(Math.random()*4)];
+              p.style.cssText='position:fixed;font-size:'+(12+Math.random()*18)+'px;left:'+(Math.random()*100)+'vw;top:-20px;pointer-events:none;z-index:100001;color:'+( ['#ff8fab','#e8c17e','#ffd3e0','#b8a0ff'][Math.floor(Math.random()*4)])+';animation:burstFloat '+(2+Math.random()*2)+'s ease-out forwards';
+              document.body.appendChild(p);
+              setTimeout(function(){p.remove()},4500);
+            },delay);
+          })(i*30);
+        }
+        if(navigator.vibrate)try{navigator.vibrate([50,30,50])}catch(e){}
+      }
+    });
+  })();
+
+  /* ---- DOUBLE-TAP SHOOTING STARS (stars) ---- */
+  (function(){
+    if(PAGE!=='stars.html')return;
+    var lastTap=0;
+    document.addEventListener('click',function(e){
+      var now=Date.now();
+      if(now-lastTap<300){
+        var canvas=document.getElementById('skyCanvas');
+        if(!canvas)return;
+        for(var i=0;i<12;i++){
+          (function(delay){
+            setTimeout(function(){
+              var star=document.createElement('div');
+              star.textContent='\u2B50';
+              star.style.cssText='position:fixed;font-size:'+(10+Math.random()*14)+'px;pointer-events:none;z-index:10;color:#e8c17e;left:'+(Math.random()*100)+'vw;top:'+(Math.random()*40)+'vh;opacity:0;animation:burstFloat '+(1.5+Math.random()*1.5)+'s ease-out forwards';
+              document.body.appendChild(star);
+              setTimeout(function(){star.remove()},3500);
+            },delay);
+          })(i*80);
+        }
+        if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
+      }
+      lastTap=now;
+    });
+  })();
 })();
