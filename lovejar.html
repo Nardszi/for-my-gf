@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Love Jar</title>
+  <meta name="theme-color" content="#1a0f14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #1a0f14;
+      --bg-secondary: #241218;
+      --fg-primary: #fff7ee;
+      --fg-secondary: #d8c4ca;
+      --accent-primary: #ff8fab;
+      --accent-secondary: #e0567c;
+      --accent-dark: #ff5d8f;
+      --card-bg: rgba(42, 20, 32, 0.82);
+      --card-border: rgba(255, 143, 171, 0.28);
+      --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.35);
+      --gradient-romantic: linear-gradient(135deg, #2a1420 0%, #1a0f14 50%, #241218 100%);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html { color-scheme: dark; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg-primary);
+      color: var(--fg-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .back-link {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: var(--serif);
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      z-index: 100;
+    }
+    .back-link:hover { opacity: 1; }
+
+    .page-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--accent-primary);
+      margin-bottom: 0.3rem;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    .page-subtitle {
+      font-size: 0.75rem;
+      color: var(--fg-secondary);
+      opacity: 0.6;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* ---- JAR ---- */
+    .jar-wrapper {
+      position: relative;
+      width: 220px;
+      height: 300px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .jar-body {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 220px;
+      background: linear-gradient(180deg, rgba(255,143,171,0.08) 0%, rgba(255,143,171,0.15) 100%);
+      border: 2px solid rgba(255,143,171,0.3);
+      border-radius: 12px 12px 28px 28px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .jar-wrapper:hover .jar-body {
+      border-color: rgba(255,143,171,0.5);
+    }
+
+    .jar-glass {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+      border-radius: inherit;
+    }
+
+    .jar-notes {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+      padding: 0 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .mini-note {
+      width: 28px;
+      height: 20px;
+      border-radius: 4px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .jar-lid {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 36px;
+      background: linear-gradient(180deg, #c98a6a 0%, #a06840 100%);
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: left bottom;
+      z-index: 2;
+    }
+    .jar-lid::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 3px;
+    }
+
+    .jar-lid.open {
+      transform: translateX(-50%) rotate(-25deg) translateY(-10px);
+    }
+
+    .jar-label {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,143,171,0.2);
+      border: 1px solid rgba(255,143,171,0.3);
+      border-radius: 6px;
+      padding: 4px 14px;
+      font-family: var(--serif);
+      font-size: 0.8rem;
+      color: var(--accent-primary);
+      white-space: nowrap;
+    }
+
+    /* ---- NOTE POPUP ---- */
+    .note-container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,6,18,0.88);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      padding: 1rem;
+    }
+    .note-container.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .note-card {
+      background: linear-gradient(135deg, #fff7ee 0%, #fff3e6 100%);
+      border-radius: 16px;
+      padding: 2rem 1.8rem;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,143,171,0.2);
+      transform: translateY(40px) scale(0.85) rotate(-3deg);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+    .note-container.active .note-card {
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+
+    .note-card::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 16px;
+      background: var(--accent-primary);
+      border-radius: 0 0 8px 8px;
+    }
+
+    .note-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .note-text {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: #1a0f14;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+
+    .note-author {
+      font-size: 0.7rem;
+      color: rgba(26,15,20,0.4);
+      font-style: italic;
+    }
+
+    .note-category {
+      display: inline-block;
+      background: rgba(255,143,171,0.15);
+      color: var(--accent-secondary);
+      font-size: 0.6rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .note-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+
+    .note-btn {
+      background: linear-gradient(135deg, #ff8fab, #e0567c);
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .note-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(255,143,171,0.4);
+    }
+    .note-btn.secondary {
+      background: rgba(26,15,20,0.08);
+      color: #1a0f14;
+    }
+    .note-btn.saved {
+      background: #e8c17e;
+      color: #1a0f14;
+    }
+
+    /* ---- FAVORITES ---- */
+    .favorites-section {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1.5rem;
+    }
+    .fav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .fav-title {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      color: var(--accent-primary);
+    }
+    .fav-count {
+      font-size: 0.7rem;
+      color: var(--fg-secondary);
+      opacity: 0.5;
+    }
+    .fav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .fav-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      animation: fadeIn 0.3s ease;
+    }
+    .fav-item-text {
+      flex: 1;
+      font-family: var(--serif);
+      font-size: 0.85rem;
+      color: var(--fg-primary);
+      line-height: 1.4;
+    }
+    .fav-item-remove {
+      background: none;
+      border: none;
+      color: var(--accent-primary);
+      font-size: 0.7rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .fav-item-remove:hover { opacity: 1; }
+
+    .fav-empty {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--fg-secondary);
+      opacity: 0.4;
+      padding: 1rem;
+    }
+
+    /* ---- SHAKE HINT ---- */
+    .shake-hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: var(--fg-secondary);
+      opacity: 0.3;
+      pointer-events: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ---- ANIMATIONS ---- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes noteFloat {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      50% { transform: translateY(-20px) rotate(-5deg); }
+      100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    }
+    @keyframes noteShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px) rotate(-2deg); }
+      75% { transform: translateX(8px) rotate(2deg); }
+    }
+    .jar-wrapper.shake .jar-body {
+      animation: noteShake 0.4s ease;
+    }
+    .jar-wrapper.shake .jar-notes {
+      animation: noteShake 0.4s ease;
+    }
+
+    /* ---- COUNTER ---- */
+    .note-counter {
+      font-size: 0.7rem;
+      color: var(--fg-secondary);
+      opacity: 0.5;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="lovepage.html" class="back-link">&larr; back</a>
+
+  <div class="page-title">Love Jar</div>
+  <div class="page-subtitle">tap the jar or shake your phone</div>
+
+  <div class="jar-wrapper" id="jar">
+    <div class="jar-lid" id="jarLid"></div>
+    <div class="jar-body">
+      <div class="jar-glass"></div>
+      <div class="jar-notes" id="jarNotes"></div>
+    </div>
+    <div class="jar-label">love notes</div>
+  </div>
+
+  <div class="note-counter" id="noteCounter"></div>
+
+  <div class="favorites-section">
+    <div class="fav-header">
+      <div class="fav-title">&#10084;&#65039; Saved Notes</div>
+      <div class="fav-count" id="favCount">0 saved</div>
+    </div>
+    <div class="fav-list" id="favList">
+      <div class="fav-empty">No saved notes yet. Tap the heart to save one!</div>
+    </div>
+  </div>
+
+  <div class="note-container" id="noteOverlay">
+    <div class="note-card" id="noteCard">
+      <span class="note-emoji" id="noteEmoji"></span>
+      <div class="note-text" id="noteText"></div>
+      <div class="note-author">— Nard</div>
+      <div class="note-category" id="noteCategory"></div>
+      <div class="note-actions">
+        <button class="note-btn" id="saveBtn" onclick="saveNote()">&#10084;&#65039; Save</button>
+        <button class="note-btn secondary" onclick="closeNote()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shake-hint" id="shakeHint">shake for a new note</div>
+
+  <script>
+  (function() {
+    var notes = [
+      { text: "You are the first thing I think about when I wake up and the last thing before I sleep.", emoji: "🌅", category: "love" },
+      { text: "I fall in love with you a little more every single day.", emoji: "💕", category: "love" },
+      { text: "Your smile is my favorite thing in this world.", emoji: "😊", category: "compliment" },
+      { text: "I would choose you again in a heartbeat, every lifetime.", emoji: "💫", category: "love" },
+      { text: "You make the ordinary moments feel magical.", emoji: "✨", category: "compliment" },
+      { text: "I love the way you laugh — it's my favorite sound.", emoji: "🎵", category: "compliment" },
+      { text: "You are my today and all of my tomorrows.", emoji: "📅", category: "love" },
+      { text: "Every love song makes sense when I think of you.", emoji: "🎶", category: "love" },
+      { text: "I am so grateful you exist.", emoji: "🙏", category: "grateful" },
+      { text: "You are the plot twist I never saw coming but always needed.", emoji: "📖", category: "love" },
+      { text: "I love you more than words could ever say.", emoji: "💌", category: "love" },
+      { text: "You are my favorite notification.", emoji: "🔔", category: "compliment" },
+      { text: "When I'm with you, I'm home.", emoji: "🏠", category: "love" },
+      { text: "You make my heart smile.", emoji: "💖", category: "love" },
+      { text: "I never believed in soulmates until I met you.", emoji: "🌟", category: "love" },
+      { text: "You are the best thing that ever happened to me.", emoji: "🎉", category: "love" },
+      { text: "I love the little things about you that no one else notices.", emoji: "🔍", category: "compliment" },
+      { text: "You are my safe place in this crazy world.", emoji: "🛡️", category: "love" },
+      { text: "I can't imagine my life without you in it.", emoji: "💭", category: "love" },
+      { text: "You are beautiful, inside and out.", emoji: "🌹", category: "compliment" },
+      { text: "I love how you make me want to be a better person.", emoji: "🌱", category: "grateful" },
+      { text: "You are the reason I believe in love.", emoji: "💘", category: "love" },
+      { text: "I miss you even when you're right next to me.", emoji: "🥺", category: "miss" },
+      { text: "You are my sunshine on a cloudy day.", emoji: "☀️", category: "compliment" },
+      { text: "I love doing nothing with you — it's my favorite something.", emoji: "🛋️", category: "love" },
+      { text: "You are the missing piece I didn't know I needed.", emoji: "🧩", category: "love" },
+      { text: "I love you for who you are, not who I want you to be.", emoji: "💜", category: "love" },
+      { text: "You make me believe in forever.", emoji: "♾️", category: "love" },
+      { text: "I am a better person because of you.", emoji: "💪", category: "grateful" },
+      { text: "You are the calm in my chaos.", emoji: "🌊", category: "compliment" },
+      { text: "I love how your eyes light up when you talk about something you love.", emoji: "✨", category: "compliment" },
+      { text: "My heart is yours — completely, wholly, forever.", emoji: "❤️", category: "love" },
+      { text: "I still get butterflies when I see you.", emoji: "🦋", category: "love" },
+      { text: "You are the reason I look at my phone and smile.", emoji: "📱", category: "love" },
+      { text: "I would wait a lifetime just to be with you.", emoji: "⏳", category: "love" },
+      { text: "You are my favorite adventure.", emoji: "🗺️", category: "love" },
+      { text: "I love you more than yesterday, less than tomorrow.", emoji: "📆", category: "love" },
+      { text: "You make my heart race in the best way.", emoji: "💓", category: "love" },
+      { text: "I am so lucky to call you mine.", emoji: "🍀", category: "grateful" },
+      { text: "You are everything I ever wanted and more.", emoji: "👑", category: "love" }
+    ];
+
+    var jar = document.getElementById('jar');
+    var lid = document.getElementById('jarLid');
+    var overlay = document.getElementById('noteOverlay');
+    var noteText = document.getElementById('noteText');
+    var noteEmoji = document.getElementById('noteEmoji');
+    var noteCategory = document.getElementById('noteCategory');
+    var saveBtn = document.getElementById('saveBtn');
+    var noteCounter = document.getElementById('noteCounter');
+    var favList = document.getElementById('favList');
+    var favCount = document.getElementById('favCount');
+    var jarNotes = document.getElementById('jarNotes');
+    var currentNote = null;
+    var usedIndexes = [];
+    var favorites = loadFavorites();
+
+    var noteColors = ['#ff8fab', '#e0567c', '#e8c17e', '#ffd3e0', '#b8a0ff', '#a0e8c0', '#ffe9a8', '#ff5d8f'];
+
+    // populate jar mini notes
+    function populateJar() {
+      jarNotes.innerHTML = '';
+      for (var i = 0; i < 15; i++) {
+        var mn = document.createElement('div');
+        mn.className = 'mini-note';
+        mn.style.background = noteColors[i % noteColors.length];
+        mn.style.transform = 'rotate(' + (Math.random() * 30 - 15) + 'deg)';
+        mn.textContent = ['♥', '♡', '✦', '♥'][i % 4];
+        jarNotes.appendChild(mn);
+      }
+    }
+    populateJar();
+
+    function getRandomNote() {
+      if (usedIndexes.length >= notes.length) usedIndexes = [];
+      var idx;
+      do {
+        idx = Math.floor(Math.random() * notes.length);
+      } while (usedIndexes.indexOf(idx) !== -1);
+      usedIndexes.push(idx);
+      return notes[idx];
+    }
+
+    function showNote() {
+      currentNote = getRandomNote();
+      noteText.textContent = currentNote.text;
+      noteEmoji.textContent = currentNote.emoji;
+      noteCategory.textContent = currentNote.category;
+
+      var isFav = favorites.some(function(f) { return f.text === currentNote.text; });
+      saveBtn.innerHTML = isFav ? '&#10003; Saved' : '&#10084;&#65039; Save';
+      saveBtn.className = isFav ? 'note-btn saved' : 'note-btn';
+
+      lid.classList.add('open');
+      jar.classList.add('shake');
+      setTimeout(function() { jar.classList.remove('shake'); }, 500);
+
+      setTimeout(function() {
+        overlay.classList.add('active');
+      }, 400);
+
+      noteCounter.textContent = (usedIndexes.length) + ' of ' + notes.length + ' notes';
+      if (navigator.vibrate) try { navigator.vibrate(15); } catch(e) {}
+    }
+
+    function closeNote() {
+      overlay.classList.remove('active');
+      setTimeout(function() {
+        lid.classList.remove('open');
+      }, 300);
+    }
+
+    // tap jar
+    jar.addEventListener('click', showNote);
+    jar.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      showNote();
+    });
+
+    // tap overlay to close
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeNote();
+    });
+
+    // save note
+    window.saveNote = function() {
+      if (!currentNote) return;
+      var exists = favorites.some(function(f) { return f.text === currentNote.text; });
+      if (exists) {
+        favorites = favorites.filter(function(f) { return f.text !== currentNote.text; });
+        saveBtn.innerHTML = '&#10084;&#65039; Save';
+        saveBtn.className = 'note-btn';
+      } else {
+        favorites.push({ text: currentNote.text, emoji: currentNote.emoji, category: currentNote.category });
+        saveBtn.innerHTML = '&#10003; Saved';
+        saveBtn.className = 'note-btn saved';
+        if (navigator.vibrate) try { navigator.vibrate([10, 20, 10]); } catch(e) {}
+      }
+      saveFavorites();
+      renderFavorites();
+    };
+
+    window.closeNote = closeNote;
+
+    // favorites
+    function loadFavorites() {
+      try { return JSON.parse(localStorage.getItem('loveJar_favorites')) || []; }
+      catch(e) { return []; }
+    }
+    function saveFavorites() {
+      try { localStorage.setItem('loveJar_favorites', JSON.stringify(favorites)); } catch(e) {}
+    }
+
+    function renderFavorites() {
+      favCount.textContent = favorites.length + ' saved';
+      if (favorites.length === 0) {
+        favList.innerHTML = '<div class="fav-empty">No saved notes yet. Tap the heart to save one!</div>';
+        return;
+      }
+      favList.innerHTML = '';
+      favorites.forEach(function(f, i) {
+        var item = document.createElement('div');
+        item.className = 'fav-item';
+        item.innerHTML = '<span style="font-size:1.2rem">' + f.emoji + '</span><div class="fav-item-text">' + f.text + '</div><button class="fav-item-remove" data-idx="' + i + '">&#10005;</button>';
+        favList.appendChild(item);
+      });
+      favList.querySelectorAll('.fav-item-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var idx = parseInt(this.getAttribute('data-idx'));
+          favorites.splice(idx, 1);
+          saveFavorites();
+          renderFavorites();
+        });
+      });
+    }
+    renderFavorites();
+
+    // shake to get new note
+    var lastShake = 0;
+    var shakeX = 0, shakeY = 0, shakeZ = 0;
+    function handleMotion(e) {
+      var a = e.accelerationIncludingGravity;
+      if (!a || a.x === null) return;
+      var dx = Math.abs(a.x - shakeX);
+      var dy = Math.abs(a.y - shakeY);
+      var dz = Math.abs(a.z - shakeZ);
+      if (dx + dy + dz > 25) {
+        var now = Date.now();
+        if (now - lastShake > 1000) {
+          lastShake = now;
+          if (!overlay.classList.contains('active')) {
+            showNote();
+          }
+        }
+      }
+      shakeX = a.x; shakeY = a.y; shakeZ = a.z;
+    }
+
+    function enableShake() {
+      if (window.DeviceMotionEvent) {
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
+          DeviceMotionEvent.requestPermission().then(function(state) {
+            if (state === 'granted') window.addEventListener('devicemotion', handleMotion);
+          }).catch(function() {});
+        } else {
+          window.addEventListener('devicemotion', handleMotion);
+        }
+      }
+    }
+    document.addEventListener('touchstart', function reqPerm() {
+      enableShake();
+      document.removeEventListener('touchstart', reqPerm);
+    }, { once: true, passive: true });
+    enableShake();
+
+    // keyboard: space to open, esc to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (!overlay.classList.contains('active')) showNote();
+      }
+      if (e.key === 'Escape') closeNote();
+    });
+
+    // fade hint
+    setTimeout(function() {
+      var hint = document.getElementById('shakeHint');
+      hint.style.transition = 'opacity 2s';
+      hint.style.opacity = '0';
+    }, 6000);
+  })();
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
