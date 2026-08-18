@@ -634,13 +634,14 @@
     // shake to get new note
     var lastShake = 0;
     var shakeX = 0, shakeY = 0, shakeZ = 0;
+    var shakeEnabled = false;
     function handleMotion(e) {
       var a = e.accelerationIncludingGravity;
       if (!a || a.x === null) return;
       var dx = Math.abs(a.x - shakeX);
       var dy = Math.abs(a.y - shakeY);
       var dz = Math.abs(a.z - shakeZ);
-      if (dx + dy + dz > 25) {
+      if (dx + dy + dz > 20) {
         var now = Date.now();
         if (now - lastShake > 1000) {
           lastShake = now;
@@ -653,6 +654,8 @@
     }
 
     function enableShake() {
+      if (shakeEnabled) return;
+      shakeEnabled = true;
       if (window.DeviceMotionEvent) {
         if (typeof DeviceMotionEvent.requestPermission === 'function') {
           DeviceMotionEvent.requestPermission().then(function(state) {
@@ -663,11 +666,11 @@
         }
       }
     }
+    /* request permission on first tap (iOS requirement) */
     document.addEventListener('touchstart', function reqPerm() {
       enableShake();
       document.removeEventListener('touchstart', reqPerm);
     }, { once: true, passive: true });
-    enableShake();
 
     // keyboard: space to open, esc to close
     document.addEventListener('keydown', function(e) {
