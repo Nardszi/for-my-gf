@@ -484,43 +484,41 @@
   (function(){
     if(PAGE!=='timecapsule.html')return;
     var revealed=false;
-    function checkTilt(){
+    function triggerTilt(){
       if(revealed)return;
-      if(window.DeviceOrientationEvent&&window.DeviceOrientationEvent.requestPermission){
-        window.DeviceOrientationEvent.requestPermission().then(function(state){
-          if(state==='granted')window.addEventListener('deviceorientation',handleOrientation);
-        }).catch(function(){});
-      }else if(window.DeviceOrientationEvent){
-        window.addEventListener('deviceorientation',handleOrientation);
-      }
+      revealed=true;
+      var chest=document.getElementById('chest3d');
+      if(chest){chest.classList.add('chest-shake');}
+      var toast=document.createElement('div');
+      toast.innerHTML='<div style="font-size:1.2rem;margin-bottom:0.4rem">\uD83D\uDD2E</div><div style="font-size:0.8rem">The capsule trembles...</div><div style="font-size:0.65rem;margin-top:0.3rem;opacity:0.6">something stirs inside</div>';
+      toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center';
+      document.body.appendChild(toast);
+      setTimeout(function(){toast.remove()},3500);
+      if(navigator.vibrate)try{navigator.vibrate([30,50,30,50,30])}catch(e){}
     }
     function handleOrientation(e){
       if(revealed)return;
-      if(e.beta!==null&&Math.abs(e.beta)>150){
-        revealed=true;
-        var chest=document.getElementById('chest3d');
-        if(chest){chest.classList.add('chest-shake');}
-        var toast=document.createElement('div');
-        toast.innerHTML='<div style="font-size:1.2rem;margin-bottom:0.4rem">\uD83D\uDD2E</div><div style="font-size:0.8rem">The capsule trembles...</div><div style="font-size:0.65rem;margin-top:0.3rem;opacity:0.6">something stirs inside</div>';
-        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center';
-        document.body.appendChild(toast);
-        setTimeout(function(){toast.remove()},3500);
-        if(navigator.vibrate)try{navigator.vibrate([30,50,30,50,30])}catch(e){}
+      if(e.beta!==null&&Math.abs(e.beta)>150)triggerTilt();
+    }
+    function enableTilt(){
+      if(window.DeviceOrientationEvent){
+        if(typeof DeviceOrientationEvent.requestPermission==='function'){
+          DeviceOrientationEvent.requestPermission().then(function(state){
+            if(state==='granted')window.addEventListener('deviceorientation',handleOrientation);
+          }).catch(function(){});
+        }else{
+          window.addEventListener('deviceorientation',handleOrientation);
+        }
       }
     }
-    checkTilt();
+    document.addEventListener('touchstart',function reqPerm(){
+      enableTilt();
+      document.removeEventListener('touchstart',reqPerm);
+    },{once:true,passive:true});
+    enableTilt();
     /* also trigger on desktop: press U key */
     document.addEventListener('keydown',function(e){
-      if((e.key==='u'||e.key==='U')&&!revealed){
-        revealed=true;
-        var chest=document.getElementById('chest3d');
-        if(chest)chest.classList.add('chest-shake');
-        var toast=document.createElement('div');
-        toast.innerHTML='<div style="font-size:1.2rem;margin-bottom:0.4rem">\uD83D\uDD2E</div><div style="font-size:0.8rem">The capsule trembles...</div><div style="font-size:0.65rem;margin-top:0.3rem;opacity:0.6">something stirs inside</div>';
-        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.95);color:#e8c17e;padding:1.2rem 1.8rem;border-radius:18px;font-family:Georgia,serif;z-index:10000;border:1px solid rgba(232,193,126,0.4);text-align:center';
-        document.body.appendChild(toast);
-        setTimeout(function(){toast.remove()},3500);
-      }
+      if((e.key==='u'||e.key==='U')&&!revealed)triggerTilt();
     });
   })();
 
@@ -562,11 +560,27 @@
   (function(){
     if(PAGE!=='stars.html')return;
     var lastTap=0;
+    document.addEventListener('touchend',function(e){
+      var now=Date.now();
+      if(now-lastTap<350){
+        for(var i=0;i<12;i++){
+          (function(delay){
+            setTimeout(function(){
+              var star=document.createElement('div');
+              star.textContent='\u2B50';
+              star.style.cssText='position:fixed;font-size:'+(10+Math.random()*14)+'px;pointer-events:none;z-index:10;color:#e8c17e;left:'+(Math.random()*100)+'vw;top:'+(Math.random()*40)+'vh;opacity:0;animation:burstFloat '+(1.5+Math.random()*1.5)+'s ease-out forwards';
+              document.body.appendChild(star);
+              setTimeout(function(){star.remove()},3500);
+            },delay);
+          })(i*80);
+        }
+        if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
+      }
+      lastTap=now;
+    },{passive:true});
     document.addEventListener('click',function(e){
       var now=Date.now();
-      if(now-lastTap<300){
-        var canvas=document.getElementById('skyCanvas');
-        if(!canvas)return;
+      if(now-lastTap<350){
         for(var i=0;i<12;i++){
           (function(delay){
             setTimeout(function(){

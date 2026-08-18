@@ -477,7 +477,7 @@
     var pinchActive=false;
     var pinchStartDist=0;
     var iLoveYouStars=[];
-    var pinchThreshold=120;
+    var pinchThreshold=80;
 
     function getDistance(t1,t2){
       return Math.sqrt(Math.pow(t2.clientX-t1.clientX,2)+Math.pow(t2.clientY-t1.clientY,2));
@@ -487,7 +487,6 @@
       if(pinchActive)return;
       pinchActive=true;
       iLoveYouStars=[];
-      var text='I LOVE YOU';
       var charPositions={
         'I':[[0.15,0.3],[0.15,0.35],[0.15,0.4],[0.15,0.45],[0.15,0.5]],
         'L':[[0.25,0.3],[0.25,0.35],[0.25,0.4],[0.25,0.45],[0.25,0.5],[0.3,0.5],[0.35,0.5]],
@@ -503,21 +502,18 @@
           iLoveYouStars.push({x:p[0]*W,y:p[1]*H,targetX:p[0]*W,targetY:p[1]*H,r:2+Math.random()*2,phase:Math.random()*Math.PI*2});
         });
       });
-      /* animate stars moving into position */
       var startTime=Date.now();
       var duration=1500;
       function animateStars(){
         var elapsed=Date.now()-startTime;
         var progress=Math.min(1,elapsed/duration);
         var ease=1-Math.pow(1-progress,3);
-        iLoveYouStars.forEach(function(s,i){
+        iLoveYouStars.forEach(function(s){
           s.x=s.targetX+Math.cos(s.phase+elapsed*0.003)*3*(1-ease);
           s.y=s.targetY+Math.sin(s.phase+elapsed*0.002)*3*(1-ease);
         });
         if(progress<1)requestAnimationFrame(animateStars);
-        else{
-          setTimeout(function(){pinchActive=false;iLoveYouStars=[];},3000);
-        }
+        else setTimeout(function(){pinchActive=false;iLoveYouStars=[];},3000);
       }
       animateStars();
       if(navigator.vibrate)try{navigator.vibrate([20,30,20])}catch(e){}
@@ -526,17 +522,17 @@
     canvas.addEventListener('touchstart',function(e){
       if(e.touches.length===2){
         pinchStartDist=getDistance(e.touches[0],e.touches[1]);
+        e.preventDefault();
       }
-    },{passive:true});
+    },{passive:false});
 
     canvas.addEventListener('touchmove',function(e){
-      if(e.touches.length===2){
+      if(e.touches.length===2&&pinchStartDist>0){
         var dist=getDistance(e.touches[0],e.touches[1]);
-        if(dist<pinchStartDist-pinchThreshold){
-          spawnILoveYou();
-        }
+        if(dist<pinchStartDist-pinchThreshold){spawnILoveYou();pinchStartDist=0;}
+        e.preventDefault();
       }
-    },{passive:true});
+    },{passive:false});
 
     /* desktop: press I key */
     document.addEventListener('keydown',function(e){
@@ -545,7 +541,7 @@
 
     /* hook into draw loop to render the text stars */
     var origDraw=draw;
-    var _frame=function(){
+    draw=function(){
       origDraw();
       if(iLoveYouStars.length>0){
         iLoveYouStars.forEach(function(s){
@@ -562,8 +558,6 @@
         });
       }
     };
-    /* replace draw with enhanced version */
-    draw=_frame;
   })();
 
   window.scrollTo(0, 0);

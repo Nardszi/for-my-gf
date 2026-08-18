@@ -7214,39 +7214,51 @@
         cctx.globalAlpha=1;
         if(confettiParts.length>0)requestAnimationFrame(drawConfetti);
       }
-
-      if(window.DeviceMotionEvent){
-        window.addEventListener('devicemotion',function(e){
-          var a=e.accelerationIncludingGravity;
-          if(!a)return;
-          var dx=Math.abs(a.x-lastX);
-          var dy=Math.abs(a.y-lastY);
-          var dz=Math.abs(a.z-lastZ);
-          if(dx+dy+dz>30){
-            var now=Date.now();
-            if(now-lastShake>400){
-              shakeCount++;lastShake=now;
-              if(shakeCount>=3){
-                shakeCount=0;
-                spawnConfetti(cW/2,cH/2);
-                requestAnimationFrame(drawConfetti);
-                var toast=document.createElement('div');
-                toast.textContent='You shook the love out of me!';
-                toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.9);color:#e8c17e;padding:1rem 2rem;border-radius:999px;font-family:Georgia,serif;font-size:0.9rem;z-index:10000;border:1px solid rgba(232,193,126,0.4);animation:fadeUpIn 0.5s ease';
-                document.body.appendChild(toast);
-                setTimeout(function(){toast.remove()},2500);
-              }
-            }
-          }
-          lastX=a.x;lastY=a.y;lastZ=a.z;
-        });
+      function triggerConfetti(){
+        spawnConfetti(cW/2,cH/2);
+        requestAnimationFrame(drawConfetti);
+        var toast=document.createElement('div');
+        toast.textContent='You shook the love out of me!';
+        toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,15,20,0.9);color:#e8c17e;padding:1rem 2rem;border-radius:999px;font-family:Georgia,serif;font-size:0.9rem;z-index:10000;border:1px solid rgba(232,193,126,0.4);animation:fadeUpIn 0.5s ease';
+        document.body.appendChild(toast);
+        setTimeout(function(){toast.remove()},2500);
       }
+      function handleMotion(e){
+        var a=e.accelerationIncludingGravity;
+        if(!a||a.x===null)return;
+        var dx=Math.abs(a.x-lastX);
+        var dy=Math.abs(a.y-lastY);
+        var dz=Math.abs(a.z-lastZ);
+        if(dx+dy+dz>25){
+          var now=Date.now();
+          if(now-lastShake>500){
+            shakeCount++;lastShake=now;
+            if(shakeCount>=3){shakeCount=0;triggerConfetti();}
+          }
+        }
+        lastX=a.x;lastY=a.y;lastZ=a.z;
+      }
+      function enableShake(){
+        if(window.DeviceMotionEvent){
+          if(typeof DeviceMotionEvent.requestPermission==='function'){
+            DeviceMotionEvent.requestPermission().then(function(state){
+              if(state==='granted')window.addEventListener('devicemotion',handleMotion);
+            }).catch(function(){});
+          }else{
+            window.addEventListener('devicemotion',handleMotion);
+          }
+        }
+      }
+      /* request permission on first touch (iOS requirement) */
+      document.addEventListener('touchstart',function reqPerm(){
+        enableShake();
+        document.removeEventListener('touchstart',reqPerm);
+      },{once:true,passive:true});
+      /* also try immediately for non-iOS */
+      enableShake();
       /* desktop: press S key */
       document.addEventListener('keydown',function(e){
-        if(e.key==='s'||e.key==='S'){
-          spawnConfetti(cW/2,cH/2);
-          requestAnimationFrame(drawConfetti);
-        }
+        if(e.key==='s'||e.key==='S')triggerConfetti();
       });
     })();
 
