@@ -633,44 +633,73 @@
 
     // shake to get new note
     var lastShake = 0;
+    var shakeCount = 0;
+    var lastShakeTime = 0;
     var shakeX = 0, shakeY = 0, shakeZ = 0;
-    var shakeEnabled = false;
+    var shakeReady = false;
+
     function handleMotion(e) {
       var a = e.accelerationIncludingGravity;
       if (!a || a.x === null) return;
+
       var dx = Math.abs(a.x - shakeX);
       var dy = Math.abs(a.y - shakeY);
       var dz = Math.abs(a.z - shakeZ);
-      if (dx + dy + dz > 20) {
+      var force = dx + dy + dz;
+
+      shakeX = a.x; shakeY = a.y; shakeZ = a.z;
+
+      if (force > 15) {
         var now = Date.now();
-        if (now - lastShake > 1000) {
-          lastShake = now;
-          if (!overlay.classList.contains('active')) {
-            showNote();
+        if (now - lastShakeTime > 300) {
+          shakeCount++;
+          lastShakeTime = now;
+
+          // visual feedback — jar shakes
+          jar.classList.add('shake');
+          setTimeout(function() { jar.classList.remove('shake'); }, 400);
+
+          if (navigator.vibrate) try { navigator.vibrate(15); } catch(e) {}
+
+          if (shakeCount >= 3) {
+            shakeCount = 0;
+            if (!overlay.classList.contains('active')) {
+              showNote();
+            }
           }
         }
       }
-      shakeX = a.x; shakeY = a.y; shakeZ = a.z;
+
+      // reset count after 2 seconds of no shaking
+      if (Date.now() - lastShakeTime > 2000) {
+        shakeCount = 0;
+      }
     }
 
     function enableShake() {
-      if (shakeEnabled) return;
-      shakeEnabled = true;
+      if (shakeReady) return;
+      shakeReady = true;
       if (window.DeviceMotionEvent) {
         if (typeof DeviceMotionEvent.requestPermission === 'function') {
           DeviceMotionEvent.requestPermission().then(function(state) {
-            if (state === 'granted') window.addEventListener('devicemotion', handleMotion);
+            if (state === 'granted') {
+              window.addEventListener('devicemotion', handleMotion);
+            }
           }).catch(function() {});
         } else {
           window.addEventListener('devicemotion', handleMotion);
         }
       }
     }
-    /* request permission on first tap (iOS requirement) */
+
+    /* request permission on first touch (iOS requirement) */
     document.addEventListener('touchstart', function reqPerm() {
       enableShake();
       document.removeEventListener('touchstart', reqPerm);
     }, { once: true, passive: true });
+
+    /* also try immediately for Android */
+    enableShake();
 
     // keyboard: space to open, esc to close
     document.addEventListener('keydown', function(e) {
