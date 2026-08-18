@@ -79,6 +79,28 @@ function moveChicks(){
 setInterval(moveChicks,4000);
 moveChicks();
 
+// Chikoy roaming
+const chikoyEl=$("#chikoy");
+let chikoyX=7,chikoyTargetX=7,chikoyTimer=null;
+
+function chikoyRoam(){
+  const targets=[5,15,25,40,55,70,80];
+  chikoyTargetX=targets[Math.floor(Math.random()*targets.length)];
+  const dist=Math.abs(chikoyTargetX-chikoyX);
+  const dur=Math.max(1500,dist*80);
+
+  chikoyEl.classList.add("walking");
+  if(chikoyTargetX<chikoyX) chikoyEl.querySelector(".chikoy").style.transform="rotateY(5deg) scaleX(-1)";
+  else chikoyEl.querySelector(".chikoy").style.transform="rotateY(-5deg)";
+
+  chikoyEl.style.left=chikoyTargetX+"%";
+  chikoyX=chikoyTargetX;
+
+  setTimeout(()=>{chikoyEl.classList.remove("walking")},dur);
+  chikoyTimer=setTimeout(chikoyRoam,4000+Math.random()*5000);
+}
+setTimeout(chikoyRoam,2000);
+
 // Eggs
 function spawnEggs(){
   const eggs=$$(".egg");

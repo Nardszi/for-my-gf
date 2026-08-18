@@ -54,10 +54,20 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 .sign-front .ci{font-size:clamp(.55rem,1.6vw,.8rem)}
 .sign-edge{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--wood-dk);border-radius:5px;transform:translateZ(-6px)}
 .sign-post{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:8px;height:55px;background:linear-gradient(180deg,var(--wood-dk),#2a1508);border-radius:3px}
-.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring),left 1.5s ease}
+.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring),left 2s ease,bottom 2s ease}
 .chikoy-3d:hover{transform:scale(1.08) rotateY(5deg)}
 .chikoy-3d.bounce{animation:cBounce .5s var(--spring)}
 @keyframes cBounce{0%{transform:translateY(0)}40%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+.chikoy-3d.walking{animation:cWalkBob .5s ease-in-out infinite}
+@keyframes cWalkBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.chikoy-3d.walking .c-arm.l{animation:cArmL .5s ease-in-out infinite}
+.chikoy-3d.walking .c-arm.r{animation:cArmR .5s ease-in-out infinite}
+.chikoy-3d.walking .c-leg.l{animation:cLegL .5s ease-in-out infinite}
+.chikoy-3d.walking .c-leg.r{animation:cLegR .5s ease-in-out infinite}
+@keyframes cArmL{0%,100%{transform:rotateZ(15deg)}50%{transform:rotateZ(-20deg)}}
+@keyframes cArmR{0%,100%{transform:rotateZ(-15deg)}50%{transform:rotateZ(20deg)}}
+@keyframes cLegL{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-8deg)}}
+@keyframes cLegR{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(8deg)}}
 .chikoy{transform-style:preserve-3d;transform:rotateY(-5deg);position:relative}
 .c-head{position:absolute;top:0;left:50%;transform:translateX(-50%) translateZ(14px);width:clamp(32px,8vw,44px);height:clamp(32px,8vw,44px);border-radius:50%;background:radial-gradient(circle at 38% 30%,#ffe0b2,#ffb74d);box-shadow:0 4px 10px rgba(0,0,0,.25);z-index:2}
 .c-hair{position:absolute;top:-5px;left:50%;transform:translateX(-50%) translateZ(16px);width:clamp(24px,6vw,34px);height:14px;background:linear-gradient(180deg,#1a0a00,#2d1a0a);border-radius:50% 50% 0 0;z-index:3}
@@ -76,7 +86,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 .c-arm.r{right:0;transform:rotateZ(-15deg);transform-origin:left center}
 .chikoy-3d.feeding .c-arm.r{animation:fArm .6s ease-in-out 3}
 @keyframes fArm{0%,100%{transform:rotateZ(-15deg)}50%{transform:rotateZ(-55deg)}}
-.c-leg{position:absolute;bottom:-10px;width:9px;height:12px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0}
+.c-leg{position:absolute;bottom:-10px;width:9px;height:12px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0;transform-origin:top center}
 .c-leg.l{left:12px}.c-leg.r{right:12px}
 .baby-chick{position:absolute;z-index:9;pointer-events:none;transition:left 1.5s ease,bottom 1.5s ease}
 .bc-body{position:relative;width:18px;height:14px;background:radial-gradient(ellipse at 40% 30%,#fff9c4,#ffd54f);border-radius:50% 50% 45% 45%;box-shadow:0 2px 4px rgba(0,0,0,.15)}
