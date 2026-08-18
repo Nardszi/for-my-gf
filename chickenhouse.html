@@ -32,7 +32,7 @@
     transition:transform 0.3s var(--spring);
   }
   .photo-frame:hover{transform:scale(1.03)}
-  .photo-frame img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+  .photo-frame img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:linear-gradient(135deg,var(--wood),var(--wood-dark))}
   .photo-label{padding:0.3rem 0.5rem;text-align:center;background:linear-gradient(135deg,var(--wood-dark),#3a2518)}
   .photo-label h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:0.7rem;font-weight:600;color:var(--cream)}
   .photo-label p{font-size:0.5rem;color:rgba(255,247,238,0.5);margin-top:0.1rem}
@@ -211,7 +211,7 @@
   <!-- PHOTO (SMALL, TOP-RIGHT) -->
   <div class="photo-frame" id="photoFrame">
     <span class="photo-badge">CHIKOY'S FARM</span>
-    <img src="chickenhouse-photos/chikoy-chickens.png" alt="Chikoy at the Chicken House">
+    <img src="chickenhouse-photos/chikoy-chickens.png" alt="Chikoy at the Chicken House" onerror="this.src='chickenhouse-photos/chikoy-chickens.jpg';this.onerror=null">
     <div class="photo-label">
       <h2>Welcome to My Chicken House</h2>
     </div>
@@ -330,18 +330,18 @@
     });
   });
 
-  /* chickens */
+  /* chickens - positioned on the ground */
   var chickenData = [
-    {type:'brown',x:42,y:55},{type:'brown',x:55,y:58},{type:'white',x:65,y:53},
-    {type:'brown',x:35,y:60},{type:'black',x:75,y:56},{type:'white',x:50,y:62},
-    {type:'brown',x:60,y:65},{type:'black',x:30,y:57},
+    {type:'brown',x:38,bottom:14},{type:'brown',x:52,bottom:12},{type:'white',x:65,bottom:15},
+    {type:'brown',x:32,bottom:11},{type:'black',x:78,bottom:13},{type:'white',x:48,bottom:16},
+    {type:'brown',x:58,bottom:10},{type:'black',x:25,bottom:14},
   ];
 
   function createChicken(data, idx){
     var el = document.createElement('div');
     el.className = 'chicken '+data.type+' walk';
     el.style.left = data.x+'%';
-    el.style.bottom = (100-data.y)+'%';
+    el.style.bottom = data.bottom+'%';
     el.style.animationDelay = (idx*0.3)+'s';
     el.innerHTML = '<div class="ch-tail"></div><div class="ch-body"><div class="ch-wing"></div><div class="ch-comb"></div><div class="ch-head"><div class="ch-eye"></div><div class="ch-beak"></div><div class="ch-wattle"></div></div></div><div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div>';
     el.addEventListener('click',function(e){e.stopPropagation();petChicken(el,data)});
@@ -350,7 +350,7 @@
     setInterval(function(){
       if(Math.random()>0.6){
         var dx=(Math.random()-0.5)*15;
-        data.x=Math.max(10,Math.min(85,data.x+dx));
+        data.x=Math.max(8,Math.min(88,data.x+dx));
         el.style.left=data.x+'%';
         el.style.transform=dx>0?'scaleX(1)':'scaleX(-1)';
       }
