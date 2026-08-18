@@ -59,20 +59,20 @@
   @keyframes grassWave{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 
   /* ===== CHICKEN COOP (CENTER, ON GROUND) ===== */
-  .coop-wrap{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);z-index:5}
-  .coop{position:relative;width:min(70vw,300px);height:clamp(80px,18vw,130px)}
-  .coop-roof{position:absolute;top:0;left:-10px;right:-10px;height:36px;background:linear-gradient(135deg,var(--wood-dark),var(--wood),var(--wood-light));clip-path:polygon(8% 100%,0% 0%,100% 0%,92% 100%);box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:2}
-  .coop-roof::after{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3a2518,#5c3d2e,#3a2518)}
-  .coop-body{position:absolute;top:33px;left:0;right:0;bottom:0;background:rgba(139,94,60,0.15);border:2px solid var(--wood);border-radius:3px;overflow:hidden}
+  .coop-wrap{position:absolute;bottom:16%;left:50%;transform:translateX(-50%);z-index:5}
+  .coop{position:relative;width:min(85vw,380px);height:clamp(100px,24vw,170px)}
+  .coop-roof{position:absolute;top:0;left:-14px;right:-14px;height:48px;background:linear-gradient(135deg,var(--wood-dark),var(--wood),var(--wood-light));clip-path:polygon(8% 100%,0% 0%,100% 0%,92% 100%);box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:2}
+  .coop-roof::after{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#3a2518,#5c3d2e,#3a2518)}
+  .coop-body{position:absolute;top:44px;left:0;right:0;bottom:0;background:rgba(139,94,60,0.15);border:2.5px solid var(--wood);border-radius:3px;overflow:hidden}
   .coop-body::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 12px,rgba(100,60,30,0.15) 12px,rgba(100,60,30,0.15) 14px),repeating-linear-gradient(0deg,transparent,transparent 12px,rgba(100,60,30,0.15) 12px,rgba(100,60,30,0.15) 14px)}
-  .coop-door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(38px,8vw,50px);height:clamp(48px,11vw,62px);background:linear-gradient(180deg,var(--wood-dark),#3a2518);border:2px solid var(--wood);border-bottom:none;border-radius:20px 20px 0 0}
+  .coop-door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(50px,11vw,65px);height:clamp(65px,15vw,85px);background:linear-gradient(180deg,var(--wood-dark),#3a2518);border:2.5px solid var(--wood);border-bottom:none;border-radius:28px 28px 0 0}
   .coop-door::after{content:"";position:absolute;top:50%;right:4px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px rgba(232,193,126,0.5)}
-  .nest{position:absolute;bottom:4px;width:30px;height:22px;background:var(--wood-dark);border:2px solid var(--wood);border-radius:3px 3px 0 0}
-  .nest::before{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:6px;background:#d4a574;border-radius:50%}
-  .nest.n1{left:4px}.nest.n2{left:42px}.nest.n3{right:4px}
+  .nest{position:absolute;bottom:5px;width:40px;height:28px;background:var(--wood-dark);border:2px solid var(--wood);border-radius:3px 3px 0 0}
+  .nest::before{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:8px;background:#d4a574;border-radius:50%}
+  .nest.n1{left:6px}.nest.n2{left:52px}.nest.n3{right:6px}
 
   /* eggs */
-  .nest-egg{position:absolute;bottom:6px;width:9px;height:11px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;box-shadow:inset -1px -1px 2px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.2);cursor:pointer;transition:transform 0.3s var(--spring),opacity 0.3s ease;z-index:4}
+  .nest-egg{position:absolute;bottom:7px;width:12px;height:15px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;box-shadow:inset -1px -1px 2px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.2);cursor:pointer;transition:transform 0.3s var(--spring),opacity 0.3s ease;z-index:4}
   .nest-egg:hover{transform:scale(1.15) translateY(-2px)}
   .nest-egg.collected{transform:scale(0) translateY(-20px);opacity:0;pointer-events:none}
   .nest-egg.white{background:radial-gradient(ellipse at 35% 30%,#fff,#f0e6d2)}
