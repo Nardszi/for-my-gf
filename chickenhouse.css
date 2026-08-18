@@ -99,30 +99,53 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes cPeck{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg) translateY(3px)}}
 .chicken.happy{animation:cHappy .5s var(--spring)}
 @keyframes cHappy{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.1)}100%{transform:translateY(0) scale(1)}}
-.ch{position:relative}
-.ch-body{position:relative;width:clamp(30px,7.5vw,40px);height:clamp(24px,6vw,32px);border-radius:50% 50% 45% 45%;box-shadow:0 4px 8px rgba(0,0,0,.2)}
-.ch-head{position:absolute;top:-8px;left:18px;width:clamp(14px,3.5vw,18px);height:clamp(14px,3.5vw,18px);border-radius:50%;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.15)}
-.ch-comb{position:absolute;top:-10px;left:14px;width:8px;height:6px;background:#e53935;border-radius:50% 50% 0 0;z-index:3}
-.ch-comb::before{content:"";position:absolute;top:-3px;left:2px;width:5px;height:5px;background:#e53935;border-radius:50% 50% 0 0}
-.ch-eye{position:absolute;top:5px;left:10px;width:2.5px;height:2.5px;border-radius:50%;background:#1a0a00;z-index:3}
-.ch-eye::after{content:"";position:absolute;top:.5px;left:.5px;width:1px;height:1px;border-radius:50%;background:#fff}
-.ch-beak{position:absolute;top:7px;left:12px;width:5px;height:3px;background:#ff8f00;border-radius:0 4px 4px 0;z-index:3}
-.ch-wattle{position:absolute;top:10px;left:10px;width:3px;height:3.5px;background:#e53935;border-radius:50%;z-index:2}
-.ch-tail{position:absolute;top:1px;left:-5px;width:9px;height:12px;border-radius:50% 0 0 50%;transform:rotate(8deg)}
-.ch-wing{position:absolute;top:6px;left:3px;width:11px;height:9px;border-radius:50% 0 0 50%;opacity:.8}
-.ch-legs{position:absolute;bottom:-4px;left:10px;display:flex;gap:6px}
-.ch-leg{width:2px;height:6px;background:#ff8f00;border-radius:0 0 2px 2px}
-.chicken.rooster .ch-comb{width:10px;height:8px}.chicken.rooster .ch-comb::before{width:6px;height:6px}
-.chicken.rooster .ch-tail{width:14px;height:16px;transform:rotate(12deg)}
-.chicken.duck .ch-body{border-radius:40% 40% 50% 50%}
-.chicken.duck .ch-beak{width:7px;height:4px;border-radius:0 5px 5px 0;background:#ffa726}
-.chicken.duck .ch-comb,.chicken.duck .ch-wattle{display:none}
-.chicken.br .ch-body{background:linear-gradient(135deg,#8B4513,#A0522D,#8B4513)}.chicken.br .ch-head{background:linear-gradient(135deg,#A0522D,#8B4513)}.chicken.br .ch-tail{background:#6B3410}.chicken.br .ch-wing{background:#7A4420}
-.chicken.wh .ch-body{background:linear-gradient(135deg,#f5f5f5,#e0e0e0,#f5f5f5)}.chicken.wh .ch-head{background:#f0f0f0}.chicken.wh .ch-tail{background:#ddd}.chicken.wh .ch-wing{background:#e8e8e8}
-.chicken.bl .ch-body{background:linear-gradient(135deg,#2a2a2a,#1a1a1a,#2a2a2a)}.chicken.bl .ch-head{background:#222}.chicken.bl .ch-tail{background:#111}.chicken.bl .ch-wing{background:#1a1a1a}
-.chicken.dk .ch-body{background:linear-gradient(135deg,#4a3728,#5c4033,#4a3728)}.chicken.dk .ch-head{background:#5c4033}.chicken.dk .ch-tail{background:#3a2a1a}.chicken.dk .ch-wing{background:#4a3728}
-.chicken.walk{animation:cWalk 2s ease-in-out infinite}
-@keyframes cWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.ch{position:relative;width:clamp(42px,10vw,56px);height:clamp(48px,11vw,62px)}
+.ch-body{position:absolute;bottom:12px;left:6px;width:clamp(32px,8vw,42px);height:clamp(28px,7vw,36px);border-radius:48% 52% 50% 48%/55% 55% 45% 45%;box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 -4px 8px rgba(0,0,0,.08)}
+.ch-body::before{content:"";position:absolute;top:3px;left:3px;right:3px;bottom:3px;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 50%,rgba(0,0,0,.06) 100%);pointer-events:none}
+.ch-body::after{content:"";position:absolute;top:6px;left:4px;width:60%;height:55%;border-radius:50% 50% 40% 40%;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);pointer-events:none}
+.ch-neck{position:absolute;bottom:28px;left:16px;width:clamp(12px,3vw,16px);height:clamp(14px,3.5vw,18px);border-radius:40% 50% 30% 30%;z-index:1}
+.ch-head{position:absolute;bottom:36px;left:12px;width:clamp(18px,4.5vw,24px);height:clamp(16px,4vw,22px);border-radius:50% 50% 45% 45%;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.ch-head::after{content:"";position:absolute;top:2px;left:2px;right:2px;bottom:4px;border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.1),transparent 60%);pointer-events:none}
+.ch-comb{position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:clamp(10px,2.5vw,14px);height:clamp(7px,1.8vw,10px);background:linear-gradient(180deg,#ef5350,#c62828);border-radius:40% 45% 20% 20%;z-index:3;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ch-comb::before{content:"";position:absolute;top:-3px;left:15%;width:45%;height:60%;background:linear-gradient(180deg,#ef5350,#d32f2f);border-radius:50% 50% 20% 20%}
+.ch-comb::after{content:"";position:absolute;top:-1px;right:10%;width:35%;height:50%;background:#e53935;border-radius:50% 50% 20% 20%}
+.ch-eye{position:absolute;top:35%;left:55%;width:clamp(3px,.8vw,4px);height:clamp(3px,.8vw,4px);border-radius:50%;background:#1a0a00;z-index:3}
+.ch-eye::after{content:"";position:absolute;top:.5px;left:.5px;width:40%;height:40%;border-radius:50%;background:rgba(255,255,255,.8)}
+.ch-beak{position:absolute;top:42%;left:70%;width:clamp(6px,1.5vw,8px);height:clamp(4px,1vw,5px);background:linear-gradient(180deg,#ff9800,#f57c00);border-radius:2px 6px 4px 2px;z-index:3;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.ch-beak::after{content:"";position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.1));border-radius:0 0 4px 2px}
+.ch-wattle{position:absolute;top:48%;left:56%;width:clamp(3px,.8vw,4px);height:clamp(4px,1vw,5px);background:linear-gradient(180deg,#e53935,#b71c1c);border-radius:30% 30% 50% 50%;z-index:2}
+.ch-ear{position:absolute;top:30%;left:42%;width:clamp(4px,1vw,5px);height:clamp(3px,.8vw,4px);background:#ffcdd2;border-radius:50%;z-index:2;opacity:.7}
+.ch-tail{position:absolute;bottom:20px;left:-2px;width:clamp(14px,3.5vw,18px);height:clamp(22px,5.5vw,28px);z-index:0;transform:rotate(10deg);transform-origin:bottom right}
+.ch-tail::before{content:"";position:absolute;bottom:0;left:0;width:100%;height:100%;border-radius:60% 20% 0 40%;transform:rotate(-5deg)}
+.ch-tail::after{content:"";position:absolute;bottom:4px;left:2px;width:85%;height:80%;border-radius:55% 15% 0 35%;transform:rotate(-8deg);opacity:.7}
+.ch-wing{position:absolute;bottom:16px;left:4px;width:clamp(16px,4vw,22px);height:clamp(14px,3.5vw,18px);border-radius:10% 50% 50% 30%;z-index:1;box-shadow:inset 0 2px 4px rgba(0,0,0,.06)}
+.ch-wing::before{content:"";position:absolute;top:2px;left:2px;right:3px;bottom:2px;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 60%)}
+.ch-wing::after{content:"";position:absolute;bottom:1px;left:0;right:0;height:40%;background:repeating-linear-gradient(170deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 3px);border-radius:inherit}
+.ch-feather{position:absolute;border-radius:50%;pointer-events:none;opacity:.15}
+.ch-feather.f1{top:8px;left:8px;width:10px;height:6px;background:rgba(255,255,255,.2);transform:rotate(-20deg)}
+.ch-feather.f2{top:14px;left:12px;width:8px;height:5px;background:rgba(255,255,255,.15);transform:rotate(-10deg)}
+.ch-feather.f3{top:18px;left:6px;width:7px;height:4px;background:rgba(0,0,0,.05);transform:rotate(5deg)}
+.ch-legs{position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:clamp(4px,1vw,7px);z-index:1}
+.ch-leg{position:relative;width:clamp(2.5px,.6vw,3px);height:clamp(10px,2.5vw,14px);background:linear-gradient(180deg,#ff8f00,#f57c00);border-radius:1px}
+.ch-foot{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(8px,2vw,10px);height:clamp(3px,.8vw,4px);display:flex;justify-content:space-between}
+.ch-toe{width:2px;height:100%;background:#ff8f00;border-radius:0 0 2px 2px}
+.ch-toe:nth-child(1){transform:rotate(-20deg)}
+.ch-toe:nth-child(3){transform:rotate(20deg)}
+.chicken.rooster .ch-comb{width:clamp(14px,3.5vw,18px);height:clamp(10px,2.5vw,13px)}
+.chicken.rooster .ch-comb::before{width:50%;height:65%}
+.chicken.rooster .ch-comb::after{width:40%;height:55%}
+.chicken.rooster .ch-tail{width:clamp(18px,4.5vw,24px);height:clamp(28px,7vw,36px);transform:rotate(15deg)}
+.chicken.rooster .ch-wattle{width:clamp(4px,1vw,5px);height:clamp(5px,1.2vw,6px)}
+.chicken.duck .ch-body{border-radius:45% 45% 50% 50%/50% 50% 50% 50%}
+.chicken.duck .ch-beak{width:clamp(8px,2vw,10px);height:clamp(4px,1vw,5px);border-radius:2px 6px 4px 3px;background:linear-gradient(180deg,#ffa726,#f57c00)}
+.chicken.duck .ch-comb,.chicken.duck .ch-wattle,.chicken.duck .ch-ear{display:none}
+.chicken.duck .ch-tail{height:clamp(10px,2.5vw,14px);border-radius:30% 50% 40% 40%}
+.chicken.br .ch-body{background:linear-gradient(145deg,#8B4513,#A0522D 40%,#8B4513 70%,#6B3410)}.chicken.br .ch-neck{background:#9A4B20}.chicken.br .ch-head{background:linear-gradient(150deg,#A0522D,#8B4513)}.chicken.br .ch-tail::before{background:linear-gradient(160deg,#6B3410,#5a2a0a)}.chicken.br .ch-tail::after{background:#4a2008}.chicken.br .ch-wing{background:linear-gradient(140deg,#7A4420,#6B3410)}
+.chicken.wh .ch-body{background:linear-gradient(145deg,#fafafa,#e8e8e8 40%,#f5f5f5 70%,#e0e0e0)}.chicken.wh .ch-neck{background:#f0f0f0}.chicken.wh .ch-head{background:linear-gradient(150deg,#f5f5f5,#eee)}.chicken.wh .ch-tail::before{background:linear-gradient(160deg,#ddd,#ccc)}.chicken.wh .ch-tail::after{background:#d0d0d0}.chicken.wh .ch-wing{background:linear-gradient(140deg,#eee,#e0e0e0)}
+.chicken.bl .ch-body{background:linear-gradient(145deg,#333,#1a1a1a 40%,#2a2a2a 70%,#111)}.chicken.bl .ch-neck{background:#252525}.chicken.bl .ch-head{background:linear-gradient(150deg,#2a2a2a,#1a1a1a)}.chicken.bl .ch-tail::before{background:linear-gradient(160deg,#111,#0a0a0a)}.chicken.bl .ch-tail::after{background:#080808}.chicken.bl .ch-wing{background:linear-gradient(140deg,#222,#151515)}
+.chicken.dk .ch-body{background:linear-gradient(145deg,#5c4033,#4a3728 40%,#5c4033 70%,#3e2a1a)}.chicken.dk .ch-neck{background:#4d3525}.chicken.dk .ch-head{background:linear-gradient(150deg,#5c4033,#4a3728)}.chicken.dk .ch-tail::before{background:linear-gradient(160deg,#3a2a1a,#2d1f12)}.chicken.dk .ch-tail::after{background:#251a10}.chicken.dk .ch-wing{background:linear-gradient(140deg,#4a3728,#3a2a1a)}
+.chicken.walk{animation:cWalk 1.5s ease-in-out infinite}
+@keyframes cWalk{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-3px) rotate(-2deg)}50%{transform:translateY(0) rotate(0)}75%{transform:translateY(-2px) rotate(2deg)}}
 .feed-p{position:absolute;width:5px;height:5px;background:radial-gradient(circle,#f5deb3,#daa520);border-radius:50%;pointer-events:none;z-index:15;animation:feedFall .7s ease-in forwards}
 @keyframes feedFall{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(.3)}}
 .egg-pop{position:absolute;pointer-events:none;z-index:25;font-size:1.2rem;animation:ePop .6s var(--spring) forwards}

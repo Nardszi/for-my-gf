@@ -35,7 +35,7 @@ function buildChicken(c,i){
   const d=document.createElement("div");
   d.className="chicken "+c.type+(i===0?" rooster":"")+(i===3?" duck":"");
   d.style.cssText=`left:${c.x}%;bottom:${c.y}%`;
-  d.innerHTML=`<div class="ch"><div class="ch-body"></div><div class="ch-head"></div><div class="ch-comb"></div><div class="ch-eye"></div><div class="ch-beak"></div><div class="ch-wattle"></div><div class="ch-tail"></div><div class="ch-wing"></div><div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div></div>`;
+  d.innerHTML=`<div class="ch"><div class="ch-body"><div class="ch-feather f1"></div><div class="ch-feather f2"></div><div class="ch-feather f3"></div></div><div class="ch-neck"></div><div class="ch-head"><div class="ch-comb"></div><div class="ch-eye"></div><div class="ch-beak"></div><div class="ch-wattle"></div><div class="ch-ear"></div></div><div class="ch-wing"></div><div class="ch-tail"></div><div class="ch-legs"><div class="ch-leg"><div class="ch-foot"><div class="ch-toe"></div><div class="ch-toe"></div><div class="ch-toe"></div></div></div><div class="ch-leg"><div class="ch-foot"><div class="ch-toe"></div><div class="ch-toe"></div><div class="ch-toe"></div></div></div></div></div>`;
   d.addEventListener("click",()=>petChicken(d));
   return d;
 }
