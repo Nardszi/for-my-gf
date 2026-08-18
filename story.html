@@ -366,6 +366,129 @@
     if (window.openShareCard) window.openShareCard();
   });
 
+  /* ---- SLIDESHOW ---- */
+  var slideshowOverlay = document.createElement('div');
+  slideshowOverlay.id = 'slideshow';
+  slideshowOverlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center';
+  slideshowOverlay.innerHTML = '' +
+    '<div id="slideImg" style="width:100%;height:100%;background-size:contain;background-position:center;background-repeat:no-repeat;transition:opacity 0.6s ease"></div>' +
+    '<div id="slideCaption" style="position:absolute;bottom:0;left:0;right:0;padding:2rem 1.5rem 1.5rem;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center">' +
+      '<div id="slideTitle" style="font-family:Georgia,serif;font-size:1.2rem;color:#fff;margin-bottom:0.3rem"></div>' +
+      '<div id="slideSubtitle" style="font-size:0.8rem;color:rgba(255,255,255,0.6)"></div>' +
+      '<div id="slideProgress" style="margin-top:0.8rem;font-size:0.7rem;color:rgba(255,255,255,0.4)"></div>' +
+    '</div>' +
+    '<button id="slideClose" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&times;</button>' +
+    '<button id="slidePrev" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#8249;</button>' +
+    '<button id="slideNext" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#8250;</button>' +
+    '<button id="slideAutoPlay" style="position:absolute;top:16px;left:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;padding:0.4rem 1rem;border-radius:999px;font-size:0.75rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#9654; Auto</button>';
+  document.body.appendChild(slideshowOverlay);
+
+  var slideImg = document.getElementById('slideImg');
+  var slideTitle = document.getElementById('slideTitle');
+  var slideSubtitle = document.getElementById('slideSubtitle');
+  var slideProgress = document.getElementById('slideProgress');
+  var slideIdx = 0;
+  var autoTimer = null;
+  var isAutoPlaying = false;
+
+  function getAllPhotos() {
+    var all = [];
+    var start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
+    var now = new Date();
+    var months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth()) + 1;
+    for (var i = 0; i < months; i++) {
+      all.push({
+        src: PHOTOS[i % PHOTOS.length],
+        title: MILESTONES[keyOf(new Date(start.getFullYear(), start.getMonth() + i, 1))]
+          ? MILESTONES[keyOf(new Date(start.getFullYear(), start.getMonth() + i, 1))].title
+          : fmtMonth(new Date(start.getFullYear(), start.getMonth() + i, 1)),
+        subtitle: 'Episode ' + (i + 1)
+      });
+    }
+    return all;
+  }
+
+  var allSlides = [];
+
+  function showSlide(idx) {
+    if (idx < 0) idx = allSlides.length - 1;
+    if (idx >= allSlides.length) idx = 0;
+    slideIdx = idx;
+    var s = allSlides[slideIdx];
+    slideImg.style.opacity = '0';
+    setTimeout(function() {
+      slideImg.style.backgroundImage = 'url(' + s.src + ')';
+      slideImg.style.opacity = '1';
+    }, 300);
+    slideTitle.textContent = s.title;
+    slideSubtitle.textContent = s.subtitle;
+    slideProgress.textContent = (slideIdx + 1) + ' / ' + allSlides.length;
+  }
+
+  function startSlideshow() {
+    allSlides = getAllPhotos();
+    slideIdx = 0;
+    slideshowOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    showSlide(0);
+  }
+
+  function stopSlideshow() {
+    slideshowOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+    stopAutoPlay();
+  }
+
+  function toggleAutoPlay() {
+    if (isAutoPlaying) {
+      stopAutoPlay();
+    } else {
+      isAutoPlaying = true;
+      document.getElementById('slideAutoPlay').innerHTML = '&#10074;&#10074; Pause';
+      autoTimer = setInterval(function() {
+        showSlide(slideIdx + 1);
+      }, 3000);
+    }
+  }
+
+  function stopAutoPlay() {
+    isAutoPlaying = false;
+    document.getElementById('slideAutoPlay').innerHTML = '&#9654; Auto';
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  }
+
+  seasonPlay.addEventListener('click', function() {
+    startSlideshow();
+  });
+
+  document.getElementById('slideClose').addEventListener('click', stopSlideshow);
+  document.getElementById('slidePrev').addEventListener('click', function() { stopAutoPlay(); showSlide(slideIdx - 1); });
+  document.getElementById('slideNext').addEventListener('click', function() { stopAutoPlay(); showSlide(slideIdx + 1); });
+  document.getElementById('slideAutoPlay').addEventListener('click', toggleAutoPlay);
+
+  slideshowOverlay.addEventListener('click', function(e) {
+    if (e.target === slideshowOverlay) stopSlideshow();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (slideshowOverlay.style.display !== 'flex') return;
+    if (e.key === 'Escape') stopSlideshow();
+    if (e.key === 'ArrowLeft') { stopAutoPlay(); showSlide(slideIdx - 1); }
+    if (e.key === 'ArrowRight') { stopAutoPlay(); showSlide(slideIdx + 1); }
+    if (e.key === ' ') { e.preventDefault(); toggleAutoPlay(); }
+  });
+
+  /* swipe on slideshow */
+  var slideStartX = 0;
+  slideshowOverlay.addEventListener('touchstart', function(e) { slideStartX = e.touches[0].clientX; }, { passive: true });
+  slideshowOverlay.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - slideStartX;
+    if (Math.abs(dx) > 50) {
+      stopAutoPlay();
+      showSlide(slideIdx + (dx < 0 ? 1 : -1));
+    }
+  }, { passive: true });
+
   window.scrollTo(0, 0);
   window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
