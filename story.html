@@ -383,6 +383,12 @@
     '<button id="slideAutoPlay" style="position:absolute;top:16px;left:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;padding:0.4rem 1rem;border-radius:999px;font-size:0.75rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#9654; Auto</button>';
   document.body.appendChild(slideshowOverlay);
 
+  var slideAudio = document.createElement('audio');
+  slideAudio.src = 'music/song2.mp3';
+  slideAudio.loop = true;
+  slideAudio.preload = 'auto';
+  document.body.appendChild(slideAudio);
+
   var slideImg = document.getElementById('slideImg');
   var slideTitle = document.getElementById('slideTitle');
   var slideSubtitle = document.getElementById('slideSubtitle');
@@ -430,12 +436,15 @@
     slideIdx = 0;
     slideshowOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    slideAudio.play().catch(function() {});
     showSlide(0);
   }
 
   function stopSlideshow() {
     slideshowOverlay.style.display = 'none';
     document.body.style.overflow = '';
+    slideAudio.pause();
+    slideAudio.currentTime = 0;
     stopAutoPlay();
   }
 
