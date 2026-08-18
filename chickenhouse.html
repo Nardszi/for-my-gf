@@ -18,160 +18,131 @@
     --spring:cubic-bezier(0.34,1.56,0.64,1);
   }
   html,body{height:100%;overflow:hidden}
-  body{
-    font-family:"Quicksand",system-ui,sans-serif;
-    background:#1a0f08;color:var(--cream);
-    user-select:none;-webkit-user-select:none;
-  }
+  body{font-family:"Quicksand",system-ui,sans-serif;background:#1a0f08;color:var(--cream);user-select:none;-webkit-user-select:none}
 
   /* ===== ARENA ===== */
-  .arena{
-    position:relative;width:100%;height:100vh;height:100dvh;
-    background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky) 30%,#b8e6b8 60%,var(--green) 100%);
-    overflow:hidden;perspective:800px;
-  }
+  .arena{position:relative;width:100%;height:100vh;height:100dvh;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky) 35%,#b8e6b8 65%,var(--green) 100%);overflow:hidden}
 
-  /* ===== 3D PHOTO FRAME ===== */
+  /* ===== PHOTO (SMALL, TOP-RIGHT CORNER) ===== */
   .photo-frame{
-    position:absolute;top:10px;left:50%;transform:translateX(-50%) rotateX(2deg);
-    width:min(88vw,380px);z-index:30;
-    border-radius:12px;overflow:hidden;
-    box-shadow:0 12px 40px rgba(0,0,0,0.5),0 0 0 3px rgba(139,94,60,0.6),0 20px 60px rgba(0,0,0,0.3);
-    background:var(--wood-dark);
-    cursor:pointer;
-    transition:transform 0.4s var(--spring),box-shadow 0.4s ease;
-    transform-style:preserve-3d;
+    position:absolute;top:48px;right:8px;z-index:30;
+    width:min(45vw,180px);border-radius:10px;overflow:hidden;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4),0 0 0 2px rgba(139,94,60,0.5);
+    background:var(--wood-dark);cursor:pointer;
+    transition:transform 0.3s var(--spring);
   }
-  .photo-frame:hover{transform:translateX(-50%) rotateX(0deg) scale(1.02) translateZ(20px);box-shadow:0 16px 50px rgba(0,0,0,0.6),0 0 0 3px var(--gold)}
+  .photo-frame:hover{transform:scale(1.03)}
   .photo-frame img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
-  .photo-label{padding:0.4rem 0.7rem;text-align:center;background:linear-gradient(135deg,var(--wood-dark),#3a2518)}
-  .photo-label h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(0.85rem,2.8vw,1rem);font-weight:600;color:var(--cream)}
-  .photo-label p{font-size:0.6rem;color:rgba(255,247,238,0.5);margin-top:0.1rem}
-  .photo-badge{position:absolute;top:6px;right:6px;z-index:2;padding:0.2rem 0.5rem;border-radius:999px;background:rgba(26,15,8,0.7);backdrop-filter:blur(8px);font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;border:1px solid rgba(232,193,126,0.3)}
-  .arena.minimized .photo-frame{width:min(65vw,240px);top:6px;transform:translateX(-50%) rotateX(0deg)}
-  .arena.minimized .photo-frame img{aspect-ratio:16/7}
+  .photo-label{padding:0.3rem 0.5rem;text-align:center;background:linear-gradient(135deg,var(--wood-dark),#3a2518)}
+  .photo-label h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:0.7rem;font-weight:600;color:var(--cream)}
+  .photo-label p{font-size:0.5rem;color:rgba(255,247,238,0.5);margin-top:0.1rem}
+  .photo-badge{position:absolute;top:4px;right:4px;z-index:2;padding:0.15rem 0.4rem;border-radius:999px;background:rgba(26,15,8,0.7);backdrop-filter:blur(6px);font-size:0.45rem;color:var(--gold);border:1px solid rgba(232,193,126,0.3)}
 
-  /* ===== 3D SKY ===== */
-  .sun{position:absolute;top:4%;right:7%;width:clamp(32px,7vw,55px);height:clamp(32px,7vw,55px);border-radius:50%;background:radial-gradient(circle,#fff7aa 30%,#ffd700 70%,transparent 100%);box-shadow:0 0 40px 10px rgba(255,215,0,0.3);animation:sunPulse 4s ease-in-out infinite;z-index:1;transform:translateZ(30px)}
-  @keyframes sunPulse{0%,100%{box-shadow:0 0 40px 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 60px 18px rgba(255,215,0,0.4)}}
-
-  .cloud{position:absolute;background:#fff;border-radius:50px;opacity:0.8;filter:blur(1px);z-index:1;transform:translateZ(20px)}
+  /* ===== SKY ===== */
+  .sun{position:absolute;top:5%;right:6%;width:clamp(28px,6vw,48px);height:clamp(28px,6vw,48px);border-radius:50%;background:radial-gradient(circle,#fff7aa 30%,#ffd700 70%,transparent 100%);box-shadow:0 0 30px 8px rgba(255,215,0,0.3);animation:sunPulse 4s ease-in-out infinite;z-index:1}
+  @keyframes sunPulse{0%,100%{box-shadow:0 0 30px 8px rgba(255,215,0,0.3)}50%{box-shadow:0 0 50px 15px rgba(255,215,0,0.4)}}
+  .cloud{position:absolute;background:#fff;border-radius:50px;opacity:0.7;filter:blur(1px);z-index:1}
   .cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
-  .cloud.c1{width:75px;height:26px;top:7%;left:-90px;animation:cloudDrift 18s linear infinite}
-  .cloud.c1::before{width:38px;height:32px;top:-14px;left:10px}
-  .cloud.c1::after{width:48px;height:28px;top:-10px;left:30px}
-  .cloud.c2{width:55px;height:20px;top:13%;left:-70px;animation:cloudDrift 25s linear infinite 5s;opacity:0.6}
-  .cloud.c2::before{width:30px;height:26px;top:-10px;left:8px}
-  .cloud.c2::after{width:38px;height:22px;top:-7px;left:24px}
-  @keyframes cloudDrift{from{transform:translateX(0) translateZ(20px)}to{transform:translateX(calc(100vw + 100px)) translateZ(20px)}}
+  .cloud.c1{width:65px;height:22px;top:8%;left:-80px;animation:cloudDrift 18s linear infinite}
+  .cloud.c1::before{width:32px;height:28px;top:-12px;left:8px}
+  .cloud.c1::after{width:42px;height:24px;top:-8px;left:26px}
+  .cloud.c2{width:50px;height:18px;top:14%;left:-65px;animation:cloudDrift 25s linear infinite 5s;opacity:0.5}
+  .cloud.c2::before{width:26px;height:22px;top:-9px;left:6px}
+  .cloud.c2::after{width:34px;height:20px;top:-6px;left:20px}
+  @keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 90px))}}
 
-  /* ===== 3D GROUND ===== */
-  .ground{position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 10%,var(--dirt) 35%,#4a2f1a 100%);border-radius:50% 50% 0 0 / 5% 5% 0 0;z-index:2;transform:rotateX(2deg);transform-origin:bottom}
-  .ground::before{content:"";position:absolute;top:-2px;left:0;right:0;height:14px;background:linear-gradient(180deg,var(--green),transparent);border-radius:50% 50% 0 0}
-  .grass{position:absolute;bottom:29%;width:100%;height:10px;z-index:2}
-  .grass span{position:absolute;bottom:0;width:2.5px;background:var(--green-dark);border-radius:2px 2px 0 0;animation:grassWave 2s ease-in-out infinite}
-  @keyframes grassWave{0%,100%{transform:rotateZ(-3deg)}50%{transform:rotateZ(3deg)}}
+  /* ===== GROUND ===== */
+  .ground{position:absolute;bottom:0;left:0;right:0;height:28%;background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 10%,var(--dirt) 35%,#4a2f1a 100%);border-radius:50% 50% 0 0 / 5% 5% 0 0;z-index:2}
+  .ground::before{content:"";position:absolute;top:-2px;left:0;right:0;height:12px;background:linear-gradient(180deg,var(--green),transparent);border-radius:50% 50% 0 0}
+  .grass{position:absolute;bottom:27%;width:100%;height:10px;z-index:2}
+  .grass span{position:absolute;bottom:0;width:2px;background:var(--green-dark);border-radius:2px 2px 0 0;animation:grassWave 2s ease-in-out infinite}
+  @keyframes grassWave{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 
-  /* ===== 3D CHICKEN COOP ===== */
-  .coop-wrap{position:absolute;bottom:18%;left:50%;transform:translateX(-50%) perspective(600px) rotateY(-2deg);z-index:3;transform-style:preserve-3d}
-  .coop{position:relative;width:min(78vw,360px);height:clamp(90px,20vw,150px);transform-style:preserve-3d}
+  /* ===== CHICKEN COOP (CENTER, ON GROUND) ===== */
+  .coop-wrap{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);z-index:5}
+  .coop{position:relative;width:min(70vw,300px);height:clamp(80px,18vw,130px)}
+  .coop-roof{position:absolute;top:0;left:-10px;right:-10px;height:36px;background:linear-gradient(135deg,var(--wood-dark),var(--wood),var(--wood-light));clip-path:polygon(8% 100%,0% 0%,100% 0%,92% 100%);box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:2}
+  .coop-roof::after{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3a2518,#5c3d2e,#3a2518)}
+  .coop-body{position:absolute;top:33px;left:0;right:0;bottom:0;background:rgba(139,94,60,0.15);border:2px solid var(--wood);border-radius:3px;overflow:hidden}
+  .coop-body::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 12px,rgba(100,60,30,0.15) 12px,rgba(100,60,30,0.15) 14px),repeating-linear-gradient(0deg,transparent,transparent 12px,rgba(100,60,30,0.15) 12px,rgba(100,60,30,0.15) 14px)}
+  .coop-door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(38px,8vw,50px);height:clamp(48px,11vw,62px);background:linear-gradient(180deg,var(--wood-dark),#3a2518);border:2px solid var(--wood);border-bottom:none;border-radius:20px 20px 0 0}
+  .coop-door::after{content:"";position:absolute;top:50%;right:4px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px rgba(232,193,126,0.5)}
+  .nest{position:absolute;bottom:4px;width:30px;height:22px;background:var(--wood-dark);border:2px solid var(--wood);border-radius:3px 3px 0 0}
+  .nest::before{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:6px;background:#d4a574;border-radius:50%}
+  .nest.n1{left:4px}.nest.n2{left:42px}.nest.n3{right:4px}
 
-  /* roof */
-  .coop-roof{position:absolute;top:0;left:-12px;right:-12px;height:42px;transform:translateZ(15px) rotateX(-8deg);transform-origin:bottom;background:linear-gradient(135deg,var(--wood-dark),var(--wood),var(--wood-light));clip-path:polygon(8% 100%,0% 0%,100% 0%,92% 100%);box-shadow:0 6px 20px rgba(0,0,0,0.4)}
-  .coop-roof::after{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#3a2518,#5c3d2e,#3a2518)}
-  .coop-roof-side{position:absolute;top:0;left:-12px;right:-12px;height:42px;transform:translateZ(-10px) rotateX(-8deg);transform-origin:bottom;background:linear-gradient(135deg,#3a2518,#5c3d2e);clip-path:polygon(8% 100%,0% 0%,100% 0%,92% 100%);opacity:0.5}
-
-  /* body */
-  .coop-body{position:absolute;top:38px;left:0;right:0;bottom:0;background:rgba(139,94,60,0.12);border:2.5px solid var(--wood);border-radius:3px;overflow:hidden;transform:translateZ(5px);box-shadow:inset 0 0 20px rgba(0,0,0,0.1)}
-  .coop-body::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 13px,rgba(100,60,30,0.18) 13px,rgba(100,60,30,0.18) 15px),repeating-linear-gradient(0deg,transparent,transparent 13px,rgba(100,60,30,0.18) 13px,rgba(100,60,30,0.18) 15px)}
-  .coop-body-side{position:absolute;top:38px;left:0;right:0;bottom:0;background:rgba(80,50,30,0.3);border:2px solid var(--wood-dark);border-radius:3px;transform:translateZ(-8px)}
-
-  /* door */
-  .coop-door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:clamp(42px,9vw,55px);height:clamp(50px,12vw,68px);background:linear-gradient(180deg,var(--wood-dark),#3a2518);border:2.5px solid var(--wood);border-bottom:none;border-radius:22px 22px 0 0;box-shadow:inset 0 0 10px rgba(0,0,0,0.3)}
-  .coop-door::after{content:"";position:absolute;top:50%;right:5px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px rgba(232,193,126,0.5)}
-
-  /* nests */
-  .nest{position:absolute;bottom:5px;width:34px;height:26px;background:var(--wood-dark);border:2px solid var(--wood);border-radius:3px 3px 0 0}
-  .nest::before{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:8px;background:#d4a574;border-radius:50%}
-  .nest.n1{left:5px}.nest.n2{left:48px}.nest.n3{right:5px}
-
-  /* eggs in nest */
-  .nest-egg{position:absolute;bottom:8px;width:10px;height:13px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;box-shadow:inset -1px -1px 3px rgba(0,0,0,0.1),0 2px 4px rgba(0,0,0,0.2);cursor:pointer;transition:transform 0.3s var(--spring),opacity 0.3s ease;z-index:4}
-  .nest-egg:hover{transform:scale(1.15) translateY(-3px)}
-  .nest-egg.collected{transform:scale(0) translateY(-30px);opacity:0;pointer-events:none}
+  /* eggs */
+  .nest-egg{position:absolute;bottom:6px;width:9px;height:11px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;box-shadow:inset -1px -1px 2px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.2);cursor:pointer;transition:transform 0.3s var(--spring),opacity 0.3s ease;z-index:4}
+  .nest-egg:hover{transform:scale(1.15) translateY(-2px)}
+  .nest-egg.collected{transform:scale(0) translateY(-20px);opacity:0;pointer-events:none}
   .nest-egg.white{background:radial-gradient(ellipse at 35% 30%,#fff,#f0e6d2)}
   .nest-egg.brown{background:radial-gradient(ellipse at 35% 30%,#d4a574,#b8834a)}
-  .ne1{left:6px}.ne2{left:16px;bottom:6px}.ne3{right:6px}
+  .ne1{left:4px}.ne2{left:14px;bottom:4px}.ne3{right:4px}
 
-  /* ===== 3D SIGN ===== */
-  .sign{position:absolute;bottom:26%;right:3%;width:clamp(75px,16vw,110px);cursor:pointer;z-index:8;transform:perspective(400px) rotateY(-5deg);transform-style:preserve-3d;transition:transform 0.3s var(--spring)}
-  .sign:hover,.sign:active{transform:perspective(400px) rotateY(0deg) scale(1.05) translateZ(10px)}
-  .sign-post{position:absolute;bottom:-42px;left:50%;transform:translateX(-50%);width:7px;height:45px;background:linear-gradient(180deg,var(--wood-dark),#3a2518);border-radius:2px;box-shadow:2px 0 4px rgba(0,0,0,0.2)}
-  .sign-board{background:linear-gradient(135deg,var(--wood),var(--wood-light));border:2px solid var(--wood-dark);border-radius:4px;padding:5px;text-align:center;box-shadow:3px 4px 10px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.1)}
-  .sign-board h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(0.38rem,1.2vw,0.55rem);font-weight:600;color:var(--cream);line-height:1.25}
-  .sign-board .ci{font-size:clamp(0.5rem,1.6vw,0.75rem)}
+  /* ===== SIGN (LEFT OF COOP) ===== */
+  .sign{position:absolute;bottom:22%;left:6%;width:clamp(70px,15vw,100px);cursor:pointer;z-index:6;transition:transform 0.3s var(--spring)}
+  .sign:hover,.sign:active{transform:scale(1.05) rotate(-2deg)}
+  .sign-post{position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);width:6px;height:40px;background:var(--wood-dark);border-radius:2px}
+  .sign-board{background:linear-gradient(135deg,var(--wood),var(--wood-light));border:2px solid var(--wood-dark);border-radius:4px;padding:4px;text-align:center;box-shadow:2px 3px 8px rgba(0,0,0,0.3)}
+  .sign-board h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(0.35rem,1.1vw,0.5rem);font-weight:600;color:var(--cream);line-height:1.2}
+  .sign-board .ci{font-size:clamp(0.45rem,1.4vw,0.7rem)}
 
-  /* ===== 3D CHIKOY ===== */
-  .chikoy{position:absolute;bottom:18%;left:6%;width:clamp(48px,12vw,68px);cursor:pointer;z-index:10;transform:perspective(500px) rotateY(5deg);transform-style:preserve-3d;transition:transform 0.3s var(--spring)}
-  .chikoy:hover,.chikoy:active{transform:perspective(500px) rotateY(0deg) scale(1.08) translateZ(15px)}
+  /* ===== CHIKOY (LEFT SIDE, ABOVE GROUND) ===== */
+  .chikoy{position:absolute;bottom:20%;left:8%;width:clamp(44px,11vw,62px);cursor:pointer;z-index:10;transition:transform 0.3s var(--spring)}
+  .chikoy:hover,.chikoy:active{transform:scale(1.08)}
   .chikoy.bounce{animation:chBounce 0.5s var(--spring)}
-  @keyframes chBounce{0%{transform:translateY(0) translateZ(0)}40%{transform:translateY(-14px) translateZ(20px)}100%{transform:translateY(0) translateZ(0)}}
+  @keyframes chBounce{0%{transform:translateY(0)}40%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 
-  .chikoy-head{position:absolute;top:0;left:50%;transform:translateX(-50%) translateZ(12px);width:clamp(30px,7.5vw,42px);height:clamp(30px,7.5vw,42px);border-radius:50%;background:radial-gradient(circle at 38% 32%,#ffe0b2,#ffcc80);box-shadow:0 4px 8px rgba(0,0,0,0.25),inset 0 -2px 4px rgba(0,0,0,0.05);z-index:2}
-  .chikoy-hair{position:absolute;top:-4px;left:50%;transform:translateX(-50%) translateZ(14px);width:clamp(22px,5.5vw,32px);height:13px;background:linear-gradient(180deg,#1a0a00,#2a1a0a);border-radius:50% 50% 0 0;z-index:3}
-  .chikoy-hair::before{content:"";position:absolute;top:-3px;left:5px;width:8px;height:9px;background:#1a0a00;border-radius:50% 50% 0 0;transform:rotate(-15deg)}
-  .chikoy-eyes{position:absolute;top:35%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(6px,1.8vw,10px);z-index:4}
-  .chikoy-eye{width:5px;height:5px;border-radius:50%;background:#1a0a00;animation:chBlink 4s ease-in-out infinite;position:relative}
-  .chikoy-eye::after{content:"";position:absolute;top:1px;left:1.5px;width:1.5px;height:1.5px;border-radius:50%;background:#fff}
+  .chikoy-head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:clamp(28px,7vw,38px);height:clamp(28px,7vw,38px);border-radius:50%;background:radial-gradient(circle at 38% 32%,#ffe0b2,#ffcc80);box-shadow:0 3px 6px rgba(0,0,0,0.2);z-index:2}
+  .chikoy-hair{position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:clamp(20px,5vw,28px);height:11px;background:linear-gradient(180deg,#1a0a00,#2a1a0a);border-radius:50% 50% 0 0;z-index:3}
+  .chikoy-hair::before{content:"";position:absolute;top:-2px;left:4px;width:7px;height:8px;background:#1a0a00;border-radius:50% 50% 0 0;transform:rotate(-15deg)}
+  .chikoy-eyes{position:absolute;top:35%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(5px,1.5vw,9px);z-index:4}
+  .chikoy-eye{width:4px;height:4px;border-radius:50%;background:#1a0a00;animation:chBlink 4s ease-in-out infinite;position:relative}
+  .chikoy-eye::after{content:"";position:absolute;top:0.5px;left:1px;width:1.5px;height:1.5px;border-radius:50%;background:#fff}
   @keyframes chBlink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(0.1)}}
-  .chikoy-mouth{position:absolute;top:55%;left:50%;transform:translateX(-50%);width:8px;height:4px;border-radius:0 0 6px 6px;background:#e57373;z-index:4}
-  .chikoy-cheek{position:absolute;top:42%;width:6px;height:3.5px;background:rgba(255,138,128,0.5);border-radius:50%;z-index:4}
+  .chikoy-mouth{position:absolute;top:55%;left:50%;transform:translateX(-50%);width:7px;height:3.5px;border-radius:0 0 5px 5px;background:#e57373;z-index:4}
+  .chikoy-cheek{position:absolute;top:42%;width:5px;height:3px;background:rgba(255,138,128,0.5);border-radius:50%;z-index:4}
   .chikoy-cheek.l{left:2px}.chikoy-cheek.r{right:2px}
-  .chikoy-body{position:absolute;top:clamp(26px,6.5vw,36px);left:50%;transform:translateX(-50%) translateZ(6px);width:clamp(28px,7vw,38px);height:clamp(26px,6.5vw,34px);background:linear-gradient(180deg,#FFD700,#FFC107);border-radius:5px 5px 3px 3px;box-shadow:0 4px 8px rgba(0,0,0,0.2),inset 0 2px 4px rgba(255,255,255,0.2);z-index:1}
-  .chikoy-body::before{content:"CHOOSE FEAR";position:absolute;top:25%;left:50%;transform:translateX(-50%);font-size:clamp(0.16rem,0.6vw,0.28rem);font-weight:700;color:#1a0a00;white-space:nowrap;border:1px solid #1a0a00;padding:1px 2px}
-  .chikoy-arm{position:absolute;top:clamp(30px,7.5vw,42px);width:13px;height:4.5px;background:#FFD700;border-radius:3px;z-index:0;transition:transform 0.3s var(--spring);box-shadow:0 1px 3px rgba(0,0,0,0.15)}
-  .chikoy-arm.l{left:0;transform:rotateY(-20deg) rotateZ(15deg);transform-origin:right center}
-  .chikoy-arm.r{right:0;transform:rotateY(20deg) rotateZ(-15deg);transform-origin:left center}
+  .chikoy-body{position:absolute;top:clamp(24px,6vw,33px);left:50%;transform:translateX(-50%);width:clamp(26px,6.5vw,35px);height:clamp(24px,6vw,32px);background:linear-gradient(180deg,#FFD700,#FFC107);border-radius:4px 4px 3px 3px;box-shadow:0 3px 6px rgba(0,0,0,0.15);z-index:1}
+  .chikoy-body::before{content:"CHOOSE FEAR";position:absolute;top:25%;left:50%;transform:translateX(-50%);font-size:clamp(0.14rem,0.5vw,0.25rem);font-weight:700;color:#1a0a00;white-space:nowrap;border:1px solid #1a0a00;padding:0.5px 2px}
+  .chikoy-arm{position:absolute;top:clamp(28px,7vw,38px);width:12px;height:4px;background:#FFD700;border-radius:2px;z-index:0;transition:transform 0.3s var(--spring)}
+  .chikoy-arm.l{left:0;transform:rotate(15deg);transform-origin:right center}
+  .chikoy-arm.r{right:0;transform:rotate(-15deg);transform-origin:left center}
   .chikoy.feeding .chikoy-arm.r{animation:feedArm 0.6s ease-in-out 3}
-  @keyframes feedArm{0%,100%{transform:rotateY(20deg) rotateZ(-15deg)}50%{transform:rotateY(20deg) rotateZ(-50deg) translateZ(10px)}}
-  .chikoy-leg{position:absolute;bottom:-10px;width:8px;height:12px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0}
-  .chikoy-leg.l{left:11px}.chikoy-leg.r{right:11px}
+  @keyframes feedArm{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(-45deg)}}
+  .chikoy-leg{position:absolute;bottom:-9px;width:7px;height:10px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0}
+  .chikoy-leg.l{left:10px}.chikoy-leg.r{right:10px}
 
-  /* ===== 3D FEED BUCKET ===== */
-  .bucket{position:absolute;bottom:19%;left:30%;width:clamp(30px,7.5vw,42px);cursor:pointer;z-index:8;transform:perspective(400px) rotateX(5deg);transform-style:preserve-3d;transition:transform 0.2s var(--spring)}
-  .bucket:hover,.bucket:active{transform:perspective(400px) rotateX(5deg) scale(1.12) translateZ(10px)}
+  /* ===== FEED BUCKET (BETWEEN CHIKOY AND COOP) ===== */
+  .bucket{position:absolute;bottom:19%;left:28%;width:clamp(28px,7vw,38px);cursor:pointer;z-index:8;transition:transform 0.2s var(--spring)}
+  .bucket:hover,.bucket:active{transform:scale(1.1)}
   .bucket.shake{animation:bShake 0.4s ease-in-out}
-  @keyframes bShake{0%,100%{transform:rotate(0) translateZ(0)}25%{transform:rotate(-10deg) translateZ(5px)}75%{transform:rotate(10deg) translateZ(5px)}}
-  .bucket-body{position:absolute;bottom:0;left:3px;right:3px;height:24px;background:linear-gradient(135deg,var(--wood),var(--wood-light));border-radius:0 0 4px 4px;border:2px solid var(--wood-dark);box-shadow:inset 0 -3px 6px rgba(0,0,0,0.15),0 3px 8px rgba(0,0,0,0.2)}
-  .bucket-rim{position:absolute;top:0;left:0;right:0;height:6px;background:var(--wood-dark);border-radius:3px}
-  .bucket-handle{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:20px;height:11px;border:2px solid var(--wood-dark);border-bottom:none;border-radius:9px 9px 0 0}
-  .bucket-feed{position:absolute;top:4px;left:4px;right:4px;height:11px;background:radial-gradient(ellipse,#f5deb3,#daa520);border-radius:2px}
-  .bucket-label{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:0.28rem;color:var(--cream);font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,0.3);white-space:nowrap}
+  @keyframes bShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+  .bucket-body{position:absolute;bottom:0;left:3px;right:3px;height:22px;background:linear-gradient(135deg,var(--wood),var(--wood-light));border-radius:0 0 4px 4px;border:2px solid var(--wood-dark)}
+  .bucket-rim{position:absolute;top:0;left:0;right:0;height:5px;background:var(--wood-dark);border-radius:2px}
+  .bucket-handle{position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:18px;height:10px;border:2px solid var(--wood-dark);border-bottom:none;border-radius:8px 8px 0 0}
+  .bucket-feed{position:absolute;top:4px;left:4px;right:4px;height:10px;background:radial-gradient(ellipse,#f5deb3,#daa520);border-radius:2px}
 
-  /* ===== FEED PARTICLES ===== */
-  .feed-particle{position:absolute;width:4px;height:4px;background:radial-gradient(circle,#f5deb3,#daa520);border-radius:50%;pointer-events:none;z-index:5;animation:feedFall 0.7s ease-in forwards}
-  @keyframes feedFall{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}100%{opacity:0;transform:translate3d(var(--fx),var(--fy),20px) scale(0.3)}}
-
-  /* ===== 3D CHICKENS ===== */
-  .chicken{position:absolute;cursor:pointer;transition:transform 0.3s var(--spring);z-index:6;transform-style:preserve-3d}
-  .chicken:hover,.chicken:active{transform:scale(1.1) translateZ(10px)}
+  /* ===== CHICKENS (SPREAD ON GROUND) ===== */
+  .chicken{position:absolute;cursor:pointer;transition:transform 0.3s var(--spring);z-index:6}
+  .chicken:hover,.chicken:active{transform:scale(1.1)}
   .chicken.peck{animation:chPeck 0.4s ease-in-out 3}
-  @keyframes chPeck{0%,100%{transform:rotateZ(0) translateY(0)}50%{transform:rotateZ(12deg) translateY(3px)}}
+  @keyframes chPeck{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg) translateY(2px)}}
   .chicken.happy{animation:chHappy 0.5s var(--spring)}
-  @keyframes chHappy{0%{transform:translateY(0) translateZ(0)}50%{transform:translateY(-10px) translateZ(15px)}100%{transform:translateY(0) translateZ(0)}}
+  @keyframes chHappy{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
 
-  .ch-body{position:relative;width:clamp(30px,7.5vw,42px);height:clamp(24px,6vw,32px);border-radius:50% 50% 45% 45%;box-shadow:0 4px 8px rgba(0,0,0,0.2)}
-  .ch-head{position:absolute;top:-8px;left:17px;width:clamp(13px,3.2vw,18px);height:clamp(13px,3.2vw,18px);border-radius:50%;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,0.15)}
-  .ch-eye{position:absolute;top:4px;left:9px;width:2.5px;height:2.5px;border-radius:50%;background:#1a0a00;z-index:3}
+  .ch-body{position:relative;width:clamp(28px,7vw,38px);height:clamp(22px,5.5vw,30px);border-radius:50% 50% 45% 45%;box-shadow:0 3px 6px rgba(0,0,0,0.2)}
+  .ch-head{position:absolute;top:-7px;left:16px;width:clamp(12px,3vw,16px);height:clamp(12px,3vw,16px);border-radius:50%;z-index:2;box-shadow:0 2px 3px rgba(0,0,0,0.15)}
+  .ch-eye{position:absolute;top:4px;left:9px;width:2px;height:2px;border-radius:50%;background:#1a0a00;z-index:3}
   .ch-eye::after{content:"";position:absolute;top:0.5px;left:0.5px;width:1px;height:1px;border-radius:50%;background:#fff}
-  .ch-beak{position:absolute;top:6px;left:11px;width:5px;height:3px;background:#ff8f00;border-radius:0 4px 4px 0;z-index:3}
-  .ch-wattle{position:absolute;top:9px;left:10px;width:3px;height:3.5px;background:#e53935;border-radius:50%;z-index:2}
-  .ch-comb{position:absolute;top:-10px;left:15px;width:8px;height:6px;background:#e53935;border-radius:50% 50% 0 0;z-index:3}
-  .ch-comb::before{content:"";position:absolute;top:-2px;left:2px;width:5px;height:4px;background:#e53935;border-radius:50% 50% 0 0}
-  .ch-tail{position:absolute;top:1px;left:-5px;width:9px;height:12px;border-radius:50% 0 0 50%;transform:rotate(8deg)}
-  .ch-wing{position:absolute;top:6px;left:3px;width:11px;height:9px;border-radius:50% 0 0 50%;opacity:0.8}
-  .ch-legs{position:absolute;bottom:-4px;left:9px;display:flex;gap:6px}
-  .ch-leg{width:2px;height:6px;background:#ff8f00;border-radius:0 0 2px 2px}
+  .ch-beak{position:absolute;top:6px;left:10px;width:4px;height:2.5px;background:#ff8f00;border-radius:0 3px 3px 0;z-index:3}
+  .ch-wattle{position:absolute;top:8px;left:9px;width:2.5px;height:3px;background:#e53935;border-radius:50%;z-index:2}
+  .ch-comb{position:absolute;top:-9px;left:14px;width:7px;height:5px;background:#e53935;border-radius:50% 50% 0 0;z-index:3}
+  .ch-comb::before{content:"";position:absolute;top:-2px;left:2px;width:4px;height:3px;background:#e53935;border-radius:50% 50% 0 0}
+  .ch-tail{position:absolute;top:1px;left:-4px;width:8px;height:10px;border-radius:50% 0 0 50%;transform:rotate(8deg)}
+  .ch-wing{position:absolute;top:5px;left:2px;width:10px;height:8px;border-radius:50% 0 0 50%;opacity:0.8}
+  .ch-legs{position:absolute;bottom:-3px;left:8px;display:flex;gap:5px}
+  .ch-leg{width:1.5px;height:5px;background:#ff8f00;border-radius:0 0 1px 1px}
 
   .chicken.brown .ch-body{background:linear-gradient(135deg,#8B4513,#A0522D,#8B4513)}
   .chicken.brown .ch-head{background:linear-gradient(135deg,#A0522D,#8B4513)}
@@ -185,37 +156,40 @@
   .chicken.walk{animation:chWalk 2s ease-in-out infinite}
   @keyframes chWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 
-  /* ===== EGG POP ===== */
-  .egg-pop{position:absolute;pointer-events:none;z-index:25;font-size:1.1rem;animation:eggPop 0.6s var(--spring) forwards}
-  @keyframes eggPop{0%{opacity:1;transform:scale(0.3) translateY(0)}50%{opacity:1;transform:scale(1.2) translateY(-20px)}100%{opacity:0;transform:scale(0.8) translateY(-40px)}}
-
-  /* ===== LOVE BURST ===== */
-  .love-burst{position:absolute;pointer-events:none;z-index:20;font-size:0.85rem;animation:loveFloat 0.7s ease-out forwards}
-  @keyframes loveFloat{0%{opacity:1;transform:translate3d(0,0,0) scale(0.5)}100%{opacity:0;transform:translate3d(var(--lx),var(--ly),20px) scale(1.1)}}
+  /* ===== EFFECTS ===== */
+  .feed-particle{position:absolute;width:4px;height:4px;background:radial-gradient(circle,#f5deb3,#daa520);border-radius:50%;pointer-events:none;z-index:15;animation:feedFall 0.7s ease-in forwards}
+  @keyframes feedFall{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(0.3)}}
+  .egg-pop{position:absolute;pointer-events:none;z-index:25;font-size:1rem;animation:eggPop 0.6s var(--spring) forwards}
+  @keyframes eggPop{0%{opacity:1;transform:scale(0.3) translateY(0)}50%{opacity:1;transform:scale(1.2) translateY(-15px)}100%{opacity:0;transform:scale(0.8) translateY(-30px)}}
+  .love-burst{position:absolute;pointer-events:none;z-index:20;font-size:0.8rem;animation:loveFloat 0.7s ease-out forwards}
+  @keyframes loveFloat{0%{opacity:1;transform:translate(0,0) scale(0.5)}100%{opacity:0;transform:translate(var(--lx),var(--ly)) scale(1.1)}}
 
   /* ===== CONTROLS ===== */
-  .top-bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.8rem;background:linear-gradient(180deg,rgba(26,15,8,0.75),transparent)}
-  .top-bar .back{color:var(--cream);text-decoration:none;font-size:0.65rem;padding:0.25rem 0.5rem;border-radius:999px;border:1px solid rgba(255,143,171,0.3);background:rgba(26,15,8,0.4);backdrop-filter:blur(6px)}
-  .top-bar .title{font-family:"Cormorant Garamond",Georgia,serif;font-size:0.8rem;font-weight:600;color:var(--gold);background:rgba(26,15,8,0.4);backdrop-filter:blur(6px);padding:0.25rem 0.7rem;border-radius:999px;border:1px solid rgba(232,193,126,0.2)}
+  .top-bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.7rem;background:linear-gradient(180deg,rgba(26,15,8,0.7),transparent)}
+  .top-bar .back{color:var(--cream);text-decoration:none;font-size:0.6rem;padding:0.2rem 0.45rem;border-radius:999px;border:1px solid rgba(255,143,171,0.3);background:rgba(26,15,8,0.4);backdrop-filter:blur(6px)}
+  .top-bar .title{font-family:"Cormorant Garamond",Georgia,serif;font-size:0.75rem;font-weight:600;color:var(--gold);background:rgba(26,15,8,0.4);backdrop-filter:blur(6px);padding:0.2rem 0.6rem;border-radius:999px;border:1px solid rgba(232,193,126,0.2)}
 
-  .bottom-bar{position:absolute;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;padding:0.45rem 0.6rem;background:linear-gradient(0deg,rgba(26,15,8,0.8),transparent)}
-  .ctrl{display:flex;align-items:center;gap:0.2rem;font-size:0.65rem}
+  .bottom-bar{position:absolute;bottom:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-around;padding:0.4rem 0.5rem;background:linear-gradient(0deg,rgba(26,15,8,0.8),transparent)}
+  .ctrl{display:flex;align-items:center;gap:0.15rem;font-size:0.6rem}
   .ctrl .v{color:var(--gold);font-weight:600}
-  .feed-btn{padding:0.4rem 1rem;border-radius:999px;border:none;background:linear-gradient(135deg,var(--rose),#e0567c);color:#fff;font-family:inherit;font-size:0.68rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(224,86,124,0.4);transition:all 0.2s ease}
-  .feed-btn:hover,.feed-btn:active{transform:scale(1.06)}
+  .feed-btn{padding:0.35rem 0.9rem;border-radius:999px;border:none;background:linear-gradient(135deg,var(--rose),#e0567c);color:#fff;font-family:inherit;font-size:0.65rem;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(224,86,124,0.4);transition:all 0.2s ease}
+  .feed-btn:hover,.feed-btn:active{transform:scale(1.05)}
 
-  .toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:0.45rem 0.9rem;border-radius:10px;background:rgba(26,15,8,0.92);border:1px solid rgba(232,193,126,0.3);backdrop-filter:blur(12px);font-size:0.75rem;color:var(--cream);z-index:200;white-space:nowrap;pointer-events:none;animation:toastPop 0.3s var(--spring)}
+  .toast{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);padding:0.4rem 0.8rem;border-radius:8px;background:rgba(26,15,8,0.92);border:1px solid rgba(232,193,126,0.3);backdrop-filter:blur(10px);font-size:0.7rem;color:var(--cream);z-index:200;white-space:nowrap;pointer-events:none;animation:toastPop 0.3s var(--spring)}
   @keyframes toastPop{from{opacity:0;transform:translate(-50%,-50%) scale(0.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 
-  .hint{position:absolute;bottom:3rem;left:50%;transform:translateX(-50%);padding:0.35rem 0.8rem;border-radius:999px;background:rgba(26,15,8,0.75);backdrop-filter:blur(8px);font-size:0.62rem;color:rgba(255,247,238,0.6);z-index:40;animation:hintFade 3.5s ease forwards;white-space:nowrap}
+  .hint{position:absolute;bottom:2.8rem;left:50%;transform:translateX(-50%);padding:0.3rem 0.7rem;border-radius:999px;background:rgba(26,15,8,0.7);backdrop-filter:blur(8px);font-size:0.58rem;color:rgba(255,247,238,0.6);z-index:40;animation:hintFade 3.5s ease forwards;white-space:nowrap}
   @keyframes hintFade{0%,70%{opacity:0.8}100%{opacity:0}}
 
-  @media(max-width:380px){
-    .photo-frame{width:92vw}
-    .coop-wrap{transform:translateX(-50%) perspective(600px) rotateY(0deg)}
-    .sign{right:1%}
-    .chikoy{left:3%}
-    .bucket{left:25%}
+  @media(max-width:360px){
+    .photo-frame{width:50vw}
+    .sign{left:2%}
+    .chikoy{left:4%}
+    .bucket{left:22%}
+  }
+  @media(min-width:768px){
+    .photo-frame{width:min(30vw,200px)}
+    .coop-wrap{width:min(50vw,400px)}
   }
   @media(prefers-reduced-motion:reduce){
     *,*::before,::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
@@ -234,22 +208,19 @@
     <span class="title">CHIKOY'S CHICKEN HOUSE</span>
   </div>
 
-  <!-- PHOTO -->
+  <!-- PHOTO (SMALL, TOP-RIGHT) -->
   <div class="photo-frame" id="photoFrame">
     <span class="photo-badge">CHIKOY'S FARM</span>
     <img src="chickenhouse-photos/chikoy-chickens.png" alt="Chikoy at the Chicken House">
     <div class="photo-label">
       <h2>Welcome to My Chicken House</h2>
-      <p id="photoHint">tap to minimize</p>
     </div>
   </div>
 
-  <!-- 3D COOP -->
+  <!-- COOP -->
   <div class="coop-wrap">
     <div class="coop">
-      <div class="coop-roof-side"></div>
       <div class="coop-roof"></div>
-      <div class="coop-body-side"></div>
       <div class="coop-body">
         <div class="coop-door"></div>
         <div class="nest n1">
@@ -267,7 +238,7 @@
     </div>
   </div>
 
-  <!-- SIGN -->
+  <!-- SIGN (LEFT) -->
   <div class="sign" id="sign">
     <div class="sign-board">
       <div class="ci">🐔</div>
@@ -277,7 +248,7 @@
     <div class="sign-post"></div>
   </div>
 
-  <!-- CHIKOY -->
+  <!-- CHIKOY (LEFT) -->
   <div class="chikoy" id="chikoy">
     <div class="chikoy-hair"></div>
     <div class="chikoy-head">
@@ -290,13 +261,12 @@
     <div class="chikoy-leg l"></div><div class="chikoy-leg r"></div>
   </div>
 
-  <!-- BUCKET -->
+  <!-- BUCKET (BETWEEN CHIKOY AND COOP) -->
   <div class="bucket" id="bucket">
     <div class="bucket-handle"></div>
     <div class="bucket-rim"></div>
     <div class="bucket-body">
       <div class="bucket-feed"></div>
-      <div class="bucket-label">FEED</div>
     </div>
   </div>
 
@@ -319,201 +289,147 @@
   var feedCount = 0, loveCount = 0, eggCount = 0;
   var chickens = [];
 
-  /* minimize photo */
-  document.getElementById('photoFrame').addEventListener('click', function(){
-    arena.classList.toggle('minimized');
-    document.getElementById('photoHint').textContent = arena.classList.contains('minimized') ? 'tap to expand' : 'tap to minimize';
-  });
-
   /* grass */
   (function(){
     var g = document.getElementById('grass');
-    for(var i=0;i<30;i++){
+    for(var i=0;i<25;i++){
       var s = document.createElement('span');
-      s.style.left = (i/30*100)+'%';
-      s.style.height = (4+Math.random()*7)+'px';
+      s.style.left = (i/25*100)+'%';
+      s.style.height = (3+Math.random()*6)+'px';
       s.style.animationDelay = (Math.random()*2)+'s';
       g.appendChild(s);
     }
   })();
 
-  /* respawn eggs periodically */
-  function respawnEggs(){
+  /* respawn eggs */
+  setInterval(function(){
     document.querySelectorAll('.nest-egg.collected').forEach(function(el){
-      if(Math.random() > 0.5){
-        el.classList.remove('collected');
-        el.style.transform = '';
-        el.style.opacity = '';
-      }
+      if(Math.random()>0.5){el.classList.remove('collected');el.style.transform='';el.style.opacity=''}
     });
-  }
-  setInterval(respawnEggs, 8000);
+  }, 8000);
 
   /* egg collection */
   document.querySelectorAll('.nest-egg').forEach(function(el){
     el.addEventListener('click', function(e){
       e.stopPropagation();
-      if(el.classList.contains('collected')) return;
+      if(el.classList.contains('collected'))return;
       el.classList.add('collected');
       eggCount++;
       document.getElementById('eggCount').textContent = eggCount;
-
-      /* egg pop effect */
       var pop = document.createElement('div');
-      pop.className = 'egg-pop';
-      pop.textContent = '🥚';
-      var r = el.getBoundingClientRect();
-      var ar = arena.getBoundingClientRect();
-      pop.style.left = (r.left - ar.left + r.width/2) + 'px';
-      pop.style.top = (r.top - ar.top) + 'px';
+      pop.className = 'egg-pop'; pop.textContent = '🥚';
+      var r = el.getBoundingClientRect(); var ar = arena.getBoundingClientRect();
+      pop.style.left = (r.left-ar.left+r.width/2)+'px';
+      pop.style.top = (r.top-ar.top)+'px';
       arena.appendChild(pop);
-      setTimeout(function(){ pop.remove(); }, 600);
-
-      /* toast */
-      if(eggCount === 1) showToast("You collected your first egg!");
-      else if(eggCount === 5) showToast("5 eggs! Chikoy is proud!");
-      else if(eggCount === 10) showToast("10 eggs! Egg master!");
-      else if(eggCount === 20) showToast("20 eggs! Legendary farmer!");
+      setTimeout(function(){pop.remove()},600);
+      if(eggCount===1)showToast("First egg collected!");
+      else if(eggCount===5)showToast("5 eggs! Nice!");
+      else if(eggCount===10)showToast("10 eggs! Egg master!");
+      else if(eggCount===20)showToast("20 eggs! Legendary!");
     });
   });
 
   /* chickens */
   var chickenData = [
-    {type:'brown',x:55,y:60,name:'Tikyo'},
-    {type:'brown',x:65,y:63,name:'Browny'},
-    {type:'white',x:73,y:58,name:'Snow'},
-    {type:'brown',x:47,y:66,name:'Clucky'},
-    {type:'black',x:82,y:62,name:'Midnight'},
-    {type:'white',x:36,y:64,name:'Cotton'},
-    {type:'brown',x:61,y:68,name:'Sunny'},
-    {type:'black',x:43,y:61,name:'Shadow'},
+    {type:'brown',x:42,y:55},{type:'brown',x:55,y:58},{type:'white',x:65,y:53},
+    {type:'brown',x:35,y:60},{type:'black',x:75,y:56},{type:'white',x:50,y:62},
+    {type:'brown',x:60,y:65},{type:'black',x:30,y:57},
   ];
 
   function createChicken(data, idx){
     var el = document.createElement('div');
-    el.className = 'chicken ' + data.type + ' walk';
-    el.style.left = data.x + '%';
-    el.style.bottom = (100 - data.y) + '%';
-    el.style.animationDelay = (idx * 0.3) + 's';
-    el.innerHTML =
-      '<div class="ch-tail"></div>' +
-      '<div class="ch-body">' +
-        '<div class="ch-wing"></div>' +
-        '<div class="ch-comb"></div>' +
-        '<div class="ch-head">' +
-          '<div class="ch-eye"></div>' +
-          '<div class="ch-beak"></div>' +
-          '<div class="ch-wattle"></div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div>';
-    el.addEventListener('click', function(e){ e.stopPropagation(); petChicken(el, data); });
+    el.className = 'chicken '+data.type+' walk';
+    el.style.left = data.x+'%';
+    el.style.bottom = (100-data.y)+'%';
+    el.style.animationDelay = (idx*0.3)+'s';
+    el.innerHTML = '<div class="ch-tail"></div><div class="ch-body"><div class="ch-wing"></div><div class="ch-comb"></div><div class="ch-head"><div class="ch-eye"></div><div class="ch-beak"></div><div class="ch-wattle"></div></div></div><div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div>';
+    el.addEventListener('click',function(e){e.stopPropagation();petChicken(el,data)});
     arena.appendChild(el);
-    chickens.push({el:el, data:data});
+    chickens.push({el:el,data:data});
     setInterval(function(){
-      if(Math.random() > 0.6){
-        var dx = (Math.random()-0.5)*18;
-        data.x = Math.max(12, Math.min(88, data.x + dx));
-        el.style.left = data.x + '%';
-        el.style.transform = dx > 0 ? 'scaleX(1)' : 'scaleX(-1)';
+      if(Math.random()>0.6){
+        var dx=(Math.random()-0.5)*15;
+        data.x=Math.max(10,Math.min(85,data.x+dx));
+        el.style.left=data.x+'%';
+        el.style.transform=dx>0?'scaleX(1)':'scaleX(-1)';
       }
-    }, 3000 + idx*500);
+    },3000+idx*500);
   }
-  chickenData.forEach(function(c,i){ createChicken(c,i); });
+  chickenData.forEach(function(c,i){createChicken(c,i)});
   document.getElementById('chickenCount').textContent = chickens.length;
 
   /* feed */
   function feedChickens(){
     chikoy.classList.add('feeding');
-    setTimeout(function(){ chikoy.classList.remove('feeding'); }, 1800);
+    setTimeout(function(){chikoy.classList.remove('feeding')},1800);
     bucket.classList.add('shake');
-    setTimeout(function(){ bucket.classList.remove('shake'); }, 400);
-
-    var rect = bucket.getBoundingClientRect();
-    var ar = arena.getBoundingClientRect();
-    var sx = rect.left - ar.left + rect.width/2;
-    var sy = rect.top - ar.top;
+    setTimeout(function(){bucket.classList.remove('shake')},400);
+    var rect=bucket.getBoundingClientRect();var ar=arena.getBoundingClientRect();
+    var sx=rect.left-ar.left+rect.width/2;var sy=rect.top-ar.top;
     for(var i=0;i<8;i++){
-      var p = document.createElement('div');
-      p.className = 'feed-particle';
-      p.style.left = sx + 'px'; p.style.top = sy + 'px';
-      p.style.setProperty('--fx', ((Math.random()-0.5)*60)+'px');
-      p.style.setProperty('--fy', (Math.random()*35+10)+'px');
+      var p=document.createElement('div');p.className='feed-particle';
+      p.style.left=sx+'px';p.style.top=sy+'px';
+      p.style.setProperty('--fx',((Math.random()-0.5)*55)+'px');
+      p.style.setProperty('--fy',(Math.random()*30+8)+'px');
       arena.appendChild(p);
-      setTimeout(function(pp){ pp.remove(); }.bind(null,p), 700);
+      setTimeout(function(pp){pp.remove()}.bind(null,p),700);
     }
-    feedCount += chickens.length;
-    document.getElementById('feedCount').textContent = feedCount;
-    chickens.forEach(function(c, i){
-      setTimeout(function(){
-        c.el.classList.add('peck');
-        setTimeout(function(){ c.el.classList.remove('peck'); }, 1200);
-      }, i * 80);
+    feedCount+=chickens.length;
+    document.getElementById('feedCount').textContent=feedCount;
+    chickens.forEach(function(c,i){
+      setTimeout(function(){c.el.classList.add('peck');setTimeout(function(){c.el.classList.remove('peck')},1200)},i*80);
     });
-    if(feedCount % 50 === 0) showToast("You've fed " + feedCount + " chickens!");
+    if(feedCount%50===0)showToast("Fed "+feedCount+" chickens!");
   }
-  bucket.addEventListener('click', function(e){ e.stopPropagation(); feedChickens(); });
-  document.getElementById('feedBtn').addEventListener('click', feedChickens);
+  bucket.addEventListener('click',function(e){e.stopPropagation();feedChickens()});
+  document.getElementById('feedBtn').addEventListener('click',feedChickens);
 
   /* pet */
-  function petChicken(el, data){
-    el.classList.add('happy');
-    setTimeout(function(){ el.classList.remove('happy'); }, 500);
-    loveCount++;
-    document.getElementById('loveCount').textContent = loveCount;
+  function petChicken(el,data){
+    el.classList.add('happy');setTimeout(function(){el.classList.remove('happy')},500);
+    loveCount++;document.getElementById('loveCount').textContent=loveCount;
     for(var i=0;i<2;i++){
-      var heart = document.createElement('div');
-      heart.className = 'love-burst';
-      heart.textContent = ['❤️','💕','💗'][Math.floor(Math.random()*3)];
-      var r = el.getBoundingClientRect(); var ar = arena.getBoundingClientRect();
-      heart.style.left = (r.left - ar.left + r.width/2 + (Math.random()-0.5)*18) + 'px';
-      heart.style.top = (r.top - ar.top - 5) + 'px';
-      heart.style.setProperty('--lx', ((Math.random()-0.5)*35)+'px');
-      heart.style.setProperty('--ly', (-25 - Math.random()*20)+'px');
-      arena.appendChild(heart);
-      setTimeout(function(h){ h.remove(); }.bind(null,heart), 700);
+      var h=document.createElement('div');h.className='love-burst';
+      h.textContent=['❤️','💕','💗'][Math.floor(Math.random()*3)];
+      var r=el.getBoundingClientRect();var ar=arena.getBoundingClientRect();
+      h.style.left=(r.left-ar.left+r.width/2+(Math.random()-0.5)*15)+'px';
+      h.style.top=(r.top-ar.top-4)+'px';
+      h.style.setProperty('--lx',((Math.random()-0.5)*30)+'px');
+      h.style.setProperty('--ly',(-20-Math.random()*18)+'px');
+      arena.appendChild(h);
+      setTimeout(function(hh){hh.remove()}.bind(null,h),700);
     }
   }
 
   /* chikoy */
-  chikoy.addEventListener('click', function(){
-    chikoy.classList.add('bounce');
-    setTimeout(function(){ chikoy.classList.remove('bounce'); }, 500);
-    var heart = document.createElement('div');
-    heart.className = 'love-burst'; heart.textContent = '💛';
-    var r = chikoy.getBoundingClientRect(); var ar = arena.getBoundingClientRect();
-    heart.style.left = (r.left - ar.left + r.width/2) + 'px';
-    heart.style.top = (r.top - ar.top) + 'px';
-    heart.style.setProperty('--lx', '0px'); heart.style.setProperty('--ly', '-30px');
-    arena.appendChild(heart);
-    setTimeout(function(){ heart.remove(); }, 700);
+  chikoy.addEventListener('click',function(){
+    chikoy.classList.add('bounce');setTimeout(function(){chikoy.classList.remove('bounce')},500);
+    var h=document.createElement('div');h.className='love-burst';h.textContent='💛';
+    var r=chikoy.getBoundingClientRect();var ar=arena.getBoundingClientRect();
+    h.style.left=(r.left-ar.left+r.width/2)+'px';
+    h.style.top=(r.top-ar.top)+'px';
+    h.style.setProperty('--lx','0px');h.style.setProperty('--ly','-25px');
+    arena.appendChild(h);setTimeout(function(){h.remove()},700);
   });
 
   /* sign */
-  document.getElementById('sign').addEventListener('click', function(){
-    var msgs = ["Welcome to Chikoy's domain!","The chickens love you!","Bawk bawk bawk!","Fresh eggs daily!","Chikoy is the chicken king!","Peck peck peck!"];
-    showToast(msgs[Math.floor(Math.random()*msgs.length)]);
+  document.getElementById('sign').addEventListener('click',function(){
+    showToast(["Welcome to Chikoy's domain!","Bawk bawk bawk!","Fresh eggs daily!","Chikoy is the chicken king!"][Math.floor(Math.random()*4)]);
   });
 
   function showToast(msg){
-    var t = document.createElement('div'); t.className = 'toast';
-    t.textContent = msg;
-    arena.appendChild(t);
-    setTimeout(function(){ t.remove(); }, 2000);
+    var t=document.createElement('div');t.className='toast';t.textContent=msg;
+    arena.appendChild(t);setTimeout(function(){t.remove()},2000);
   }
 
-  /* keyboard */
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'f' || e.key === 'F') feedChickens();
-  });
+  document.addEventListener('keydown',function(e){if(e.key==='f'||e.key==='F')feedChickens()});
 
-  /* hint */
   setTimeout(function(){
-    var h = document.createElement('div'); h.className = 'hint';
-    h.textContent = 'Tap eggs to collect! Tap bucket to feed!';
-    arena.appendChild(h);
-    setTimeout(function(){ h.remove(); }, 4000);
-  }, 500);
+    var h=document.createElement('div');h.className='hint';
+    h.textContent='Tap eggs to collect! Tap bucket to feed!';
+    arena.appendChild(h);setTimeout(function(){h.remove()},4000);
+  },500);
 
   window.scrollTo(0,0);
 </script>
