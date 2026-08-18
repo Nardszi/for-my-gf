@@ -194,7 +194,7 @@
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     placeStars();
     placeBgStars();
   }
@@ -219,10 +219,9 @@
       };
     });
 
-    // draw R-N constellation — simple line between two named stars
-    // ensure "The Day We Met" and "Forever" are somewhat separated
-    stars[0].x = W * 0.35; stars[0].y = H * 0.38;
-    stars[19].x = W * 0.62; stars[19].y = H * 0.55;
+    // place R-N constellation stars in good positions
+    stars[0].baseX = W * 0.35; stars[0].baseY = H * 0.38;
+    stars[19].baseX = W * 0.62; stars[19].baseY = H * 0.55;
   }
 
   function placeBgStars() {
