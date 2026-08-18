@@ -600,7 +600,7 @@
 
   /* ---- SWIPE NAVIGATION BETWEEN PAGES ---- */
   (function(){
-    var pages=['lovepage.html','aurora.html','chikoy-room.html','letters.html','diary.html','stars.html','reasons.html','scratch.html','story.html','timecapsule.html','photovault.html','lovejar.html','finale.html','hidden.html','visitors.html'];
+    var pages=['lovepage.html','aurora.html','chikoy-room.html','chickenhouse.html','letters.html','diary.html','stars.html','reasons.html','scratch.html','story.html','timecapsule.html','photovault.html','lovejar.html','finale.html','hidden.html','visitors.html'];
     var idx=pages.indexOf(PAGE);
     if(idx===-1)return;
     var startX=0,startY=0,swiping=false,toast=null;

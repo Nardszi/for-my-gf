@@ -13,6 +13,7 @@ var CORE = [
   'aurora.html',
   'chikoy-room.html',
   'lovejar.html',
+  'chickenhouse.html',
   'manifest.json',
   'app.js',
   'icons/icon-192.png',

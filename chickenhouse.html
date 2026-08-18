@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chikoy's Chicken House</title>
+<meta name="theme-color" content="#2d1810">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --wood:#8B5E3C;--wood-dark:#5C3D2E;--wood-light:#A67C52;
+    --green:#4a7c59;--green-dark:#2d5a3a;--sky:#87CEEB;--sky-top:#4A90D9;
+    --dirt:#6B4423;--dirt-light:#8B6914;
+    --spring:cubic-bezier(0.34,1.56,0.64,1);
+  }
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:"Quicksand",system-ui,sans-serif;
+    background:#1a0f08;color:#fff7ee;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* ===== SKY ===== */
+  .scene{
+    position:relative;width:100%;height:100vh;
+    background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky) 40%,#b8e6b8 70%,var(--green) 100%);
+    overflow:hidden;
+  }
+
+  /* sun */
+  .sun{
+    position:absolute;top:8%;right:12%;
+    width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(circle,#fff7aa 30%,#ffd700 70%,transparent 100%);
+    box-shadow:0 0 60px 20px rgba(255,215,0,0.3);
+    animation:sunPulse 4s ease-in-out infinite;
+  }
+  @keyframes sunPulse{0%,100%{box-shadow:0 0 60px 20px rgba(255,215,0,0.3)}50%{box-shadow:0 0 80px 30px rgba(255,215,0,0.4)}}
+
+  /* clouds */
+  .cloud{
+    position:absolute;background:#fff;border-radius:50px;
+    opacity:0.8;filter:blur(1px);
+  }
+  .cloud::before,.cloud::after{
+    content:"";position:absolute;background:inherit;border-radius:50%;
+  }
+  .cloud.c1{width:120px;height:40px;top:12%;left:-150px;animation:cloudDrift 25s linear infinite}
+  .cloud.c1::before{width:60px;height:50px;top:-20px;left:20px}
+  .cloud.c1::after{width:80px;height:45px;top:-15px;left:50px}
+  .cloud.c2{width:90px;height:32px;top:18%;left:-120px;animation:cloudDrift 35s linear infinite 8s;opacity:0.6}
+  .cloud.c2::before{width:50px;height:40px;top:-18px;left:15px}
+  .cloud.c2::after{width:60px;height:35px;top:-12px;left:40px}
+  .cloud.c3{width:100px;height:35px;top:8%;left:-130px;animation:cloudDrift 30s linear infinite 15s;opacity:0.5}
+  .cloud.c3::before{width:55px;height:42px;top:-16px;left:18px}
+  .cloud.c3::after{width:65px;height:38px;top:-10px;left:45px}
+  @keyframes cloudDrift{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 200px))}}
+
+  /* ===== GROUND ===== */
+  .ground{
+    position:absolute;bottom:0;left:0;right:0;height:38%;
+    background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 20%,var(--dirt) 50%,#4a2f1a 100%);
+    border-radius:50% 50% 0 0 / 8% 8% 0 0;
+  }
+  .ground::before{
+    content:"";position:absolute;top:-2px;left:0;right:0;height:30px;
+    background:linear-gradient(180deg,var(--green),transparent);
+    border-radius:50% 50% 0 0;
+  }
+  /* grass tufts */
+  .grass{
+    position:absolute;bottom:37%;width:100%;height:20px;
+  }
+  .grass span{
+    position:absolute;bottom:0;width:4px;background:var(--green-dark);
+    border-radius:2px 2px 0 0;
+    animation:grassWave 2s ease-in-out infinite;
+  }
+  @keyframes grassWave{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+  /* ===== CHICKEN COOP ===== */
+  .coop{
+    position:absolute;bottom:28%;left:50%;transform:translateX(-50%);
+    width:min(90vw,500px);height:200px;
+  }
+  /* roof */
+  .coop-roof{
+    position:absolute;top:0;left:-15px;right:-15px;height:60px;
+    background:linear-gradient(135deg,var(--wood-dark) 0%,var(--wood) 50%,var(--wood-light) 100%);
+    clip-path:polygon(10% 100%,0% 0%,100% 0%,90% 100%);
+    box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  }
+  .coop-roof::after{
+    content:"";position:absolute;top:0;left:0;right:0;height:8px;
+    background:linear-gradient(90deg,#3a2518,#5c3d2e,#3a2518);
+  }
+  /* wire mesh */
+  .coop-body{
+    position:absolute;top:55px;left:0;right:0;bottom:0;
+    background:rgba(139,94,60,0.2);
+    border:3px solid var(--wood);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .coop-body::before{
+    content:"";position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(90deg,transparent,transparent 18px,rgba(100,60,30,0.25) 18px,rgba(100,60,30,0.25) 20px),
+      repeating-linear-gradient(0deg,transparent,transparent 18px,rgba(100,60,30,0.25) 18px,rgba(100,60,30,0.25) 20px);
+  }
+  /* door */
+  .coop-door{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:70px;height:90px;
+    background:var(--wood-dark);
+    border:3px solid var(--wood);
+    border-bottom:none;border-radius:35px 35px 0 0;
+  }
+  .coop-door::after{
+    content:"";position:absolute;top:50%;right:8px;
+    width:8px;height:8px;border-radius:50%;
+    background:var(--gold);box-shadow:0 0 6px rgba(232,193,126,0.5);
+  }
+  /* nesting boxes */
+  .nest{
+    position:absolute;bottom:8px;width:50px;height:40px;
+    background:var(--wood-dark);border:2px solid var(--wood);
+    border-radius:4px 4px 0 0;
+  }
+  .nest::before{
+    content:"";position:absolute;bottom:4px;left:4px;right:4px;height:12px;
+    background:#d4a574;border-radius:50%;
+  }
+  .nest.n1{left:10px}
+  .nest.n2{left:70px}
+  .nest.n3{right:10px}
+  /* egg */
+  .egg{
+    position:absolute;bottom:16px;width:14px;height:18px;
+    background:radial-gradient(ellipse at 40% 30%,#fff,#f5e6d0);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow:inset -2px -2px 4px rgba(0,0,0,0.1);
+  }
+  .egg.e1{left:20px}
+  .egg.e2{left:30px;bottom:14px}
+  .egg.e3{right:20px}
+
+  /* ===== SIGN ===== */
+  .sign{
+    position:absolute;bottom:32%;right:8%;
+    width:140px;cursor:pointer;
+    transition:transform 0.3s var(--spring);
+  }
+  .sign:hover{transform:rotate(-3deg) scale(1.05)}
+  .sign-post{
+    position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+    width:12px;height:70px;background:var(--wood-dark);
+    border-radius:2px;
+  }
+  .sign-board{
+    background:linear-gradient(135deg,var(--wood) 0%,var(--wood-light) 100%);
+    border:3px solid var(--wood-dark);
+    border-radius:6px;padding:10px 8px;text-align:center;
+    box-shadow:2px 4px 10px rgba(0,0,0,0.3);
+  }
+  .sign-board h3{
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:0.7rem;font-weight:600;color:#fff7ee;
+    text-shadow:1px 1px 2px rgba(0,0,0,0.3);
+    line-height:1.3;
+  }
+  .sign-board .chicken-icon{font-size:0.9rem}
+
+  /* ===== CHIKOY CHARACTER ===== */
+  .chikoy{
+    position:absolute;bottom:28%;left:15%;
+    width:80px;height:120px;
+    cursor:pointer;
+    transition:transform 0.3s var(--spring);
+    z-index:10;
+  }
+  .chikoy:hover{transform:scale(1.08)}
+  .chikoy.bounce{animation:chikoyBounce 0.5s var(--spring)}
+  @keyframes chikoyBounce{0%{transform:translateY(0)}40%{transform:translateY(-20px)}100%{transform:translateY(0)}}
+
+  /* head */
+  .chikoy-head{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:50px;height:50px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#ffe0b2,#ffcc80);
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    z-index:2;
+  }
+  /* hair */
+  .chikoy-hair{
+    position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+    width:40px;height:20px;
+    background:#2a1a0a;
+    border-radius:50% 50% 0 0;
+    z-index:3;
+  }
+  .chikoy-hair::before{
+    content:"";position:absolute;top:-5px;left:8px;
+    width:12px;height:15px;background:#2a1a0a;
+    border-radius:50% 50% 0 0;
+    transform:rotate(-15deg);
+  }
+  /* eyes */
+  .chikoy-eyes{
+    position:absolute;top:18px;left:50%;transform:translateX(-50%);
+    display:flex;gap:12px;z-index:4;
+  }
+  .chikoy-eye{
+    width:8px;height:8px;border-radius:50%;
+    background:#1a0a00;
+    animation:chikoyBlink 4s ease-in-out infinite;
+  }
+  .chikoy-eye::after{
+    content:"";position:absolute;top:1px;left:2px;
+    width:3px;height:3px;border-radius:50%;
+    background:#fff;
+  }
+  @keyframes chikoyBlink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(0.1)}}
+  /* mouth */
+  .chikoy-mouth{
+    position:absolute;top:30px;left:50%;transform:translateX(-50%);
+    width:14px;height:8px;
+    border-radius:0 0 10px 10px;
+    background:#e57373;
+    z-index:4;
+  }
+  /* cheeks */
+  .chikoy-cheek{
+    position:absolute;top:24px;width:10px;height:6px;
+    background:rgba(255,138,128,0.5);border-radius:50%;z-index:4;
+  }
+  .chikoy-cheek.l{left:4px}
+  .chikoy-cheek.r{right:4px}
+  /* body - yellow shirt */
+  .chikoy-body{
+    position:absolute;top:42px;left:50%;transform:translateX(-50%);
+    width:44px;height:40px;
+    background:linear-gradient(180deg,#FFD700,#FFC107);
+    border-radius:8px 8px 4px 4px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.15);
+    z-index:1;
+  }
+  .chikoy-body::before{
+    content:"CHOOSE FEAR";position:absolute;top:10px;left:50%;
+    transform:translateX(-50%);font-size:0.35rem;font-weight:700;
+    color:#1a0a00;letter-spacing:0.02em;white-space:nowrap;
+    border:1.5px solid #1a0a00;padding:2px 4px;
+  }
+  /* arms */
+  .chikoy-arm{
+    position:absolute;top:48px;width:20px;height:8px;
+    background:#FFD700;border-radius:4px;z-index:0;
+    transition:transform 0.3s var(--spring);
+  }
+  .chikoy-arm.l{left:2px;transform:rotate(20deg);transform-origin:right center}
+  .chikoy-arm.r{right:2px;transform:rotate(-20deg);transform-origin:left center}
+  .chikoy.feeding .chikoy-arm.r{animation:feedArm 0.6s ease-in-out 3}
+  @keyframes feedArm{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-60deg)}}
+  /* legs */
+  .chikoy-leg{
+    position:absolute;bottom:-18px;width:12px;height:20px;
+    background:#37474F;border-radius:3px 3px 4px 4px;z-index:0;
+  }
+  .chikoy-leg.l{left:18px}
+  .chikoy-leg.r{right:18px}
+
+  /* ===== FEED BUCKET ===== */
+  .bucket{
+    position:absolute;bottom:28%;left:38%;
+    width:50px;height:45px;cursor:pointer;
+    z-index:8;transition:transform 0.2s var(--spring);
+  }
+  .bucket:hover{transform:scale(1.1)}
+  .bucket.shake{animation:bucketShake 0.4s ease-in-out}
+  @keyframes bucketShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+  .bucket-body{
+    position:absolute;bottom:0;left:5px;right:5px;height:35px;
+    background:linear-gradient(135deg,var(--wood) 0%,var(--wood-light) 100%);
+    border-radius:0 0 6px 6px;
+    border:2px solid var(--wood-dark);
+  }
+  .bucket-rim{
+    position:absolute;top:0;left:0;right:0;height:10px;
+    background:var(--wood-dark);border-radius:4px;
+  }
+  .bucket-handle{
+    position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+    width:30px;height:16px;
+    border:3px solid var(--wood-dark);border-bottom:none;
+    border-radius:15px 15px 0 0;
+  }
+  .bucket-feed{
+    position:absolute;top:8px;left:8px;right:8px;height:18px;
+    background:radial-gradient(ellipse,#f5deb3,#daa520);
+    border-radius:2px;
+  }
+  .bucket-label{
+    position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+    font-size:0.45rem;color:#fff7ee;font-weight:600;
+    text-shadow:0 1px 2px rgba(0,0,0,0.3);white-space:nowrap;
+  }
+
+  /* ===== FEED PARTICLES ===== */
+  .feed-particle{
+    position:absolute;width:6px;height:6px;
+    background:radial-gradient(circle,#f5deb3,#daa520);
+    border-radius:50%;pointer-events:none;z-index:5;
+    animation:feedFall 1s ease-in forwards;
+  }
+  @keyframes feedFall{
+    0%{opacity:1;transform:translate(0,0) scale(1)}
+    100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(0.5)}
+  }
+
+  /* ===== CHICKENS ===== */
+  .chicken{
+    position:absolute;cursor:pointer;
+    transition:transform 0.3s var(--spring);
+    z-index:6;
+  }
+  .chicken:hover{transform:scale(1.1)}
+  .chicken.peck{animation:chickenPeck 0.4s ease-in-out 3}
+  @keyframes chickenPeck{0%,100%{transform:rotate(0)}50%{transform:rotate(15deg) translateY(4px)}}
+  .chicken.happy{animation:chickenHappy 0.5s var(--spring)}
+  @keyframes chickenHappy{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+
+  /* chicken body */
+  .ch-body{
+    position:relative;width:50px;height:40px;
+    border-radius:50% 50% 45% 45%;
+  }
+  /* head */
+  .ch-head{
+    position:absolute;top:-12px;left:28px;
+    width:22px;height:22px;border-radius:50%;
+    z-index:2;
+  }
+  /* eye */
+  .ch-eye{
+    position:absolute;top:6px;left:14px;
+    width:4px;height:4px;border-radius:50%;
+    background:#1a0a00;z-index:3;
+  }
+  .ch-eye::after{
+    content:"";position:absolute;top:0.5px;left:1px;
+    width:1.5px;height:1.5px;border-radius:50%;background:#fff;
+  }
+  /* beak */
+  .ch-beak{
+    position:absolute;top:10px;left:18px;
+    width:8px;height:5px;
+    background:#ff8f00;border-radius:0 6px 6px 0;
+    z-index:3;
+  }
+  /* wattle */
+  .ch-wattle{
+    position:absolute;top:14px;left:16px;
+    width:5px;height:7px;
+    background:#e53935;border-radius:50%;
+    z-index:2;
+  }
+  /* comb */
+  .ch-comb{
+    position:absolute;top:-16px;left:24px;
+    width:14px;height:10px;
+    background:#e53935;border-radius:50% 50% 0 0;
+    z-index:3;
+  }
+  .ch-comb::before{
+    content:"";position:absolute;top:-4px;left:4px;
+    width:8px;height:8px;background:#e53935;
+    border-radius:50% 50% 0 0;
+  }
+  /* tail */
+  .ch-tail{
+    position:absolute;top:2px;left:-8px;
+    width:16px;height:20px;
+    border-radius:50% 0 0 50%;
+    transform:rotate(10deg);
+  }
+  /* wing */
+  .ch-wing{
+    position:absolute;top:10px;left:5px;
+    width:18px;height:14px;
+    border-radius:50% 0 0 50%;
+    opacity:0.8;
+  }
+  /* legs */
+  .ch-legs{
+    position:absolute;bottom:-8px;left:15px;
+    display:flex;gap:10px;
+  }
+  .ch-leg{
+    width:3px;height:10px;background:#ff8f00;
+    border-radius:0 0 2px 2px;
+  }
+
+  /* brown chicken */
+  .chicken.brown .ch-body{background:linear-gradient(135deg,#8B4513,#A0522D,#8B4513)}
+  .chicken.brown .ch-head{background:linear-gradient(135deg,#A0522D,#8B4513)}
+  .chicken.brown .ch-tail{background:#6B3410}
+  .chicken.brown .ch-wing{background:#7A4420}
+
+  /* white chicken */
+  .chicken.white .ch-body{background:linear-gradient(135deg,#f5f5f5,#e0e0e0,#f5f5f5)}
+  .chicken.white .ch-head{background:#f0f0f0}
+  .chicken.white .ch-tail{background:#ddd}
+  .chicken.white .ch-wing{background:#e8e8e8}
+
+  /* black chicken */
+  .chicken.black .ch-body{background:linear-gradient(135deg,#2a2a2a,#1a1a1a,#2a2a2a)}
+  .chicken.black .ch-head{background:#222}
+  .chicken.black .ch-tail{background:#111}
+  .chicken.black .ch-wing{background:#1a1a1a}
+
+  /* walking */
+  .chicken.walk{animation:chickenWalk 2s ease-in-out infinite}
+  @keyframes chickenWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+  /* ===== LOVE BURST ===== */
+  .love-burst{
+    position:absolute;pointer-events:none;z-index:20;
+    font-size:1.2rem;
+    animation:loveFloat 1s ease-out forwards;
+  }
+  @keyframes loveFloat{
+    0%{opacity:1;transform:translate(0,0) scale(0.5)}
+    100%{opacity:0;transform:translate(var(--lx),var(--ly)) scale(1.2)}
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0.8rem 1.2rem;
+    background:linear-gradient(180deg,rgba(26,15,8,0.85),rgba(26,15,8,0));
+    backdrop-filter:blur(8px);
+  }
+  .topbar-brand{
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:0.95rem;font-weight:600;color:#e8c17e;
+    letter-spacing:0.12em;
+  }
+  .topbar-back{
+    color:#fff7ee;text-decoration:none;font-size:0.75rem;
+    padding:0.35rem 0.8rem;border-radius:999px;
+    border:1px solid rgba(255,143,171,0.3);
+    transition:all 0.3s ease;
+  }
+  .topbar-back:hover{background:rgba(255,143,171,0.15)}
+
+  /* ===== COUNTER ===== */
+  .counter{
+    position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:0.8rem;
+    padding:0.6rem 1.2rem;border-radius:999px;
+    background:rgba(26,15,8,0.85);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,143,171,0.2);
+    z-index:50;font-size:0.78rem;
+  }
+  .counter-item{display:flex;align-items:center;gap:0.3rem}
+  .counter-val{color:#e8c17e;font-weight:600}
+
+  /* ===== HINT ===== */
+  .hint{
+    position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);
+    padding:0.5rem 1rem;border-radius:999px;
+    background:rgba(26,15,8,0.8);
+    backdrop-filter:blur(8px);
+    font-size:0.72rem;color:rgba(255,247,238,0.6);
+    z-index:50;
+    animation:hintPulse 3s ease-in-out infinite;
+  }
+  @keyframes hintPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+
+  /* ===== REDUCED MOTION ===== */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-brand">CHIKOY'S CHICKEN HOUSE</span>
+  <a class="topbar-back" href="lovepage.html">&#8592; back</a>
+</div>
+
+<div class="scene" id="scene">
+  <!-- sky elements -->
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <!-- chicken coop -->
+  <div class="coop">
+    <div class="coop-roof"></div>
+    <div class="coop-body">
+      <div class="coop-door"></div>
+      <div class="nest n1"></div>
+      <div class="nest n2"></div>
+      <div class="nest n3"></div>
+      <div class="egg e1"></div>
+      <div class="egg e2"></div>
+      <div class="egg e3"></div>
+    </div>
+  </div>
+
+  <!-- sign -->
+  <div class="sign" id="sign">
+    <div class="sign-board">
+      <div class="chicken-icon">&#128020;</div>
+      <h3>WELCOME TO<br>MY CHICKEN<br>HOUSE</h3>
+      <div class="chicken-icon">&#128020;</div>
+    </div>
+    <div class="sign-post"></div>
+  </div>
+
+  <!-- chikoy -->
+  <div class="chikoy" id="chikoy">
+    <div class="chikoy-hair"></div>
+    <div class="chikoy-head">
+      <div class="chikoy-eyes">
+        <div class="chikoy-eye"></div>
+        <div class="chikoy-eye"></div>
+      </div>
+      <div class="chikoy-mouth"></div>
+      <div class="chikoy-cheek l"></div>
+      <div class="chikoy-cheek r"></div>
+    </div>
+    <div class="chikoy-body"></div>
+    <div class="chikoy-arm l"></div>
+    <div class="chikoy-arm r"></div>
+    <div class="chikoy-leg l"></div>
+    <div class="chikoy-leg r"></div>
+  </div>
+
+  <!-- feed bucket -->
+  <div class="bucket" id="bucket">
+    <div class="bucket-handle"></div>
+    <div class="bucket-rim"></div>
+    <div class="bucket-body">
+      <div class="bucket-feed"></div>
+      <div class="bucket-label">FEED</div>
+    </div>
+  </div>
+
+  <!-- grass -->
+  <div class="grass" id="grass"></div>
+
+  <!-- ground -->
+  <div class="ground"></div>
+
+  <!-- chickens added by JS -->
+</div>
+
+<div class="hint" id="hint">Tap the bucket to feed the chickens!</div>
+
+<div class="counter">
+  <div class="counter-item">&#127830; <span class="counter-val" id="feedCount">0</span></div>
+  <div class="counter-item">&#128020; <span class="counter-val" id="chickenCount">0</span></div>
+  <div class="counter-item">&#10084;&#65039; <span class="counter-val" id="loveCount">0</span></div>
+</div>
+
+<script>
+  var scene = document.getElementById('scene');
+  var chikoy = document.getElementById('chikoy');
+  var bucket = document.getElementById('bucket');
+  var feedCount = 0, loveCount = 0;
+  var chickens = [];
+
+  /* ===== GRASS ===== */
+  (function buildGrass(){
+    var g = document.getElementById('grass');
+    for(var i=0;i<60;i++){
+      var s = document.createElement('span');
+      s.style.left = (i/60*100)+'%';
+      s.style.height = (8+Math.random()*12)+'px';
+      s.style.animationDelay = (Math.random()*2)+'s';
+      g.appendChild(s);
+    }
+  })();
+
+  /* ===== CHICKENS ===== */
+  var chickenData = [
+    {type:'brown',x:55,y:62,name:'Tikyo'},
+    {type:'brown',x:65,y:65,name:'Browny'},
+    {type:'white',x:72,y:60,name:'Snow'},
+    {type:'brown',x:48,y:68,name:'Clucky'},
+    {type:'black',x:80,y:64,name:'Midnight'},
+    {type:'white',x:38,y:66,name:'Cotton'},
+    {type:'brown',x:60,y:70,name:'Sunny'},
+    {type:'black',x:45,y:63,name:'Shadow'},
+  ];
+
+  function createChicken(data, idx){
+    var el = document.createElement('div');
+    el.className = 'chicken ' + data.type + ' walk';
+    el.style.left = data.x + '%';
+    el.style.bottom = (100 - data.y) + '%';
+    el.style.animationDelay = (idx * 0.3) + 's';
+    el.innerHTML =
+      '<div class="ch-tail"></div>' +
+      '<div class="ch-body">' +
+        '<div class="ch-wing"></div>' +
+        '<div class="ch-comb"></div>' +
+        '<div class="ch-head">' +
+          '<div class="ch-eye"></div>' +
+          '<div class="ch-beak"></div>' +
+          '<div class="ch-wattle"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ch-legs"><div class="ch-leg"></div><div class="ch-leg"></div></div>';
+
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      petChicken(el, data);
+    });
+
+    scene.appendChild(el);
+    chickens.push({el:el, data:data, fed:false});
+
+    /* random wandering */
+    setInterval(function(){
+      if(Math.random() > 0.6){
+        var dx = (Math.random()-0.5)*30;
+        var newX = Math.max(20, Math.min(85, data.x + dx));
+        data.x = newX;
+        el.style.left = newX + '%';
+        el.style.transform = dx > 0 ? 'scaleX(1)' : 'scaleX(-1)';
+      }
+    }, 3000 + idx*500);
+  }
+
+  chickenData.forEach(function(c,i){ createChicken(c,i); });
+  document.getElementById('chickenCount').textContent = chickens.length;
+
+  /* ===== FEED CHICKENS ===== */
+  bucket.addEventListener('click', function(e){
+    e.stopPropagation();
+    feedChickens();
+  });
+
+  function feedChickens(){
+    /* chikoy animation */
+    chikoy.classList.add('feeding');
+    chikoy.querySelector('.chikoy-arm.r').style.animation = 'feedArm 0.6s ease-in-out 3';
+    setTimeout(function(){
+      chikoy.classList.remove('feeding');
+      chikoy.querySelector('.chikoy-arm.r').style.animation = '';
+    }, 1800);
+
+    /* bucket shake */
+    bucket.classList.add('shake');
+    setTimeout(function(){ bucket.classList.remove('shake'); }, 400);
+
+    /* scatter feed particles */
+    var bx = bucket.getBoundingClientRect();
+    var sx = bx.left + bx.width/2;
+    var sy = bx.top;
+    for(var i=0;i<12;i++){
+      var p = document.createElement('div');
+      p.className = 'feed-particle';
+      p.style.left = sx + 'px';
+      p.style.top = sy + 'px';
+      p.style.setProperty('--fx', ((Math.random()-0.5)*100)+'px');
+      p.style.setProperty('--fy', (Math.random()*60+20)+'px');
+      scene.appendChild(p);
+      setTimeout(function(pp){ pp.remove(); }.bind(null,p), 1000);
+    }
+
+    feedCount += chickens.length;
+    document.getElementById('feedCount').textContent = feedCount;
+
+    /* chickens react */
+    chickens.forEach(function(c, i){
+      setTimeout(function(){
+        c.el.classList.add('peck');
+        c.fed = true;
+        setTimeout(function(){ c.el.classList.remove('peck'); }, 1200);
+      }, i * 150);
+    });
+
+    /* hide hint after first feed */
+    var hint = document.getElementById('hint');
+    if(hint) hint.style.display = 'none';
+  }
+
+  /* ===== PET CHICKEN ===== */
+  function petChicken(el, data){
+    el.classList.add('happy');
+    setTimeout(function(){ el.classList.remove('happy'); }, 500);
+
+    loveCount++;
+    document.getElementById('loveCount').textContent = loveCount;
+
+    /* love burst */
+    for(var i=0;i<3;i++){
+      var heart = document.createElement('div');
+      heart.className = 'love-burst';
+      heart.textContent = ['❤️','💕','💗','🩷'][Math.floor(Math.random()*4)];
+      var rect = el.getBoundingClientRect();
+      heart.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*30) + 'px';
+      heart.style.top = (rect.top - 10) + 'px';
+      heart.style.setProperty('--lx', ((Math.random()-0.5)*60)+'px');
+      heart.style.setProperty('--ly', (-40 - Math.random()*40)+'px');
+      scene.appendChild(heart);
+      setTimeout(function(h){ h.remove(); }.bind(null,heart), 1000);
+    }
+  }
+
+  /* ===== CHIKOY CLICK ===== */
+  chikoy.addEventListener('click', function(){
+    chikoy.classList.add('bounce');
+    setTimeout(function(){ chikoy.classList.remove('bounce'); }, 500);
+    for(var i=0;i<2;i++){
+      var heart = document.createElement('div');
+      heart.className = 'love-burst';
+      heart.textContent = '💛';
+      var rect = chikoy.getBoundingClientRect();
+      heart.style.left = (rect.left + rect.width/2) + 'px';
+      heart.style.top = (rect.top) + 'px';
+      heart.style.setProperty('--lx', ((Math.random()-0.5)*50)+'px');
+      heart.style.setProperty('--ly', (-50)+'px');
+      scene.appendChild(heart);
+      setTimeout(function(h){ h.remove(); }.bind(null,heart), 1000);
+    }
+  });
+
+  /* ===== SIGN CLICK ===== */
+  document.getElementById('sign').addEventListener('click', function(){
+    var msgs = [
+      "Welcome to Chikoy's domain!",
+      "The chickens love you!",
+      "Bawk bawk bawk!",
+      "Fresh eggs daily!",
+      "Chikoy is the chicken king!",
+      "Peck peck peck!"
+    ];
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);' +
+      'padding:0.8rem 1.5rem;border-radius:12px;font-size:0.85rem;z-index:100;' +
+      'background:rgba(26,15,8,0.9);border:1px solid rgba(232,193,126,0.3);' +
+      'backdrop-filter:blur(12px);animation:fadeIn 0.3s ease;white-space:nowrap';
+    toast.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 2000);
+  });
+
+  /* ===== KEYBOARD ===== */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'f' || e.key === 'F') feedChickens();
+  });
+
+  window.scrollTo(0,0);
+</script>
+<script src="app.js"></script>
+</body>
+</html>
