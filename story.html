@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Our Story — a season of us</title>
-<meta name="theme-color" content="#1a0f14">
+<meta name="theme-color" content="#0d0812">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -13,6 +13,7 @@
 <meta property="og:description" content="Every love story is beautiful, but ours is my favorite. Made with all my love, Nard.">
 <meta property="og:image" content="og-preview.png">
 <meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -21,183 +22,356 @@
     --cream: #fff7ee;
     --gold: #e8c17e;
     --ink: #2a1420;
+    --bg: #0d0812;
     --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    background: #120a10;
+    font-family: "Quicksand", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
     color: var(--cream);
     min-height: 100vh;
     overflow-x: hidden;
   }
-  .bg-fade {
-    position: fixed; inset: 0; z-index: 0;
-    background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.28), transparent 60%),
-                radial-gradient(900px 500px at 100% 110%, rgba(232,193,126,0.12), transparent 55%),
-                linear-gradient(180deg, #1a0f14, #120a10);
-  }
-  .page { position: relative; z-index: 1; padding: 0 0 3rem; }
+  ::selection { background: var(--rose-deep); color: #fff; }
 
-  .topbar {
-    position: sticky; top: 0; z-index: 20;
+  /* ===== ANIMATED BACKGROUND ===== */
+  .bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(224,86,124,0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(232,193,126,0.1), transparent),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(13,8,18,1) 0%, #0d0812 100%);
+  }
+  .bg-orb {
+    position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0;
+    animation: orbFloat 20s ease-in-out infinite alternate;
+  }
+  .bg-orb.orb1 { width: 400px; height: 400px; top: -100px; left: -100px; background: rgba(224,86,124,0.08); }
+  .bg-orb.orb2 { width: 350px; height: 350px; bottom: -80px; right: -80px; background: rgba(232,193,126,0.06); animation-delay: -10s; }
+  .bg-orb.orb3 { width: 250px; height: 250px; top: 40%; left: 60%; background: rgba(255,143,171,0.05); animation-delay: -5s; }
+  @keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(40px, 30px) scale(1.1); }
+  }
+
+  /* ===== PAGE ===== */
+  .page { position: relative; z-index: 1; }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 1.2rem;
-    background: linear-gradient(180deg, rgba(18,10,16,0.9), rgba(18,10,16,0));
-    backdrop-filter: blur(6px);
+    padding: 0.9rem 1.4rem;
+    background: rgba(13,8,12,0.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border-bottom: 1px solid rgba(255,143,171,0.08);
   }
-  .topbar a {
-    color: var(--cream); text-decoration: none;
-    font-size: 0.82rem; letter-spacing: 0.06em;
-    border: 1px solid rgba(255,143,171,0.35);
-    padding: 0.45rem 0.9rem; border-radius: 999px;
-    transition: background 0.3s ease;
-  }
-  .topbar a:hover { background: rgba(224,86,124,0.25); }
-  .topbar .brand { font-family: Georgia, serif; font-size: 1.05rem; letter-spacing: 0.14em; color: var(--gold); }
-
-  .hero {
-    text-align: center; padding: 2.2rem 1.5rem 2rem;
-  }
-  .hero-eyebrow {
-    font-size: 0.72rem; letter-spacing: 0.34em; text-transform: uppercase;
-    color: rgba(255,247,238,0.55);
-  }
-  .hero h1 {
-    font-family: Georgia, serif; font-weight: 500;
-    font-size: clamp(2.4rem, 9vw, 4rem);
-    margin: 0.7rem 0 0.3rem;
-    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
-    background-size: 250% auto;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: shimmer 5s linear infinite;
-  }
-  .hero-sub { font-size: 0.9rem; font-style: italic; color: rgba(255,247,238,0.65); }
-  .hero-chip {
-    display: inline-block; margin-top: 1rem;
-    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--rose); border: 1px solid rgba(255,143,171,0.4);
-    border-radius: 999px; padding: 0.45rem 1.1rem;
-  }
-
-  .row {
-    margin-top: 2.2rem;
-  }
-  .row-head {
-    display: flex; align-items: baseline; gap: 0.6rem;
-    padding: 0 1.2rem;
-  }
-  .row-head .tag {
-    font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase;
+  .nav-brand {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1rem; font-weight: 500; letter-spacing: 0.18em;
     color: var(--gold);
   }
-  .row-head h2 {
-    font-family: Georgia, serif; font-weight: 500;
-    font-size: 1.35rem; letter-spacing: 0.02em;
+  .nav-back {
+    color: var(--cream); text-decoration: none;
+    font-size: 0.78rem; letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.9rem; border-radius: 999px;
+    border: 1px solid rgba(255,143,171,0.25);
+    transition: all 0.3s var(--smooth);
   }
-  .row-head .count { font-size: 0.75rem; color: rgba(255,247,238,0.45); }
-  .row-scroll {
-    display: flex; gap: 0.9rem; overflow-x: auto;
-    padding: 1.2rem 1.2rem 1rem;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-  .row-scroll::-webkit-scrollbar { display: none; }
+  .nav-back:hover { background: rgba(224,86,124,0.15); border-color: rgba(255,143,171,0.5); }
 
-  .card {
-    flex: 0 0 150px; scroll-snap-align: start;
-    border-radius: 14px; overflow: hidden;
-    background: rgba(30,17,24,0.7);
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center; padding: 4rem 1.5rem 3rem;
+    position: relative;
+  }
+  .hero-label {
+    font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.7;
+    margin-bottom: 0.8rem;
+  }
+  .hero h1 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 300; font-size: clamp(2.8rem, 10vw, 5rem);
+    line-height: 1.1; letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #ffd3e0 0%, var(--gold) 30%, #fff 50%, var(--gold) 70%, #ffd3e0 100%);
+    background-size: 300% 300%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 8s ease infinite;
+  }
+  .hero-sub {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic; font-weight: 300;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: rgba(255,247,238,0.5);
+    margin-top: 0.6rem;
+  }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-top: 1.5rem; padding: 0.5rem 1.2rem;
+    border-radius: 999px; font-size: 0.75rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--rose);
+    background: rgba(255,143,171,0.08);
     border: 1px solid rgba(255,143,171,0.2);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
-    transition: transform 0.3s var(--spring), border-color 0.3s ease;
-    cursor: pointer;
-    text-decoration: none; color: var(--cream);
   }
-  .card:hover { transform: translateY(-4px); border-color: rgba(255,143,171,0.6); }
-  .card.episode .art {
-    position: relative; width: 100%; aspect-ratio: 2/3;
-    background-size: cover; background-position: center;
+  .hero-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--rose);
+    animation: pulse 2s ease-in-out infinite;
   }
-  .card.episode .art::after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(18,10,16,0.1) 40%, rgba(18,10,16,0.85) 100%);
-  }
-  .card .ep-badge {
-    position: absolute; top: 8px; left: 8px; z-index: 2;
-    font-size: 0.62rem; letter-spacing: 0.12em;
-    color: #1a0f14; background: var(--gold);
-    padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600;
-  }
-  .card .ep-milestone {
-    position: absolute; top: 8px; right: 8px; z-index: 2;
-    font-size: 0.62rem; letter-spacing: 0.1em;
-    color: #fff; background: var(--rose-deep);
-    padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600;
-  }
-  .card .meta { padding: 0.7rem 0.7rem 0.8rem; }
-  .card .meta .d { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,247,238,0.5); }
-  .card .meta .t { font-size: 0.86rem; font-weight: 600; margin-top: 0.15rem; line-height: 1.3; }
-  .card .meta .s { font-size: 0.72rem; color: rgba(255,247,238,0.55); margin-top: 0.2rem; line-height: 1.35; }
+  @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
-  .big-card {
-    flex: 0 0 230px; scroll-snap-align: start;
-    border-radius: 16px; overflow: hidden;
-    border: 1px solid rgba(232,193,126,0.35);
-    background: rgba(30,17,24,0.75);
-    box-shadow: 0 16px 36px rgba(0,0,0,0.5);
-    text-decoration: none; color: var(--cream);
-  }
-  .big-card .art { position: relative; width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; }
-  .big-card .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(18,10,16,0.85)); }
-  .big-card .meta { padding: 0.8rem 0.9rem 0.95rem; }
-  .big-card .meta .d { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
-  .big-card .meta .t { font-family: Georgia, serif; font-size: 1.05rem; margin-top: 0.2rem; }
-  .big-card .meta .s { font-size: 0.76rem; color: rgba(255,247,238,0.6); margin-top: 0.25rem; line-height: 1.4; }
-
-  .season-banner {
-    margin: 2.4rem 1.2rem 0;
-    border-radius: 18px; padding: 1.4rem 1.3rem;
-    background: linear-gradient(135deg, rgba(224,86,124,0.22), rgba(30,17,24,0.7));
-    border: 1px solid rgba(255,143,171,0.35);
+  /* ===== PLAY BANNER ===== */
+  .play-banner {
+    margin: 0 1.2rem 2.5rem;
+    border-radius: 20px; overflow: hidden;
+    background: linear-gradient(135deg, rgba(224,86,124,0.12), rgba(232,193,126,0.06));
+    border: 1px solid rgba(255,143,171,0.15);
     display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.4s var(--smooth);
   }
-  .season-banner .play {
-    flex: 0 0 54px; height: 54px; border-radius: 50%;
+  .play-banner:hover {
+    border-color: rgba(255,143,171,0.4);
+    background: linear-gradient(135deg, rgba(224,86,124,0.18), rgba(232,193,126,0.1));
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(224,86,124,0.15);
+  }
+  .play-btn {
+    flex: 0 0 56px; height: 56px; border-radius: 50%;
     background: linear-gradient(135deg, var(--rose), var(--rose-deep));
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; color: #fff;
-    box-shadow: 0 8px 22px rgba(224,86,124,0.5);
-    animation: pulse 2s ease-in-out infinite;
-    cursor: pointer;
+    color: #fff; font-size: 1.2rem;
+    box-shadow: 0 8px 24px rgba(224,86,124,0.4);
+    animation: pulse 2.5s ease-in-out infinite;
+    transition: transform 0.3s var(--spring);
   }
-  .season-banner .info h3 { font-family: Georgia, serif; font-weight: 500; font-size: 1.15rem; letter-spacing: 0.06em; }
-  .season-banner .info p { font-size: 0.78rem; color: rgba(255,247,238,0.65); margin-top: 0.25rem; line-height: 1.45; }
-  .season-banner .info .eps { color: var(--gold); }
+  .play-banner:hover .play-btn { transform: scale(1.08); }
+  .play-info h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500; font-size: 1.1rem; letter-spacing: 0.08em;
+  }
+  .play-info p {
+    font-size: 0.78rem; color: rgba(255,247,238,0.5);
+    margin-top: 0.2rem; line-height: 1.4;
+  }
+  .play-info .gold { color: var(--gold); }
 
-  .footer {
-    text-align: center; margin-top: 3rem; padding: 0 1.2rem;
-    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+  /* ===== SECTION ===== */
+  .section { margin-bottom: 3rem; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    padding: 0 1.4rem; margin-bottom: 0.2rem;
   }
-  .footer .note { font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.5); }
-  .footer .share {
+  .section-tag {
+    font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.8;
+  }
+  .section-title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 400; font-size: 1.4rem;
+  }
+  .section-count { font-size: 0.72rem; color: rgba(255,247,238,0.35); }
+
+  /* ===== SCROLL ROW ===== */
+  .scroll-row {
+    display: flex; gap: 1rem; overflow-x: auto;
+    padding: 1rem 1.4rem 1.2rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    scroll-padding-left: 1.4rem;
+  }
+  .scroll-row::-webkit-scrollbar { display: none; }
+
+  /* ===== EPISODE CARD ===== */
+  .ep-card {
+    flex: 0 0 160px; scroll-snap-align: start;
+    border-radius: 16px; overflow: hidden;
+    background: rgba(20,12,18,0.8);
+    border: 1px solid rgba(255,143,171,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    cursor: pointer;
+    text-decoration: none; color: var(--cream);
+    transition: all 0.35s var(--smooth);
+    position: relative;
+  }
+  .ep-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,143,171,0.35);
+    box-shadow: 0 16px 48px rgba(224,86,124,0.15);
+  }
+  .ep-art {
+    position: relative; width: 100%; aspect-ratio: 3/4;
+    background-size: cover; background-position: center;
+    overflow: hidden;
+  }
+  .ep-art::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(13,8,18,0.9) 100%);
+  }
+  .ep-num {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-size: 0.6rem; letter-spacing: 0.15em; font-weight: 600;
+    color: var(--bg); background: var(--gold);
+    padding: 0.2rem 0.55rem; border-radius: 8px;
+  }
+  .ep-star {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    font-size: 0.8rem;
+    filter: drop-shadow(0 2px 6px rgba(224,86,124,0.6));
+  }
+  .ep-body { padding: 0.75rem 0.8rem 0.9rem; }
+  .ep-date {
+    font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,247,238,0.4);
+  }
+  .ep-title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500; font-size: 0.95rem;
+    margin-top: 0.2rem; line-height: 1.25;
+  }
+  .ep-desc {
+    font-size: 0.7rem; color: rgba(255,247,238,0.45);
+    margin-top: 0.25rem; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  /* ===== MILESTONE CARD ===== */
+  .ms-card {
+    flex: 0 0 240px; scroll-snap-align: start;
+    border-radius: 18px; overflow: hidden;
+    background: rgba(20,12,18,0.85);
+    border: 1px solid rgba(232,193,126,0.2);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    cursor: pointer;
+    text-decoration: none; color: var(--cream);
+    transition: all 0.4s var(--smooth);
+  }
+  .ms-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(232,193,126,0.5);
+    box-shadow: 0 20px 50px rgba(232,193,126,0.1);
+  }
+  .ms-art {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    background-size: cover; background-position: center;
+  }
+  .ms-art::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(13,8,18,0.95) 100%);
+  }
+  .ms-body { padding: 0.9rem 1rem 1rem; }
+  .ms-date {
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .ms-title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500; font-size: 1.1rem;
+    margin-top: 0.2rem;
+  }
+  .ms-desc {
+    font-size: 0.75rem; color: rgba(255,247,238,0.5);
+    margin-top: 0.2rem; line-height: 1.4;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center; padding: 2rem 1.4rem 3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  }
+  .footer-note {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic; font-size: 1rem;
+    color: rgba(255,247,238,0.4);
+  }
+  .footer-share {
     border: none; cursor: pointer;
     background: linear-gradient(135deg, var(--rose), var(--rose-deep));
-    color: #fff; font-family: inherit;
-    padding: 0.65rem 1.5rem; border-radius: 999px; font-size: 0.85rem;
-    box-shadow: 0 8px 20px rgba(224,86,124,0.4);
+    color: #fff; font-family: "Quicksand", sans-serif;
+    padding: 0.7rem 1.8rem; border-radius: 999px; font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    box-shadow: 0 8px 24px rgba(224,86,124,0.35);
+    transition: all 0.3s var(--smooth);
   }
-  .footer .back {
-    color: rgba(255,247,238,0.65); text-decoration: none; font-size: 0.82rem;
-    border-bottom: 1px solid rgba(255,247,238,0.3); padding-bottom: 2px;
+  .footer-share:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(224,86,124,0.5); }
+  .footer-back {
+    color: rgba(255,247,238,0.5); text-decoration: none; font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255,247,238,0.2); padding-bottom: 2px;
+    transition: color 0.3s ease;
+  }
+  .footer-back:hover { color: var(--rose); border-color: var(--rose); }
+
+  /* ===== SLIDESHOW ===== */
+  #slideshow {
+    position: fixed; inset: 0; z-index: 99999;
+    background: #000;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  #slideImg {
+    width: 100%; height: 100%;
+    background-size: contain; background-position: center; background-repeat: no-repeat;
+    transition: opacity 0.6s ease;
+  }
+  .slide-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 3rem 2rem 1.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    text-align: center;
+  }
+  .slide-caption h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 400; font-size: 1.3rem; color: #fff;
+  }
+  .slide-caption p {
+    font-size: 0.78rem; color: rgba(255,255,255,0.5);
+    margin-top: 0.3rem;
+  }
+  .slide-counter {
+    margin-top: 0.8rem;
+    font-size: 0.7rem; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+  }
+  .slide-btn {
+    position: absolute; z-index: 10;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; cursor: pointer;
+    transition: all 0.3s var(--smooth);
+  }
+  .slide-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); }
+  .slide-close { top: 16px; right: 16px; width: 42px; height: 42px; border-radius: 50%; font-size: 1.3rem; }
+  .slide-prev { left: 14px; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; font-size: 1.4rem; }
+  .slide-next { right: 14px; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; font-size: 1.4rem; }
+  .slide-auto {
+    top: 16px; left: 16px; padding: 0.45rem 1rem;
+    border-radius: 999px; font-size: 0.72rem; letter-spacing: 0.06em;
+  }
+  .slide-progress {
+    position: absolute; bottom: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--rose), var(--gold));
+    transition: width 3s linear;
+    border-radius: 0 3px 3px 0;
   }
 
-  @keyframes shimmer { to { background-position: 250% center; } }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-up { opacity: 0; animation: fadeUp 0.9s var(--spring) forwards; }
-  .d1 { animation-delay: 0.25s; }
-  .d2 { animation-delay: 0.45s; }
-  .d3 { animation-delay: 0.65s; }
+  /* ===== ANIMATIONS ===== */
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .anim { opacity: 0; animation: fadeUp 0.8s var(--smooth) forwards; }
+  .anim-d1 { animation-delay: 0.1s; }
+  .anim-d2 { animation-delay: 0.2s; }
+  .anim-d3 { animation-delay: 0.3s; }
+  .anim-d4 { animation-delay: 0.4s; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -205,51 +379,71 @@
 </style>
 </head>
 <body>
-<div class="bg-fade" aria-hidden="true"></div>
+<div class="bg" aria-hidden="true"></div>
+<div class="bg-orb orb1" aria-hidden="true"></div>
+<div class="bg-orb orb2" aria-hidden="true"></div>
+<div class="bg-orb orb3" aria-hidden="true"></div>
 
 <div class="page">
-  <div class="topbar">
-    <span class="brand">OUR STORY</span>
-    <a href="lovepage.html">&#8592; our story</a>
-  </div>
+  <nav class="nav">
+    <span class="nav-brand">OUR STORY</span>
+    <a class="nav-back" href="lovepage.html">&#8592; back</a>
+  </nav>
 
-  <div class="hero">
-    <p class="hero-eyebrow fade-up d1">you + me, every month</p>
-    <h1 class="fade-up d1">A Season of Us</h1>
-    <p class="hero-sub fade-up d2">Netflix-style binge of the best show I've ever watched &mdash; us.</p>
-    <div class="hero-chip fade-up d3" id="episodeCount">S1 &middot; 0 episodes so far</div>
-  </div>
+  <section class="hero">
+    <p class="hero-label anim anim-d1">you + me, every month</p>
+    <h1 class="anim anim-d2">A Season of Us</h1>
+    <p class="hero-sub anim anim-d3">Netflix-style binge of the best show I've ever watched &mdash; us.</p>
+    <div class="hero-pill anim anim-d4" id="episodeCount">
+      <span class="dot"></span>
+      <span>S1 &middot; 0 episodes so far</span>
+    </div>
+  </section>
 
-  <div class="season-banner fade-up d2">
-    <div class="play" id="seasonPlay">&#9654;</div>
-    <div class="info">
+  <div class="play-banner anim anim-d3" id="seasonPlay">
+    <div class="play-btn">&#9654;</div>
+    <div class="play-info">
       <h3>SEASON 1 &mdash; the beginning</h3>
-      <p><span class="eps">All episodes are ours.</span><br>Since we started, every single month has been worth watching.</p>
+      <p><span class="gold">All episodes are ours.</span><br>Since we started, every month has been worth watching.</p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="row-head">
-      <span class="tag">Season 1</span>
-      <h2>Episodes</h2>
-      <span class="count" id="episodeCountSmall"></span>
+  <section class="section anim anim-d4">
+    <div class="section-head">
+      <span class="section-tag">Season 1</span>
+      <h2 class="section-title">Episodes</h2>
+      <span class="section-count" id="episodeCountSmall"></span>
     </div>
-    <div class="row-scroll" id="episodeRow"></div>
-  </div>
+    <div class="scroll-row" id="episodeRow"></div>
+  </section>
 
-  <div class="row">
-    <div class="row-head">
-      <span class="tag">Chapter marks</span>
-      <h2>Milestones</h2>
+  <section class="section anim anim-d4">
+    <div class="section-head">
+      <span class="section-tag">Chapter marks</span>
+      <h2 class="section-title">Milestones</h2>
     </div>
-    <div class="row-scroll" id="milestoneRow"></div>
-  </div>
+    <div class="scroll-row" id="milestoneRow"></div>
+  </section>
 
-  <div class="footer">
-    <p class="note">no binge-warning needed &mdash; this one never ends</p>
-    <button class="share" id="storyShare">Share our story</button>
-    <a class="back" href="lovepage.html">back to our story</a>
+  <footer class="footer">
+    <p class="footer-note">no binge-warning needed &mdash; this one never ends</p>
+    <button class="footer-share" id="storyShare">Share our story</button>
+    <a class="footer-back" href="lovepage.html">back to our story</a>
+  </footer>
+</div>
+
+<div id="slideshow">
+  <div id="slideImg"></div>
+  <div class="slide-caption">
+    <h3 id="slideTitle"></h3>
+    <p id="slideSubtitle"></p>
+    <div class="slide-counter" id="slideProgress"></div>
   </div>
+  <button class="slide-btn slide-close" id="slideClose">&times;</button>
+  <button class="slide-btn slide-prev" id="slidePrev">&#8249;</button>
+  <button class="slide-btn slide-next" id="slideNext">&#8250;</button>
+  <button class="slide-btn slide-auto" id="slideAutoPlay">&#9654; Auto</button>
+  <div class="slide-progress" id="slideProgressBar"></div>
 </div>
 
 <script>
@@ -276,18 +470,11 @@
   function monthsBetween(start, n) {
     var out = [];
     var d = new Date(start.getFullYear(), start.getMonth(), 1);
-    for (var i = 0; i < n; i++) {
-      out.push(new Date(d.getFullYear(), d.getMonth() + i, 1));
-    }
+    for (var i = 0; i < n; i++) out.push(new Date(d.getFullYear(), d.getMonth() + i, 1));
     return out;
   }
-
-  function fmtMonth(d) {
-    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  }
-  function keyOf(d) {
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-  }
+  function fmtMonth(d) { return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }); }
+  function keyOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
 
   function buildEpisodes() {
     var start = new Date(RELATIONSHIP_START_DATE + 'T00:00:00');
@@ -302,45 +489,40 @@
       var title = isMilestone ? isMilestone.title : GENERIC_TITLES[gi % GENERIC_TITLES.length];
       var text = isMilestone ? isMilestone.text : 'another beautiful month of being yours.';
       gi++;
-
       var a = document.createElement('a');
-      a.className = 'card episode';
+      a.className = 'ep-card';
       a.href = 'lovepage.html';
-      var art = PHOTOS[i % PHOTOS.length];
       var ep = 'S1E' + String(i + 1).padStart(2, '0');
       a.innerHTML =
-        '<div class="art" style="background-image:url(' + art + ')">' +
-          '<span class="ep-badge">' + ep + '</span>' +
-          (isMilestone ? '<span class="ep-milestone">&#10022;</span>' : '') +
+        '<div class="ep-art" style="background-image:url(' + PHOTOS[i % PHOTOS.length] + ')">' +
+          '<span class="ep-num">' + ep + '</span>' +
+          (isMilestone ? '<span class="ep-star">&#10022;</span>' : '') +
         '</div>' +
-        '<div class="meta">' +
-          '<div class="d">' + fmtMonth(m) + '</div>' +
-          '<div class="t">' + title + '</div>' +
-          '<div class="s">' + text + '</div>' +
+        '<div class="ep-body">' +
+          '<div class="ep-date">' + fmtMonth(m) + '</div>' +
+          '<div class="ep-title">' + title + '</div>' +
+          '<div class="ep-desc">' + text + '</div>' +
         '</div>';
       row.appendChild(a);
     });
-
-    document.getElementById('episodeCount').textContent = 'S1 \u00b7 ' + n + ' episode' + (n > 1 ? 's' : '') + ' so far';
+    document.getElementById('episodeCount').querySelector('span:last-child').textContent = 'S1 \u00b7 ' + n + ' episode' + (n > 1 ? 's' : '') + ' so far';
     document.getElementById('episodeCountSmall').textContent = n + ' episodes';
   }
 
   function buildMilestones() {
     var row = document.getElementById('milestoneRow');
-    var keys = Object.keys(MILESTONES);
-    keys.forEach(function(k, i) {
+    Object.keys(MILESTONES).forEach(function(k, i) {
       var m = MILESTONES[k];
       var d = new Date(k + '-01T00:00:00');
       var a = document.createElement('a');
-      a.className = 'big-card';
+      a.className = 'ms-card';
       a.href = 'lovepage.html';
-      var art = PHOTOS[(i + 3) * 2 % PHOTOS.length];
       a.innerHTML =
-        '<div class="art" style="background-image:url(' + art + ')"></div>' +
-        '<div class="meta">' +
-          '<div class="d">' + fmtMonth(d) + '</div>' +
-          '<div class="t">' + m.title + '</div>' +
-          '<div class="s">' + m.text + '</div>' +
+        '<div class="ms-art" style="background-image:url(' + PHOTOS[(i + 3) * 2 % PHOTOS.length] + ')"></div>' +
+        '<div class="ms-body">' +
+          '<div class="ms-date">' + fmtMonth(d) + '</div>' +
+          '<div class="ms-title">' + m.title + '</div>' +
+          '<div class="ms-desc">' + m.text + '</div>' +
         '</div>';
       row.appendChild(a);
     });
@@ -349,53 +531,22 @@
   buildEpisodes();
   buildMilestones();
 
-  var seasonPlay = document.getElementById('seasonPlay');
-  seasonPlay.addEventListener('click', function() {
-    seasonPlay.textContent = '\u2665';
-    seasonPlay.style.animation = 'none';
-    setTimeout(function() {
-      document.getElementById('episodeRow').scrollTo({ left: 0, behavior: 'smooth' });
-      setTimeout(function() {
-        seasonPlay.textContent = '\u25B6';
-        seasonPlay.style.animation = 'pulse 2s ease-in-out infinite';
-      }, 900);
-    }, 250);
-  });
-
-  document.getElementById('storyShare').addEventListener('click', function() {
-    if (window.openShareCard) window.openShareCard();
-  });
-
-  /* ---- SLIDESHOW ---- */
-  var slideshowOverlay = document.createElement('div');
-  slideshowOverlay.id = 'slideshow';
-  slideshowOverlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center';
-  slideshowOverlay.innerHTML = '' +
-    '<div id="slideImg" style="width:100%;height:100%;background-size:contain;background-position:center;background-repeat:no-repeat;transition:opacity 0.6s ease"></div>' +
-    '<div id="slideCaption" style="position:absolute;bottom:0;left:0;right:0;padding:2rem 1.5rem 1.5rem;background:linear-gradient(transparent,rgba(0,0,0,0.85));text-align:center">' +
-      '<div id="slideTitle" style="font-family:Georgia,serif;font-size:1.2rem;color:#fff;margin-bottom:0.3rem"></div>' +
-      '<div id="slideSubtitle" style="font-size:0.8rem;color:rgba(255,255,255,0.6)"></div>' +
-      '<div id="slideProgress" style="margin-top:0.8rem;font-size:0.7rem;color:rgba(255,255,255,0.4)"></div>' +
-    '</div>' +
-    '<button id="slideClose" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&times;</button>' +
-    '<button id="slidePrev" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#8249;</button>' +
-    '<button id="slideNext" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#8250;</button>' +
-    '<button id="slideAutoPlay" style="position:absolute;top:16px;left:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;padding:0.4rem 1rem;border-radius:999px;font-size:0.75rem;cursor:pointer;z-index:10;backdrop-filter:blur(8px)">&#9654; Auto</button>';
-  document.body.appendChild(slideshowOverlay);
+  /* ===== SLIDESHOW ===== */
+  var slideshow = document.getElementById('slideshow');
+  var slideImg = document.getElementById('slideImg');
+  var slideTitle = document.getElementById('slideTitle');
+  var slideSubtitle = document.getElementById('slideSubtitle');
+  var slideProgress = document.getElementById('slideProgress');
+  var slideProgressBar = document.getElementById('slideProgressBar');
+  var slideIdx = 0;
+  var autoTimer = null;
+  var isAutoPlaying = false;
 
   var slideAudio = document.createElement('audio');
   slideAudio.src = 'music/song2.mp3';
   slideAudio.loop = true;
   slideAudio.preload = 'auto';
   document.body.appendChild(slideAudio);
-
-  var slideImg = document.getElementById('slideImg');
-  var slideTitle = document.getElementById('slideTitle');
-  var slideSubtitle = document.getElementById('slideSubtitle');
-  var slideProgress = document.getElementById('slideProgress');
-  var slideIdx = 0;
-  var autoTimer = null;
-  var isAutoPlaying = false;
 
   function getAllPhotos() {
     var all = [];
@@ -429,19 +580,27 @@
     slideTitle.textContent = s.title;
     slideSubtitle.textContent = s.subtitle;
     slideProgress.textContent = (slideIdx + 1) + ' / ' + allSlides.length;
+    slideProgressBar.style.transition = 'none';
+    slideProgressBar.style.width = '0%';
+    if (isAutoPlaying) {
+      setTimeout(function() {
+        slideProgressBar.style.transition = 'width 3s linear';
+        slideProgressBar.style.width = '100%';
+      }, 50);
+    }
   }
 
   function startSlideshow() {
     allSlides = getAllPhotos();
     slideIdx = 0;
-    slideshowOverlay.style.display = 'flex';
+    slideshow.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     slideAudio.play().catch(function() {});
     showSlide(0);
   }
 
   function stopSlideshow() {
-    slideshowOverlay.style.display = 'none';
+    slideshow.style.display = 'none';
     document.body.style.overflow = '';
     slideAudio.pause();
     slideAudio.currentTime = 0;
@@ -454,48 +613,41 @@
     } else {
       isAutoPlaying = true;
       document.getElementById('slideAutoPlay').innerHTML = '&#10074;&#10074; Pause';
-      autoTimer = setInterval(function() {
-        showSlide(slideIdx + 1);
-      }, 3000);
+      slideProgressBar.style.transition = 'width 3s linear';
+      slideProgressBar.style.width = '100%';
+      autoTimer = setInterval(function() { showSlide(slideIdx + 1); }, 3000);
     }
   }
 
   function stopAutoPlay() {
     isAutoPlaying = false;
     document.getElementById('slideAutoPlay').innerHTML = '&#9654; Auto';
+    slideProgressBar.style.transition = 'none';
+    slideProgressBar.style.width = '0%';
     if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
   }
 
-  seasonPlay.addEventListener('click', function() {
-    startSlideshow();
-  });
-
+  document.getElementById('seasonPlay').addEventListener('click', startSlideshow);
   document.getElementById('slideClose').addEventListener('click', stopSlideshow);
   document.getElementById('slidePrev').addEventListener('click', function() { stopAutoPlay(); showSlide(slideIdx - 1); });
   document.getElementById('slideNext').addEventListener('click', function() { stopAutoPlay(); showSlide(slideIdx + 1); });
   document.getElementById('slideAutoPlay').addEventListener('click', toggleAutoPlay);
-
-  slideshowOverlay.addEventListener('click', function(e) {
-    if (e.target === slideshowOverlay) stopSlideshow();
-  });
+  slideshow.addEventListener('click', function(e) { if (e.target === slideshow) stopSlideshow(); });
+  document.getElementById('storyShare').addEventListener('click', function() { if (window.openShareCard) window.openShareCard(); });
 
   document.addEventListener('keydown', function(e) {
-    if (slideshowOverlay.style.display !== 'flex') return;
+    if (slideshow.style.display !== 'flex') return;
     if (e.key === 'Escape') stopSlideshow();
     if (e.key === 'ArrowLeft') { stopAutoPlay(); showSlide(slideIdx - 1); }
     if (e.key === 'ArrowRight') { stopAutoPlay(); showSlide(slideIdx + 1); }
     if (e.key === ' ') { e.preventDefault(); toggleAutoPlay(); }
   });
 
-  /* swipe on slideshow */
   var slideStartX = 0;
-  slideshowOverlay.addEventListener('touchstart', function(e) { slideStartX = e.touches[0].clientX; }, { passive: true });
-  slideshowOverlay.addEventListener('touchend', function(e) {
+  slideshow.addEventListener('touchstart', function(e) { slideStartX = e.touches[0].clientX; }, { passive: true });
+  slideshow.addEventListener('touchend', function(e) {
     var dx = e.changedTouches[0].clientX - slideStartX;
-    if (Math.abs(dx) > 50) {
-      stopAutoPlay();
-      showSlide(slideIdx + (dx < 0 ? 1 : -1));
-    }
+    if (Math.abs(dx) > 50) { stopAutoPlay(); showSlide(slideIdx + (dx < 0 ? 1 : -1)); }
   }, { passive: true });
 
   window.scrollTo(0, 0);
