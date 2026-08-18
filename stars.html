@@ -201,7 +201,7 @@
 
   function placeStars() {
     var margin = 60;
-    var scale = Math.min(W, H) < 500 ? 1.4 : 1;
+    var scale = Math.min(W, H) < 500 ? 0.7 : 1;
     stars = STARS_DATA.map(function(data, i) {
       var baseSize = data.size === 'large' ? 13 : data.size === 'medium' ? 8 : 5.5;
       baseSize *= scale;
