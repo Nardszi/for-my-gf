@@ -54,85 +54,42 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 .sign-front .ci{font-size:clamp(.55rem,1.6vw,.8rem)}
 .sign-edge{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--wood-dk);border-radius:5px;transform:translateZ(-6px)}
 .sign-post{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:8px;height:55px;background:linear-gradient(180deg,var(--wood-dk),#2a1508);border-radius:3px}
-.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:500px;z-index:10;cursor:pointer;transition:transform .3s var(--spring),left 2s ease,bottom 2s ease}
+.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring)}
 .chikoy-3d:hover{transform:scale(1.08) rotateY(5deg)}
 .chikoy-3d.bounce{animation:cBounce .5s var(--spring)}
 @keyframes cBounce{0%{transform:translateY(0)}40%{transform:translateY(-14px)}100%{transform:translateY(0)}}
 .chikoy-3d.walking{animation:cWalkBob .5s ease-in-out infinite}
 @keyframes cWalkBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.chikoy-3d.walking .c-arm-3d.l{animation:cArmWL .5s ease-in-out infinite}
-.chikoy-3d.walking .c-arm-3d.r{animation:cArmWR .5s ease-in-out infinite}
-.chikoy-3d.walking .c-leg-3d.l{animation:cLegWL .5s ease-in-out infinite}
-.chikoy-3d.walking .c-leg-3d.r{animation:cLegWR .5s ease-in-out infinite}
-.chikoy-3d.walking .c-arm-3d.l .c-forearm{animation:cForeWL .5s ease-in-out infinite}
-.chikoy-3d.walking .c-arm-3d.r .c-forearm{animation:cForeWR .5s ease-in-out infinite}
-.chikoy-3d.walking .c-leg-3d.l .c-shin-3d{animation:cShinWL .5s ease-in-out infinite}
-.chikoy-3d.walking .c-leg-3d.r .c-shin-3d{animation:cShinWR .5s ease-in-out infinite}
-.chikoy-3d.walking .c-head-3d{animation:cHeadWL .5s ease-in-out infinite}
-@keyframes cArmWL{0%,100%{transform:rotate(8deg)}50%{transform:rotate(-30deg)}}
-@keyframes cArmWR{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(30deg)}}
-@keyframes cLegWL{0%,100%{transform:rotate(0)}50%{transform:rotate(-16deg)}}
-@keyframes cLegWR{0%,100%{transform:rotate(0)}50%{transform:rotate(16deg)}}
-@keyframes cForeWL{0%,100%{transform:rotate(0)}50%{transform:rotate(20deg)}}
-@keyframes cForeWR{0%,100%{transform:rotate(0)}50%{transform:rotate(-20deg)}}
-@keyframes cShinWL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
-@keyframes cShinWR{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
-@keyframes cHeadWL{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
+.chikoy-3d.walking .c-arm.l{animation:cArmL .5s ease-in-out infinite}
+.chikoy-3d.walking .c-arm.r{animation:cArmR .5s ease-in-out infinite}
+.chikoy-3d.walking .c-leg.l{animation:cLegL .5s ease-in-out infinite}
+.chikoy-3d.walking .c-leg.r{animation:cLegR .5s ease-in-out infinite}
+.chikoy-3d.walking .c-head{animation:cHeadBob .5s ease-in-out infinite}
+@keyframes cArmL{0%,100%{transform:rotateY(-20deg) rotateZ(15deg)}50%{transform:rotateY(-20deg) rotateZ(-25deg)}}
+@keyframes cArmR{0%,100%{transform:rotateY(20deg) rotateZ(-15deg)}50%{transform:rotateY(20deg) rotateZ(25deg)}}
+@keyframes cLegL{0%,100%{transform:rotate(0)}50%{transform:rotate(-12deg)}}
+@keyframes cLegR{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg)}}
+@keyframes cHeadBob{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
 .chikoy{transform-style:preserve-3d;transform:rotateY(-5deg);position:relative}
-.c-figure{position:relative;width:clamp(52px,13vw,68px);height:clamp(80px,19vw,104px)}
-.c-head-3d{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10}
-.c-head{width:clamp(34px,8.5vw,46px);height:clamp(32px,8vw,42px);border-radius:48% 48% 42% 42%;background:radial-gradient(ellipse at 40% 32%,#ffe0b2,#f0b070 60%,#e09050);box-shadow:0 4px 14px rgba(0,0,0,.3),inset 0 -4px 8px rgba(0,0,0,.06),inset 0 2px 6px rgba(255,255,255,.15);position:relative}
-.c-head::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:20px;height:12px;background:radial-gradient(ellipse,#f0b070,#e09050);border-radius:0 0 50% 50%}
-.c-ear{position:absolute;top:38%;width:clamp(5px,1.2vw,7px);height:clamp(8px,2vw,10px);background:radial-gradient(ellipse at 60% 40%,#f0b070,#e09050);border-radius:50%;box-shadow:inset -1px 1px 3px rgba(0,0,0,.1);z-index:-1}
-.c-ear.l{left:-3px;transform:rotate(-8deg)}.c-ear.r{right:-3px;transform:rotate(8deg)}
-.c-face{position:absolute;top:0;left:0;right:0;bottom:0;z-index:2}
-.c-hair-top{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:clamp(30px,7.5vw,40px);height:18px;background:linear-gradient(180deg,#1a0a00 0%,#2d1a0a 60%,#3d2a1a 100%);border-radius:50% 50% 20% 20%;z-index:12;box-shadow:0 2px 6px rgba(0,0,0,.3)}
-.c-hair-top::before{content:"";position:absolute;top:-5px;left:3px;width:12px;height:14px;background:linear-gradient(160deg,#1a0a00,#2d1a0a);border-radius:50% 50% 30% 30%;transform:rotate(-10deg)}
-.c-hair-top::after{content:"";position:absolute;top:-3px;right:5px;width:10px;height:12px;background:linear-gradient(200deg,#1a0a00,#2d1a0a);border-radius:50% 50% 30% 30%;transform:rotate(8deg)}
-.c-brow{position:absolute;top:22%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(10px,2.8vw,15px);z-index:3}
-.brow-l,.brow-r{width:clamp(6px,1.5vw,8px);height:2.5px;background:linear-gradient(90deg,#2d1a00,#1a0a00);border-radius:2px}
-.brow-l{transform:rotate(-6deg)}.brow-r{transform:rotate(6deg)}
-.c-eyes{position:absolute;top:30%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(8px,2.2vw,12px);z-index:3}
-.c-eye{width:clamp(7px,1.8vw,9px);height:clamp(8px,2vw,10px);border-radius:50%;background:radial-gradient(circle at 45% 40%,#2d1a0a,#0a0500);animation:cBlink 4s ease-in-out infinite;position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.5)}
-.eye-shine{position:absolute;top:1px;left:1.5px;width:40%;height:35%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,255,255,.3));pointer-events:none}
-.c-eye::after{content:"";position:absolute;bottom:1px;right:1px;width:20%;height:20%;border-radius:50%;background:rgba(255,255,255,.35)}
-@keyframes cBlink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(.06)}}
-.c-nose{position:absolute;top:44%;left:50%;transform:translateX(-50%);width:clamp(4px,1vw,5px);height:clamp(3px,.7vw,4px);background:linear-gradient(180deg,#e8a060,#d08848);border-radius:40% 40% 50% 50%;z-index:3;box-shadow:0 1px 2px rgba(0,0,0,.1)}
-.c-cheek{position:absolute;top:40%;width:clamp(7px,1.8vw,9px);height:clamp(5px,1.2vw,6px);background:rgba(255,120,120,.3);border-radius:50%;z-index:2;filter:blur(2px)}
+.c-head{position:absolute;top:0;left:50%;transform:translateX(-50%) translateZ(14px);width:clamp(32px,8vw,44px);height:clamp(32px,8vw,44px);border-radius:50%;background:radial-gradient(circle at 38% 30%,#ffe0b2,#ffb74d);box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 -3px 6px rgba(0,0,0,.05);z-index:2}
+.c-hair{position:absolute;top:-5px;left:50%;transform:translateX(-50%) translateZ(16px);width:clamp(24px,6vw,34px);height:14px;background:linear-gradient(180deg,#1a0a00,#2d1a0a);border-radius:50% 50% 0 0;z-index:3}
+.c-hair::before{content:"";position:absolute;top:-4px;left:5px;width:9px;height:10px;background:#1a0a00;border-radius:50% 50% 0 0;transform:rotate(-15deg)}
+.c-eyes{position:absolute;top:34%;left:50%;transform:translateX(-50%);display:flex;gap:clamp(7px,2vw,11px);z-index:4}
+.c-eye{width:5px;height:5px;border-radius:50%;background:#1a0a00;animation:cBlink 4s ease-in-out infinite;position:relative}
+.c-eye::after{content:"";position:absolute;top:1px;left:1.5px;width:2px;height:2px;border-radius:50%;background:#fff}
+@keyframes cBlink{0%,96%,100%{transform:scaleY(1)}98%{transform:scaleY(.1)}}
+.c-mouth{position:absolute;top:55%;left:50%;transform:translateX(-50%);width:9px;height:5px;border-radius:0 0 8px 8px;background:#e57373;z-index:4}
+.c-cheek{position:absolute;top:42%;width:7px;height:4px;background:rgba(255,138,128,.5);border-radius:50%;z-index:4}
 .c-cheek.l{left:2px}.c-cheek.r{right:2px}
-.c-mouth{position:absolute;top:56%;left:50%;transform:translateX(-50%);width:clamp(9px,2.2vw,12px);height:clamp(5px,1.2vw,6px);z-index:3;overflow:visible}
-.c-mouth::before{content:"";position:absolute;top:0;left:0;right:0;height:50%;border-bottom:2px solid #c0504a;border-radius:0 0 50% 50%}
-.c-mouth::after{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:4px;height:3px;background:#e57373;border-radius:50%;opacity:.7}
-.c-neck-3d{position:absolute;top:clamp(34px,8.2vw,44px);left:50%;transform:translateX(-50%);width:clamp(14px,3.5vw,18px);height:clamp(14px,3.5vw,18px);background:linear-gradient(180deg,#f0b070 0%,#e8a060 60%,#d89050 100%);border-radius:35%;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.c-torso-3d{position:absolute;top:clamp(44px,10.5vw,57px);left:50%;transform:translateX(-50%);width:clamp(38px,9.5vw,50px);height:clamp(34px,8.5vw,44px);z-index:4}
-.c-shirt{position:absolute;inset:0;background:linear-gradient(175deg,#FFD700 0%,#FFBF00 30%,#E6A000 65%,#D49000 100%);border-radius:14px 14px 10px 10px;box-shadow:0 5px 18px rgba(0,0,0,.3),inset 0 4px 10px rgba(255,255,255,.25),inset 0 -6px 12px rgba(0,0,0,.1)}
-.c-shirt::before{content:"";position:absolute;top:3px;left:4px;right:4px;height:35%;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.2),transparent);pointer-events:none}
-.c-shirt::after{content:"";position:absolute;bottom:0;left:0;right:0;height:6px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.06));border-radius:0 0 10px 10px}
-.c-shirt-text{position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);font-size:clamp(.2rem,.65vw,.32rem);font-weight:700;color:#1a0a00;white-space:nowrap;border:1.5px solid rgba(26,10,0,.45);padding:2px 6px;background:rgba(255,215,0,.3);border-radius:3px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.12);z-index:1}
-.c-arm-3d{position:absolute;top:clamp(44px,10.5vw,57px);z-index:3;transform-style:preserve-3d;transform-origin:top center}
-.c-arm-3d.l{left:-6px;transform:rotate(8deg)}.c-arm-3d.r{right:-6px;transform:rotate(-8deg)}
-.c-shoulder-3d{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:clamp(10px,2.5vw,13px);height:clamp(8px,2vw,10px);background:linear-gradient(180deg,#FFD700,#E6B800);border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.15)}
-.c-upper-arm{position:absolute;top:clamp(5px,1.2vw,7px);left:50%;transform:translateX(-50%);width:clamp(10px,2.5vw,13px);height:clamp(20px,5vw,26px);background:linear-gradient(180deg,#FFD700 0%,#E6B800 50%,#D4A600 100%);border-radius:5px 5px 4px 4px;box-shadow:0 2px 6px rgba(0,0,0,.2),inset 0 1px 3px rgba(255,255,255,.2)}
-.c-elbow-3d{position:absolute;top:clamp(23px,5.7vw,30px);left:50%;transform:translateX(-50%);width:clamp(10px,2.5vw,12px);height:clamp(5px,1.2vw,6px);background:radial-gradient(ellipse,#e8a060,#d08848);border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.c-forearm{position:absolute;top:clamp(26px,6.5vw,34px);left:50%;transform:translateX(-50%);width:clamp(9px,2.2vw,11px);height:clamp(18px,4.5vw,24px);background:linear-gradient(180deg,#f0b070 0%,#e8a060 50%,#d89050 100%);border-radius:4px;box-shadow:0 2px 5px rgba(0,0,0,.15),inset 0 1px 2px rgba(255,255,255,.15)}
-.c-hand-3d{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:clamp(13px,3.2vw,16px);height:clamp(12px,3vw,15px);background:radial-gradient(ellipse at 45% 35%,#ffe0b2,#e8a060);border-radius:45% 45% 50% 50%;box-shadow:0 2px 6px rgba(0,0,0,.2),inset 0 1px 3px rgba(255,255,255,.2);z-index:1;position:relative}
-.c-finger-3d{position:absolute;bottom:-2px;width:clamp(3px,.8vw,4px);height:clamp(5px,1.2vw,6px);background:linear-gradient(180deg,#e8a060,#d89050);border-radius:1px 1px 2px 2px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
-.c-finger-3d.f1{left:1px;transform:rotate(-10deg)}.c-finger-3d.f2{left:4px;height:clamp(5.5px,1.4vw,7px)}.c-finger-3d.f3{right:3px;transform:rotate(8deg)}
-.c-thumb-3d{position:absolute;top:-1px;left:-3px;width:clamp(3px,.8vw,4px);height:clamp(5px,1.2vw,6px);background:linear-gradient(180deg,#e8a060,#d89050);border-radius:2px;transform:rotate(-25deg);box-shadow:0 1px 2px rgba(0,0,0,.1)}
-.c-hip-3d{position:absolute;top:clamp(76px,18.3vw,98px);left:50%;transform:translateX(-50%);width:clamp(34px,8.5vw,44px);height:clamp(10px,2.5vw,13px);background:linear-gradient(180deg,#455A64,#37474F);border-radius:3px 3px 8px 8px;z-index:4;box-shadow:0 3px 8px rgba(0,0,0,.2)}
-.c-leg-3d{position:absolute;top:clamp(82px,19.6vw,106px);z-index:3;transform-style:preserve-3d;transform-origin:top center}
-.c-leg-3d.l{left:clamp(8px,2vw,11px)}.c-leg-3d.r{right:clamp(8px,2vw,11px)}
-.c-thigh-3d{position:absolute;top:0;left:50%;transform:translateX(-50%);width:clamp(12px,3vw,15px);height:clamp(18px,4.5vw,23px);background:linear-gradient(180deg,#455A64 0%,#37474F 50%,#2c3e50 100%);border-radius:6px 6px 4px 4px;box-shadow:0 3px 6px rgba(0,0,0,.25),inset 0 1px 3px rgba(255,255,255,.08)}
-.c-knee-3d{position:absolute;top:clamp(16px,4vw,21px);left:50%;transform:translateX(-50%);width:clamp(11px,2.7vw,14px);height:clamp(5px,1.2vw,6px);background:radial-gradient(ellipse,#3d4f5f,#2c3e50);border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.15)}
-.c-shin-3d{position:absolute;top:clamp(19px,4.7vw,25px);left:50%;transform:translateX(-50%);width:clamp(10px,2.5vw,13px);height:clamp(16px,4vw,20px);background:linear-gradient(180deg,#37474F 0%,#2c3e50 100%);border-radius:4px;box-shadow:0 2px 5px rgba(0,0,0,.2),inset 0 1px 2px rgba(255,255,255,.06)}
-.c-shoe-3d{position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:clamp(18px,4.5vw,23px);height:clamp(10px,2.5vw,13px);background:linear-gradient(170deg,#6D4C41 0%,#5D4037 35%,#4E342E 65%,#3E2723 100%);border-radius:4px 12px 6px 6px;box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 1px 3px rgba(255,255,255,.1)}
-.c-sole{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(180deg,#2c1a10,#1a0e08);border-radius:0 0 6px 6px}
-.c-shoe-3d::before{content:"";position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);border-radius:inherit}
-.c-lace-3d{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:55%;display:flex;flex-direction:column;gap:2px}
-.c-lace-3d::before{content:"";display:block;height:1px;background:rgba(255,255,255,.15);border-radius:1px}
-.c-lace-3d::after{content:"";display:block;height:1px;background:rgba(255,255,255,.1);border-radius:1px}
-.chikoy-3d.feeding .c-arm-3d.r{animation:fArm3d .6s ease-in-out 3}
-@keyframes fArm3d{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-55deg)}}.baby-chick{position:absolute;z-index:9;pointer-events:none;transition:left 1.5s ease,bottom 1.5s ease}
+.c-body{position:absolute;top:clamp(28px,7vw,38px);left:50%;transform:translateX(-50%) translateZ(8px);width:clamp(30px,7.5vw,40px);height:clamp(28px,7vw,38px);background:linear-gradient(180deg,#FFD700,#FFB300);border-radius:6px 6px 3px 3px;box-shadow:0 4px 10px rgba(0,0,0,.2),inset 0 2px 6px rgba(255,255,255,.25);z-index:1}
+.c-body::before{content:"CHOOSE FEAR";position:absolute;top:28%;left:50%;transform:translateX(-50%);font-size:clamp(.16rem,.55vw,.28rem);font-weight:700;color:#1a0a00;white-space:nowrap;border:1.5px solid #1a0a00;padding:1px 3px}
+.c-arm{position:absolute;top:clamp(32px,8vw,44px);width:14px;height:5px;background:#FFD700;border-radius:3px;z-index:0;transition:transform .3s var(--spring);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.c-arm.l{left:0;transform:rotateY(-20deg) rotateZ(15deg);transform-origin:right center}
+.c-arm.r{right:0;transform:rotateY(20deg) rotateZ(-15deg);transform-origin:left center}
+.chikoy-3d.feeding .c-arm.r{animation:fArm .6s ease-in-out 3}
+@keyframes fArm{0%,100%{transform:rotateY(20deg) rotateZ(-15deg)}50%{transform:rotateY(20deg) rotateZ(-55deg) translateZ(10px)}}
+.c-leg{position:absolute;bottom:-10px;width:9px;height:12px;background:#37474F;border-radius:2px 2px 3px 3px;z-index:0}
+.c-leg.l{left:12px}.c-leg.r{right:12px}.baby-chick{position:absolute;z-index:9;pointer-events:none;transition:left 1.5s ease,bottom 1.5s ease}
 .bc-body{position:relative;width:18px;height:14px;background:radial-gradient(ellipse at 40% 30%,#fff9c4,#ffd54f);border-radius:50% 50% 45% 45%;box-shadow:0 2px 4px rgba(0,0,0,.15)}
 .bc-head{position:absolute;top:-6px;left:10px;width:10px;height:10px;background:#fff9c4;border-radius:50%}
 .bc-eye{position:absolute;top:3px;left:6px;width:2px;height:2px;border-radius:50%;background:#1a0a00}
