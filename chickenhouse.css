@@ -54,7 +54,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 .sign-front .ci{font-size:clamp(.55rem,1.6vw,.8rem)}
 .sign-edge{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--wood-dk);border-radius:5px;transform:translateZ(-6px)}
 .sign-post{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:8px;height:55px;background:linear-gradient(180deg,var(--wood-dk),#2a1508);border-radius:3px}
-.chikoy-3d{position:absolute;bottom:16%;left:7%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring)}
+.chikoy-3d{position:absolute;bottom:16%;left:12%;perspective:400px;z-index:10;cursor:pointer;transition:transform .3s var(--spring),left 2s ease}
 .chikoy-3d:hover{transform:scale(1.08) rotateY(5deg)}
 .chikoy-3d.bounce{animation:cBounce .5s var(--spring)}
 @keyframes cBounce{0%{transform:translateY(0)}40%{transform:translateY(-14px)}100%{transform:translateY(0)}}

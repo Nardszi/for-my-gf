@@ -81,10 +81,10 @@ moveChicks();
 
 // Chikoy roaming
 const chikoyEl=$("#chikoy");
-let chikoyX=7,chikoyTargetX=7,chikoyTimer=null;
+let chikoyX=12,chikoyTargetX=12,chikoyTimer=null;
 
 function chikoyRoam(){
-  const targets=[5,15,25,40,55,70,80];
+  const targets=[12,20,30,42,55,68,78];
   chikoyTargetX=targets[Math.floor(Math.random()*targets.length)];
   const dist=Math.abs(chikoyTargetX-chikoyX);
   const dur=Math.max(1500,dist*80);
