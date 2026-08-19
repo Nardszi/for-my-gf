@@ -7388,6 +7388,226 @@
       });
     })();
   </script>
+  <script>
+  (function(){
+    "use strict";
+
+    /* ═══════════════════════════════════════════
+       3D FEATURES FOR LOVEPAGE
+       ═══════════════════════════════════════════ */
+
+    /* ── 3D HERO TEXT ── */
+    (function hero3D(){
+      var h1=document.getElementById('heroNames');
+      if(!h1)return;
+      var raw=h1.innerHTML;
+      var text=raw.replace(/<[^>]*>/g,'');
+      h1.innerHTML='';
+      h1.style.perspective='600px';
+      var words=text.split(/(\s+|<[^>]*>)/);
+      words.forEach(function(w,i){
+        if(w.match(/^\s+$/)){h1.appendChild(document.createTextNode(' '));return;}
+        if(w.match(/^<|^&/)){h1.innerHTML+=w;return;}
+        var span=document.createElement('span');
+        span.textContent=w;
+        span.style.cssText='display:inline-block;opacity:0;transform:rotateY(90deg) translateZ(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1) '+(i*0.15)+'s;transform-style:preserve-3d';
+        h1.appendChild(span);
+      });
+      setTimeout(function(){
+        h1.querySelectorAll('span').forEach(function(s){s.style.opacity='1';s.style.transform='rotateY(0) translateZ(0)'});
+      },300);
+    })();
+
+    /* ── 3D FLOATING HEARTS ── */
+    (function hearts3D(){
+      var c=document.getElementById('heartsContainer');
+      if(!c)return;
+      for(var i=0;i<15;i++){
+        var h=document.createElement('div');
+        h.className='floating-heart';
+        h.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*18)+'px;animation-duration:'+(8+Math.random()*12)+'s;animation-delay:'+Math.random()*10+'s;transform-style:preserve-3d';
+        c.appendChild(h);
+      }
+      var style=document.createElement('style');
+      style.textContent='.floating-heart{animation-name:floatUp3D!important}@keyframes floatUp3D{0%{transform:translateY(110vh) rotateX(0) rotateY(0) scale(0.5);opacity:0}10%{opacity:.15}50%{transform:translateY(50vh) rotateX(180deg) rotateY(180deg) scale(0.9);opacity:.12}90%{opacity:.12}100%{transform:translateY(-100px) rotateX(360deg) rotateY(360deg) scale(1);opacity:0}}';
+      document.head.appendChild(style);
+    })();
+
+    /* ── 3D CARD TILT (all cards) ── */
+    (function cardTilt(){
+      var selector='.time-card,.dream-card,.note-card,.game-card,.extras-card,.anniv-wish';
+      var cards=document.querySelectorAll(selector);
+      cards.forEach(function(card){
+        card.style.transformStyle='preserve-3d';
+        card.style.transition='transform 0.15s ease-out';
+        function onMove(e){
+          var r=card.getBoundingClientRect();
+          var x=(e.clientX||e.touches[0].clientX)-r.left;
+          var y=(e.clientY||e.touches[0].clientY)-r.top;
+          var cx=r.width/2,cy=r.height/2;
+          var rx=(y-cy)/cy*-12;
+          var ry=(x-cx)/cx*12;
+          card.style.transform='perspective(600px) rotateX('+rx+'deg) rotateY('+ry+'deg) scale(1.03)';
+        }
+        function onLeave(){card.style.transform='perspective(600px) rotateX(0) rotateY(0) scale(1)';}
+        card.addEventListener('mousemove',onMove);
+        card.addEventListener('touchmove',onMove,{passive:true});
+        card.addEventListener('mouseleave',onLeave);
+        card.addEventListener('touchend',onLeave);
+      });
+    })();
+
+    /* ── 3D COVERFLOW GALLERY ── */
+    (function coverflow(){
+      var container=document.getElementById('galleryContainer');
+      if(!container)return;
+      var items=container.querySelectorAll('.gallery-item');
+      if(!items.length)return;
+      container.style.cssText='display:flex;align-items:center;justify-content:center;gap:0;perspective:1000px;overflow:visible;padding:2rem 0;scroll-snap-type:none;-webkit-overflow-scrolling:touch;scrollbar-width:none';
+      container.style.msOverflowStyle='none';
+      var idx=0;
+      function layout(){
+        var w=container.offsetWidth;
+        items.forEach(function(item,i){
+          var diff=i-idx;
+          var abs=Math.abs(diff);
+          item.style.cssText='flex:0 0 auto;transition:all 0.6s cubic-bezier(0.22,1,0.36,1);transform-style:preserve-3d;cursor:pointer;scroll-snap-align:center';
+          if(abs===0){
+            item.style.transform='translateZ(0) scale(1) rotateY(0)';
+            item.style.opacity='1';item.style.zIndex='10';
+            item.style.filter='none';
+          }else if(abs===1){
+            var dir=diff>0?1:-1;
+            item.style.transform='translateZ(-80px) translateX('+(dir*40)+'px) scale(0.82) rotateY('+(dir*-18)+'deg)';
+            item.style.opacity='0.7';item.style.zIndex='5';
+            item.style.filter='brightness(0.85)';
+          }else if(abs===2){
+            var dir2=diff>0?1:-1;
+            item.style.transform='translateZ(-160px) translateX('+(dir2*70)+'px) scale(0.65) rotateY('+(dir2*-28)+'deg)';
+            item.style.opacity='0.35';item.style.zIndex='2';
+            item.style.filter='brightness(0.6)';
+          }else{
+            item.style.transform='translateZ(-250px) scale(0.5)';
+            item.style.opacity='0';item.style.zIndex='0';
+            item.style.filter='brightness(0.4)';
+          }
+        });
+      }
+      layout();
+      var touchStartX=0;
+      container.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX},{passive:true});
+      container.addEventListener('touchend',function(e){
+        var dx=e.changedTouches[0].clientX-touchStartX;
+        if(Math.abs(dx)>40){idx=dx<0?Math.min(idx+1,items.length-1):Math.max(idx-1,0);layout();updateDots3D();}
+      });
+      container.addEventListener('click',function(e){
+        var card=e.target.closest('.gallery-item');
+        if(!card)return;
+        var i=Array.from(items).indexOf(card);
+        if(i!== -1){idx=i;layout();updateDots3D();}
+      });
+      var dots=document.querySelectorAll('.gallery-dot');
+      function updateDots3D(){dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});}
+      function swipedir(dir){idx=dir<0?Math.min(idx+1,items.length-1):Math.max(idx-1,0);layout();updateDots3D();}
+      document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')swipedir(1);if(e.key==='ArrowLeft')swipedir(-1);});
+    })();
+
+    /* ── 3D LETTER / ENVELOPE ── */
+    (function letter3D(){
+      var sec=document.getElementById('letterSection');
+      if(!sec)return;
+      var content=document.getElementById('letterContent');
+      if(!content)return;
+      content.style.cssText='position:relative;perspective:800px';
+      var envelope=document.createElement('div');
+      envelope.style.cssText='position:relative;width:min(340px,85vw);margin:0 auto 2rem;height:220px;transform-style:preserve-3d;cursor:pointer;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+      envelope.innerHTML='<div style="position:absolute;inset:0;background:linear-gradient(135deg,#f5e6d3,#ede0d4);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);border:2px solid rgba(255,255,255,.4)"></div><div class="env-flap" style="position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,#e8d5c4,#f0e0d0);border-radius:16px 16px 0 0;transform-origin:top center;transition:transform 0.8s cubic-bezier(0.16,1,0.3,1);z-index:2;clip-path:polygon(0 0,50% 100%,100% 0);border-bottom:2px solid rgba(200,160,130,.3)"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2rem;z-index:3;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))">&#x1F48C;</div><div class="env-letter" style="position:absolute;top:15%;left:10%;right:10%;bottom:15%;background:#fff;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.1);transform:translateY(0);transition:transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:.85rem;color:#666;padding:1rem;text-align:center;line-height:1.6;z-index:1">&#x2764;&#xFE0F; Open me</div>';
+      content.parentNode.insertBefore(envelope,content);
+      var opened=false;
+      envelope.addEventListener('click',function(){
+        opened=!opened;
+        var flap=envelope.querySelector('.env-flap');
+        var letter=envelope.querySelector('.env-letter');
+        if(opened){
+          flap.style.transform='rotateX(180deg)';
+          letter.style.transform='translateY(-120%)';
+          letter.style.boxShadow='0 12px 30px rgba(0,0,0,.2)';
+          envelope.style.transform='scale(0.95)';
+          setTimeout(function(){envelope.style.transform='scale(1)';letter.style.transition='all 0.4s ease';letter.style.opacity='0';},1200);
+          setTimeout(function(){envelope.style.maxHeight='0';envelope.style.opacity='0';envelope.style.margin='0';envelope.style.overflow='hidden';envelope.style.transition='all 0.6s ease';},1600);
+        }else{
+          flap.style.transform='rotateX(0)';
+          letter.style.transform='translateY(0)';
+        }
+      });
+    })();
+
+    /* ── 3D CONFETTI (quiz) ── */
+    (function confetti3D(){
+      var style=document.createElement('style');
+      style.textContent='.confetti-3d{position:fixed;width:10px;height:10px;z-index:9999;pointer-events:none;animation:confettiFall3D 1.5s ease-out forwards}@keyframes confettiFall3D{0%{opacity:1;transform:translate3d(0,0,0) rotateX(0) rotateY(0) scale(1)}100%{opacity:0;transform:translate3d(var(--cx),var(--cy),var(--cz)) rotateX(var(--rx)) rotateY(var(--ry)) scale(0.3)}}';
+      document.head.appendChild(style);
+      window.confettiBurst=function(x,y){
+        var colors=['#ff8fab','#e0567c','#e8c17e','#fff7ee','#ff5d8f','#f8d7d9'];
+        for(var i=0;i<25;i++){
+          var c=document.createElement('div');
+          c.className='confetti-3d';
+          c.style.cssText='left:'+x+'px;top:'+y+'px;background:'+colors[i%colors.length]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';--cx:'+(Math.random()-0.5)*300+'px;--cy:'+(Math.random()-1)*400+'px;--cz:'+(Math.random()*200-100)+'px;--rx:'+(Math.random()*720)+'deg;--ry:'+(Math.random()*720)+'deg;animation-duration:'+(1+Math.random()*0.8)+'s';
+          document.body.appendChild(c);
+          setTimeout(function(el){el.remove();}.bind(null,c),2000);
+        }
+      };
+    })();
+
+    /* ── 3D GIFT BOX (anniversary) ── */
+    (function giftBox3D(){
+      var lockSection=document.querySelector('.anniv-lock');
+      if(!lockSection)return;
+      var gift=document.createElement('div');
+      gift.style.cssText='width:100px;height:100px;margin:0 auto 1.5rem;perspective:400px;cursor:pointer';
+      gift.innerHTML='<div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1)" class="gift-3d"><div style="position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-primary),var(--accent-dark));border-radius:16px;box-shadow:0 10px 30px rgba(201,138,143,.4)"></div><div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:40px;height:16px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-dark));border-radius:4px 4px 0 0;box-shadow:0 -4px 10px rgba(201,138,143,.3)"></div><div style="position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:12px;background:rgba(255,255,255,.3);border-radius:2px"></div><div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:12px;background:rgba(255,255,255,.3);border-radius:2px"></div><div class="gift-lid" style="position:absolute;top:0;left:-4px;right:-4px;height:24px;background:linear-gradient(135deg,var(--accent-primary),var(--accent-dark));border-radius:12px 12px 4px 4px;transform-origin:bottom center;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);box-shadow:0 4px 15px rgba(0,0,0,.2);z-index:2"></div></div>';
+      lockSection.parentNode.insertBefore(gift,lockSection);
+      var gift3d=gift.querySelector('.gift-3d');
+      var lid=gift.querySelector('.gift-lid');
+      gift.addEventListener('click',function(){
+        gift3d.style.transform='rotateY(15deg) rotateX(-10deg)';
+        lid.style.transform='rotateX(-120deg) translateY(-20px)';
+        setTimeout(function(){gift3d.style.transform='rotateY(0) rotateX(0)';lid.style.transform='rotateX(0) translateY(0)';},1500);
+      });
+    })();
+
+    /* ── 3D SCROLL REVEAL (enhanced) ── */
+    (function scrollReveal3D(){
+      var style=document.createElement('style');
+      style.textContent='.reveal-3d{opacity:0;transform:translateY(40px) rotateX(8deg);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}.reveal-3d.visible{opacity:1;transform:translateY(0) rotateX(0)}';
+      document.head.appendChild(style);
+      var targets=document.querySelectorAll('.section-header,.time-card,.dream-card,.note-card,.game-card,.extras-card,.letter-content p');
+      targets.forEach(function(t){t.classList.add('reveal-3d');});
+      var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+      },{threshold:0.15});
+      targets.forEach(function(t){obs.observe(t);});
+    })();
+
+    /* ── 3D CURSOR FOLLOWER ── */
+    (function cursorFollower(){
+      if(window.matchMedia('(pointer:coarse)').matches)return;
+      var dot=document.createElement('div');
+      dot.style.cssText='position:fixed;width:14px;height:14px;background:radial-gradient(circle,var(--accent-primary),transparent);border-radius:50%;pointer-events:none;z-index:9999;opacity:.5;transition:transform 0.1s ease-out,opacity 0.3s;mix-blend-mode:screen';
+      document.body.appendChild(dot);
+      document.addEventListener('mousemove',function(e){
+        dot.style.transform='translate3d('+(e.clientX-7)+'px,'+(e.clientY-7)+'px,0) scale(1)';
+        dot.style.opacity='0.5';
+      });
+      document.addEventListener('mouseleave',function(){dot.style.opacity='0';});
+      document.querySelectorAll('a,button,.gallery-item').forEach(function(el){
+        el.addEventListener('mouseenter',function(){dot.style.transform='translate3d('+(dot.offsetLeft)+'px,'+(dot.offsetTop)+'px,0) scale(2.5)';dot.style.opacity='0.8';});
+        el.addEventListener('mouseleave',function(){dot.style.transform='translate3d('+(dot.offsetLeft)+'px,'+(dot.offsetTop)+'px,0) scale(1)';dot.style.opacity='0.5';});
+      });
+    })();
+
+  })();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
