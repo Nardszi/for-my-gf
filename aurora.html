@@ -111,6 +111,23 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 .sky-load-input:focus{border-color:#e8c17e}
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(15,8,40,.9);border:1px solid rgba(232,193,126,.3);border-radius:12px;padding:10px 20px;color:#e8c17e;font-size:13px;font-family:Georgia,serif;z-index:60;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 3D Star Sphere */
+.sphere3d-overlay{position:fixed;inset:0;z-index:56;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.sphere3d-overlay.show{opacity:1;pointer-events:auto}
+.sphere3d-close{position:absolute;top:14px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,193,126,.3);background:rgba(15,8,40,.6);color:#e8c17e;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:59}
+.sphere3d-title{font-family:Georgia,serif;font-size:18px;color:#e8c17e;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.sphere3d-hint{font-size:11px;color:rgba(255,247,238,.5);margin-bottom:16px;text-align:center}
+.sphere3d-canvas{border-radius:50%;cursor:grab;touch-action:none}
+.sphere3d-canvas:active{cursor:grabbing}
+.sphere3d-name{position:fixed;top:50%;left:50%;transform:translate(-50%,80px);font-family:Georgia,serif;font-size:16px;color:#e8c17e;letter-spacing:1px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:57;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.sphere3d-name.show{opacity:1}
+/* 3D Nebula */
+.nebula3d-overlay{position:fixed;inset:0;z-index:56;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.nebula3d-overlay.show{opacity:1;pointer-events:auto}
+.nebula3d-close{position:absolute;top:14px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,143,171,.3);background:rgba(15,8,40,.6);color:#ff8fab;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:59}
+.nebula3d-title{font-family:Georgia,serif;font-size:18px;color:#ff8fab;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.nebula3d-hint{font-size:11px;color:rgba(255,247,238,.5);margin-bottom:16px;text-align:center}
+.nebula3d-canvas{border-radius:12px;cursor:crosshair;touch-action:none}
 
 @media(max-width:400px){.brand{font-size:15px}.pill{padding:5px 14px;font-size:11px}.topbar-btn{width:32px;height:32px;font-size:14px}}
 </style>
@@ -130,6 +147,8 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
       <span class="weather-label" id="weatherLabel"></span>
     </button>
     <button class="topbar-btn" id="constellationBtn" title="Constellation Mode">&#10022;</button>
+    <button class="topbar-btn" id="sphere3dBtn" title="3D Star Sphere">&#127759;</button>
+    <button class="topbar-btn" id="nebula3dBtn" title="3D Nebula Cloud">&#127752;</button>
     <button class="topbar-btn" id="windBtn" title="Solar Wind">
       <svg viewBox="0 0 24 24"><path d="M4 8h10a3 3 0 1 0-3-3"/><path d="M4 12h14a3 3 0 1 1-3 3"/><path d="M4 16h6a3 3 0 1 1-3 3"/></svg>
     </button>
@@ -230,6 +249,21 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
     <button class="sky-code-btn" id="doLoadBtn">Load</button>
     <button class="sky-code-btn secondary" id="closeLoadBtn">Close</button>
   </div>
+</div>
+
+<div class="sphere3d-overlay" id="sphere3dOverlay">
+  <button class="sphere3d-close" id="sphere3dClose">&#10005;</button>
+  <div class="sphere3d-title">&#127759; 3D Star Sphere</div>
+  <div class="sphere3d-hint">drag to rotate &middot; tap a star for its name</div>
+  <canvas class="sphere3d-canvas" id="sphere3dCanvas" width="320" height="320"></canvas>
+</div>
+<div class="sphere3d-name" id="sphere3dName"></div>
+
+<div class="nebula3d-overlay" id="nebula3dOverlay">
+  <button class="nebula3d-close" id="nebula3dClose">&#10005;</button>
+  <div class="nebula3d-title">&#127752; Nebula Cloud</div>
+  <div class="nebula3d-hint">move your finger to shape the nebula</div>
+  <canvas class="nebula3d-canvas" id="nebula3dCanvas" width="360" height="360"></canvas>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2275,6 +2309,233 @@ var meteorTimer=0;
 var shootingStarTimer=0;
 var heartCloudTimer2=0;
 requestAnimationFrame(frame);
+
+/* ═══════════════════════════════════════════
+   3D STAR SPHERE
+   ═══════════════════════════════════════════ */
+(function(){
+  var overlay=document.getElementById("sphere3dOverlay");
+  var sCanvas=document.getElementById("sphere3dCanvas");
+  var sCtx=sCanvas.getContext("2d");
+  var nameEl=document.getElementById("sphere3dName");
+  var closeBtn=document.getElementById("sphere3dClose");
+  var btn=document.getElementById("sphere3dBtn");
+  var size=Math.min(320,window.innerWidth-40);
+  sCanvas.width=size*2;sCanvas.height=size*2;
+  sCanvas.style.width=size+"px";sCanvas.style.height=size+"px";
+  sCtx.scale(2,2);
+
+  var starNames=["Sirius","Canopus","Alpha Centauri","Arcturus","Vega","Capella","Rigel","Procyon","Achernar","Betelgeuse","Altair","Aldebaran","Antares","Spica","Pollux","Fomalhaut","Deneb","Regulus","Castor","Bellatrix"];
+  var stars3d=[];
+  var rotX=0.3,rotY=0;
+  var dragging=false,lastMX=0,lastMY=0;
+  var autoRotate=true;
+  var center=size/2;
+
+  function initSphereStars(){
+    stars3d=[];
+    for(var i=0;i<200;i++){
+      var theta=Math.random()*Math.PI*2;
+      var phi=Math.acos(2*Math.random()-1);
+      var r=size*0.42;
+      var x=r*Math.sin(phi)*Math.cos(theta);
+      var y=r*Math.sin(phi)*Math.sin(theta);
+      var z=r*Math.cos(phi);
+      stars3d.push({x:x,y:y,z:z,r:0.5+Math.random()*1.5,brightness:0.4+Math.random()*0.6,name:i<starNames.length?starNames[i]:"Star "+(i+1),color:["#fff","#ffe","#ddf","#fdf","#ffd"][Math.floor(Math.random()*5)]});
+    }
+    for(var i=0;i<8;i++){
+      var theta=Math.random()*Math.PI*2;
+      var phi=Math.acos(2*Math.random()-1);
+      var r=size*0.42;
+      var x=r*Math.sin(phi)*Math.cos(theta);
+      var y=r*Math.sin(phi)*Math.sin(theta);
+      var z=r*Math.cos(phi);
+      stars3d.push({x:x,y:y,z:z,r:2+Math.random()*1.5,brightness:0.8+Math.random()*0.2,name:starNames[i%starNames.length],color:"#ffd700",bright:true});
+    }
+  }
+  initSphereStars();
+
+  function rotatePoint(p,rx,ry){
+    var cosX=Math.cos(rx),sinX=Math.sin(rx);
+    var cosY=Math.cos(ry),sinY=Math.sin(ry);
+    var x1=p.x*cosY-p.z*sinY;
+    var z1=p.x*sinY+p.z*cosY;
+    var y1=p.y*cosX-z1*sinX;
+    var z2=p.y*sinX+z1*cosX;
+    return{x:x1,y:y1,z:z2};
+  }
+
+  function project(p){
+    var fov=600;
+    var scale=fov/(fov+p.z+size*0.5);
+    return{x:center+p.x*scale,y:center+p.y*scale,scale:scale,z:p.z};
+  }
+
+  function drawSphere(){
+    sCtx.clearRect(0,0,size,size);
+    sCtx.beginPath();sCtx.arc(center,center,size*0.44,0,Math.PI*2);
+    sCtx.strokeStyle="rgba(232,193,126,0.15)";sCtx.lineWidth=1;sCtx.stroke();
+    var rotated=stars3d.map(function(s){
+      var r=rotatePoint(s,rotX,rotY);
+      return{screen:project(r),brightness:s.brightness,r:s.r,name:s.name,color:s.color,bright:s.bright,rx:r.x,ry:r.y,rz:r.z};
+    });
+    rotated.sort(function(a,b){return a.screen.z-b.screen.z});
+    rotated.forEach(function(s){
+      var a=s.brightness*(0.5+s.screen.scale*0.5);
+      var drawR=s.r*s.screen.scale;
+      sCtx.globalAlpha=a;
+      sCtx.fillStyle=s.color;
+      sCtx.beginPath();sCtx.arc(s.screen.x,s.screen.y,drawR,0,Math.PI*2);sCtx.fill();
+      if(s.bright&&drawR>1.5){
+        sCtx.globalAlpha=a*0.3;
+        sCtx.beginPath();sCtx.arc(s.screen.x,s.screen.y,drawR*3,0,Math.PI*2);sCtx.fill();
+      }
+    });
+    sCtx.globalAlpha=1;
+  }
+
+  function sphereLoop(){
+    if(!overlay.classList.contains("show"))return;
+    if(autoRotate&&!dragging)rotY+=0.005;
+    drawSphere();
+    requestAnimationFrame(sphereLoop);
+  }
+
+  function onDown(x,y){dragging=true;lastMX=x;lastMY=y;autoRotate=false;}
+  function onMove(x,y){
+    if(!dragging)return;
+    rotY+=(x-lastMX)*0.008;
+    rotX+=(y-lastMY)*0.008;
+    rotX=Math.max(-1.2,Math.min(1.2,rotX));
+    lastMX=x;lastMY=y;
+  }
+  function onUp(){dragging=false;setTimeout(function(){autoRotate=true;},3000);}
+
+  sCanvas.addEventListener("mousedown",function(e){onDown(e.clientX,e.clientY);});
+  sCanvas.addEventListener("mousemove",function(e){onMove(e.clientX,e.clientY);});
+  sCanvas.addEventListener("mouseup",onUp);
+  sCanvas.addEventListener("touchstart",function(e){e.preventDefault();var t=e.touches[0];onDown(t.clientX,t.clientY);},{passive:false});
+  sCanvas.addEventListener("touchmove",function(e){e.preventDefault();var t=e.touches[0];onMove(t.clientX,t.clientY);},{passive:false});
+  sCanvas.addEventListener("touchend",onUp);
+
+  sCanvas.addEventListener("click",function(e){
+    var rect=sCanvas.getBoundingClientRect();
+    var mx=(e.clientX-rect.left)*(size/rect.width);
+    var my=(e.clientY-rect.top)*(size/rect.height);
+    var closest=null,closestDist=Infinity;
+    stars3d.forEach(function(s){
+      var r=rotatePoint(s,rotX,rotY);
+      var sc=project(r);
+      var d=Math.sqrt((mx-sc.x)*(mx-sc.x)+(my-sc.y)*(my-sc.y));
+      if(d<15*s.scale&&d<closestDist){closestDist=d;closest=s;}
+    });
+    if(closest){
+      nameEl.textContent=closest.name;
+      nameEl.classList.add("show");
+      setTimeout(function(){nameEl.classList.remove("show");},2000);
+    }
+  });
+
+  btn.addEventListener("click",function(){overlay.classList.add("show");sphereLoop();});
+  closeBtn.addEventListener("click",function(){overlay.classList.remove("show");});
+  overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("show");});
+})();
+
+/* ═══════════════════════════════════════════
+   3D NEBULA CLOUD
+   ═══════════════════════════════════════════ */
+(function(){
+  var overlay=document.getElementById("nebula3dOverlay");
+  var nCanvas=document.getElementById("nebula3dCanvas");
+  var nCtx=nCanvas.getContext("2d");
+  var closeBtn=document.getElementById("nebula3dClose");
+  var btn=document.getElementById("nebula3dBtn");
+  var size=Math.min(360,window.innerWidth-40);
+  nCanvas.width=size*2;nCanvas.height=size*2;
+  nCanvas.style.width=size+"px";nCanvas.style.height=size+"px";
+  nCtx.scale(2,2);
+
+  var particles=[];
+  var mouseX=size/2,mouseY=size/2;
+  var dragging=false;
+  var colors=[[180,100,255],[255,100,180],[100,180,255],[255,180,100],[100,255,200]];
+  var center=size/2;
+
+  function initNebula(){
+    particles=[];
+    for(var i=0;i<400;i++){
+      var color=colors[Math.floor(Math.random()*colors.length)];
+      var theta=Math.random()*Math.PI*2;
+      var phi=Math.acos(2*Math.random()-1);
+      var r=Math.random()*size*0.35;
+      particles.push({
+        x:r*Math.sin(phi)*Math.cos(theta),
+        y:r*Math.sin(phi)*Math.sin(theta),
+        z:r*Math.cos(phi),
+        baseX:0,baseY:0,baseZ:0,
+        r:1+Math.random()*2.5,
+        color:color,
+        alpha:0.2+Math.random()*0.5,
+        speed:0.002+Math.random()*0.005,
+        phase:Math.random()*Math.PI*2,
+        orbitR:r
+      });
+    }
+  }
+  initNebula();
+
+  function drawNebula(t){
+    nCtx.clearRect(0,0,size,size);
+    var viewDist=500;
+    var processed=particles.map(function(p){
+      var time=t*0.001;
+      var px=p.x+Math.sin(time*p.speed*100+p.phase)*3;
+      var py=p.y+Math.cos(time*p.speed*80+p.phase*1.3)*3;
+      var pz=p.z+Math.sin(time*p.speed*60+p.phase*0.7)*3;
+      var toMouseX=(mouseX-center)*0.02;
+      var toMouseY=(mouseY-center)*0.02;
+      px+=toMouseX*(1-Math.abs(pz)/(size*0.4));
+      py+=toMouseY*(1-Math.abs(pz)/(size*0.4));
+      var scale=viewDist/(viewDist+pz+size*0.3);
+      var sx=center+px*scale;
+      var sy=center+py*scale;
+      return{sx:sx,sy:sy,scale:scale,z:pz,r:p.r,color:p.color,alpha:p.alpha};
+    });
+    processed.sort(function(a,b){return a.z-b.z});
+    processed.forEach(function(p){
+      var drawR=p.r*p.scale*2;
+      var a=p.alpha*p.scale;
+      nCtx.globalAlpha=a*0.15;
+      nCtx.fillStyle="rgba("+p.color[0]+","+p.color[1]+","+p.color[2]+",1)";
+      nCtx.beginPath();nCtx.arc(p.sx,sy,drawR*4,0,Math.PI*2);nCtx.fill();
+      nCtx.globalAlpha=a;
+      nCtx.beginPath();nCtx.arc(p.sx,p.sy,drawR,0,Math.PI*2);nCtx.fill();
+    });
+    nCtx.globalAlpha=1;
+  }
+
+  function nebulaLoop(ts){
+    if(!overlay.classList.contains("show"))return;
+    drawNebula(ts);
+    requestAnimationFrame(nebulaLoop);
+  }
+
+  function onDown(x,y){dragging=true;mouseX=x;mouseY=y;}
+  function onMove(x,y){if(!dragging)return;mouseX=x;mouseY=y;}
+  function onUp(){dragging=false;}
+
+  nCanvas.addEventListener("mousedown",function(e){var r=nCanvas.getBoundingClientRect();onDown(e.clientX-r.left,e.clientY-r.top);});
+  nCanvas.addEventListener("mousemove",function(e){var r=nCanvas.getBoundingClientRect();onMove(e.clientX-r.left,e.clientY-r.top);});
+  nCanvas.addEventListener("mouseup",onUp);
+  nCanvas.addEventListener("touchstart",function(e){e.preventDefault();var t=e.touches[0];var r=nCanvas.getBoundingClientRect();onDown(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+  nCanvas.addEventListener("touchmove",function(e){e.preventDefault();var t=e.touches[0];var r=nCanvas.getBoundingClientRect();onMove(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+  nCanvas.addEventListener("touchend",onUp);
+
+  btn.addEventListener("click",function(){overlay.classList.add("show");nebulaLoop(performance.now());});
+  closeBtn.addEventListener("click",function(){overlay.classList.remove("show");});
+  overlay.addEventListener("click",function(e){if(e.target===overlay)overlay.classList.remove("show");});
+})();
+
 })();
 </script>
 </body>
