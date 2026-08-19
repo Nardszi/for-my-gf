@@ -2585,7 +2585,7 @@
       width: 3px;
       height: 3px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.9), transparent);
+      background: radial-gradient(circle, rgba(230,220,255,0.95), transparent);
       pointer-events: none;
       opacity: 0;
       animation: sparkleFloat linear infinite;
@@ -2621,7 +2621,7 @@
       animation: introZoom 0.9s var(--spring) forwards 0.25s;
     }
 
-    .intro-screen .lock-floating-name { color: #d8ccf0; opacity: 0.35; }
+    .intro-screen .lock-floating-name { color: #d8ccf0; opacity: 0.18; }
     .intro-screen .lock-float-heart { opacity: 0.5; filter: hue-rotate(20deg); }
     .intro-screen .lock-float-flower { filter: hue-rotate(20deg) drop-shadow(0 6px 14px rgba(80, 60, 140, 0.4)); }
 
@@ -2749,6 +2749,30 @@
       color: #d8ccf0;
       margin-top: 0.25rem;
       animation: introZoom 0.9s var(--spring) forwards 0.8s;
+    }
+
+    .intro-photo-wrap {
+      margin: 1.2rem auto 1.5rem;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(216, 204, 240, 0.4);
+      box-shadow: 0 8px 30px rgba(100, 80, 160, 0.3);
+      opacity: 0;
+      animation: introPhotoIn 0.8s var(--spring) forwards 1s;
+    }
+
+    .intro-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @keyframes introPhotoIn {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     @keyframes introZoom {
@@ -4429,11 +4453,14 @@
     <div class="lock-floating-names" id="introFloatingNames"></div>
     <div class="intro-letter-container" id="introLetterContainer"></div>
     <div class="intro-inner">
-      <button class="intro-letter-btn" id="introLetterBtn">Open the letter</button>
       <div class="intro-word-wrap">
         <span class="intro-word hi" id="introHi">HI</span>
         <span class="intro-word zing" id="introZing">ZING!</span>
       </div>
+      <div class="intro-photo-wrap">
+        <img class="intro-photo" src="float-photos/1.jpg" alt="Us" onerror="this.style.display='none'">
+      </div>
+      <button class="intro-letter-btn" id="introLetterBtn">Open the letter</button>
     </div>
     <span class="intro-tap">tap to continue</span>
   </div>
@@ -5551,8 +5578,8 @@
         screen.appendChild(s);
         setTimeout(function() { s.remove(); }, 16000);
       }
-      for (var i = 0; i < 12; i++) { setTimeout(createSparkle, i * 400); }
-      setInterval(createSparkle, 800);
+      for (var i = 0; i < 18; i++) { setTimeout(createSparkle, i * 300); }
+      setInterval(createSparkle, 500);
     })();
 
     /* ── INTRO 3D PARALLAX ON SCROLL/MOUSE ── */
