@@ -3061,12 +3061,17 @@
     }
 
     .bloom.show .bloom-head {
-      animation: bloomFadeIn 1.1s ease forwards;
+      animation: bloomFadeIn 1.1s ease forwards, bloomSpin 18s linear infinite 1.1s;
     }
 
     @keyframes bloomFadeIn {
-      0% { opacity: 0; transform: scale(0.7); }
-      100% { opacity: 1; transform: scale(1); }
+      0% { opacity: 0; transform: scale(0.7) rotate(0deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes bloomSpin {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1) rotate(360deg); }
     }
 
     .bloom-petal {
@@ -3122,16 +3127,30 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(240, 140, 165, 0.4) 0%, transparent 70%);
       pointer-events: none;
+      animation: glowRingPulse 3s ease-in-out infinite;
     }
 
-    .bloom-head.breathing {
-      animation: bloomBreathe 4s ease-in-out infinite;
+    @keyframes glowRingPulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
     }
 
-    @keyframes bloomBreathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    .bloom-particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      animation: bloomDrift 3s ease-out infinite;
     }
+
+    @keyframes bloomDrift {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+      20% { opacity: 0.9; transform: translate(var(--dx, 10px), var(--dy, -20px)) scale(1); }
+      100% { opacity: 0; transform: translate(calc(var(--dx, 10px) * 2), calc(var(--dy, -20px) * 3)) scale(0.3); }
+    }
+
 
     .love-title {
       font-family: var(--serif);
@@ -5221,12 +5240,30 @@
       }, 650);
 
       setTimeout(function() {
-        head.classList.add('breathing');
-      }, 1900);
-
-      setTimeout(function() {
         document.getElementById('loveBtn').classList.add('show');
       }, 2000);
+
+      setInterval(function() {
+        if (!bloom.classList.contains('show')) return;
+        const br = bloom.getBoundingClientRect();
+        const cx = br.left + br.width / 2;
+        const cy = br.top + br.height / 2;
+        for (let i = 0; i < 3; i++) {
+          const p = document.createElement('div');
+          p.className = 'bloom-particle';
+          p.style.background = ['rgba(253,174,184,0.9)', 'rgba(242,109,133,0.8)', 'rgba(232,193,126,0.7)', 'rgba(255,247,238,0.8)'][Math.floor(Math.random() * 4)];
+          p.style.left = (cx + (Math.random() * 40 - 20)) + 'px';
+          p.style.top = (cy + (Math.random() * 20 - 10)) + 'px';
+          p.style.width = (Math.random() * 5 + 3) + 'px';
+          p.style.height = p.style.width;
+          p.style.setProperty('--dx', (Math.random() * 50 - 25) + 'px');
+          p.style.setProperty('--dy', (Math.random() * -60 - 20) + 'px');
+          p.style.animationDelay = (Math.random() * 0.5) + 's';
+          p.style.animationDuration = (Math.random() * 1.5 + 2) + 's';
+          document.body.appendChild(p);
+          setTimeout(function() { p.remove(); }, 4000);
+        }
+      }, 800);
     }
 
     function spawnLoveSparks() {
