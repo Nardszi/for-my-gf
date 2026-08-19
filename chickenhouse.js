@@ -6,10 +6,20 @@ const $$ = s => [...document.querySelectorAll(s)];
 const scene = $("#scene");
 const chickensEl = $("#chickens");
 
+// Load saved state
+const saved = JSON.parse(localStorage.getItem("chickenhouse") || "{}");
 const state = {
-  eggs: 0, gold: 0, day: true, earned: {},
+  eggs: saved.eggs || 0, gold: saved.gold || 0, day: saved.day !== undefined ? saved.day : true,
+  earned: saved.earned || {}, feedCount: saved.feedCount || 0,
   chicks: [{el:$("#bc1"),x:20,bY:31},{el:$("#bc2"),x:70,bY:32},{el:$("#bc3"),x:45,bY:30}]
 };
+
+function saveState(){
+  localStorage.setItem("chickenhouse", JSON.stringify({
+    eggs:state.eggs, gold:state.gold, day:state.day,
+    earned:state.earned, feedCount:state.feedCount
+  }));
+}
 
 const ACHS = [
   {id:"first",icon:"&#x1F423;",title:"First Egg!",desc:"Collected your first egg"},
@@ -19,11 +29,23 @@ const ACHS = [
   {id:"farmer",icon:"&#x1F33E;",title:"Legendary Farmer",desc:"Fed 50 times"}
 ];
 
-let feedCount = 0;
+// Sound mute
+let muted = localStorage.getItem("chickenhouse_muted") === "true";
+const soundBtn = $("#soundToggle");
+soundBtn.innerHTML = muted ? "&#x1F507;" : "&#x1F50A;";
+soundBtn.classList.toggle("muted", muted);
+soundBtn.addEventListener("click", ()=>{
+  muted = !muted;
+  localStorage.setItem("chickenhouse_muted", muted);
+  soundBtn.innerHTML = muted ? "&#x1F507;" : "&#x1F50A;";
+  soundBtn.classList.toggle("muted", muted);
+});
 
 // Stars
 const starsEl = $("#stars");
-for(let i=0;i<60;i++){const s=document.createElement("div");s.className="star";s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*50}%;animation-delay:${Math.random()*3}s`;starsEl.appendChild(s)}
+const frag = document.createDocumentFragment();
+for(let i=0;i<60;i++){const s=document.createElement("div");s.className="star";s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*50}%;animation-delay:${Math.random()*3}s`;frag.appendChild(s)}
+starsEl.appendChild(frag);
 
 // Chickens
 const chickenDefs = [
@@ -64,7 +86,8 @@ function petChicken(el){
   el.classList.add("happy");
   setTimeout(()=>el.classList.remove("happy"),500);
   spawnHeart(el,"&#x2764;&#xFE0F;",25);
-  toast("&#x1F496; Chikoy loves you!");
+  audio.play("heart");
+  if(navigator.vibrate) navigator.vibrate(15);
 }
 
 // Baby chicks wander
@@ -79,12 +102,21 @@ function moveChicks(){
 setInterval(moveChicks,4000);
 moveChicks();
 
-// Chikoy roaming
+// Baby chicks tap
+$$(".baby-chick").forEach(bc=>{
+  bc.addEventListener("click",()=>{
+    spawnHeart(bc,"&#x1F496;",20);
+    audio.play("heart");
+    toast("&#x1F423; Cheep cheep!");
+  });
+});
+
+// Chikoy roaming - avoid coop (center 42-58%)
 const chikoyEl=$("#chikoy");
 let chikoyX=12,chikoyTargetX=12,chikoyTimer=null;
 
 function chikoyRoam(){
-  const targets=[12,20,30,42,55,68,78];
+  const targets=[12,20,30,68,78];
   chikoyTargetX=targets[Math.floor(Math.random()*targets.length)];
   const dist=Math.abs(chikoyTargetX-chikoyX);
   const dur=Math.max(1500,dist*80);
@@ -109,7 +141,6 @@ function spawnEggs(){
     if(Math.random()<.08) e.classList.add("golden");
     else e.classList.remove("golden");
   });
-  state.earned.eggs=true;
 }
 spawnEggs();
 setInterval(spawnEggs,7000);
@@ -127,15 +158,26 @@ $$(".egg").forEach(e=>{
     if(state.eggs>=10) showAch("hunter");
     if(state.eggs>=25) showAch("master");
     audio.play("egg");
+    if(navigator.vibrate) navigator.vibrate(15);
+    saveState();
   });
 });
 
+// Init counters from saved state
+$("#eggC").textContent=state.eggs;
+$("#goldC").textContent=state.gold;
+
 // Feed All
+let feeding=false;
 const feedLocations=[
   {x:30,y:31},{x:42,y:32},{x:58,y:31},{x:75,y:33},{x:20,y:30},{x:50,y:32},{x:65,y:31},{x:38,y:33}
 ];
+const feedMessages=["&#x1F33E; Nom nom nom!","&#x1F425; Cluck cluck!","&#x1F33E; Yummy feed!","&#x1F425; Tasty!","&#x1F33E; More please!","&#x1F425; Delicious!"];
 
 function feedAll(){
+  if(feeding) return;
+  feeding=true;
+  setTimeout(()=>{feeding=false},1500);
   feedLocations.forEach(f=>{
     setTimeout(()=>{
       for(let i=0;i<3;i++){
@@ -147,11 +189,14 @@ function feedAll(){
       }
     },Math.random()*400);
   });
-  feedCount++;
-  if(feedCount>=50) showAch("farmer");
+  state.feedCount++;
+  if(state.feedCount>=50) showAch("farmer");
   audio.play("feed");
+  audio.play("cluck");
   $$(".chicken").forEach(c=>{c.classList.add("peck");setTimeout(()=>c.classList.remove("peck"),1200)});
-  toast("&#x1F33E; Nom nom nom!");
+  toast(feedMessages[Math.floor(Math.random()*feedMessages.length)]);
+  if(navigator.vibrate) navigator.vibrate(15);
+  saveState();
 }
 
 $("#feedBtn").addEventListener("click",feedAll);
@@ -186,14 +231,29 @@ function showAch(id){
   d.innerHTML=`<span class="ach-icon">${a.icon}</span><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div>`;
   document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
   audio.play("golden");
+  saveState();
 }
 
 // Day/Night
+if(!state.day){scene.classList.add("night");$("#dayToggle").innerHTML="&#x1F319;"}
 $("#dayToggle").addEventListener("click",()=>{
   state.day=!state.day;
   scene.classList.toggle("night",!state.day);
   $("#dayToggle").innerHTML=state.day?"&#x2600;&#xFE0F;":"&#x1F319;";
+  saveState();
 });
+
+// Coop door
+const doorEl=$(".door");
+if(doorEl){
+  let doorOpen=false;
+  doorEl.addEventListener("click",()=>{
+    doorOpen=!doorOpen;
+    doorEl.classList.toggle("open",doorOpen);
+    if(doorOpen){toast("&#x1F425; Welcome inside!");audio.play("cluck")}
+    else toast("&#x1F425; Door closed");
+  });
+}
 
 // Toast
 function toast(msg){
@@ -201,15 +261,24 @@ function toast(msg){
   document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
 }
 
+// Hint cycling
+const hints=["Tap chickens to pet them","Tap eggs to collect","Feed all chickens!","Tap the bucket to feed","Try day/night mode","Find the golden egg!","Tap baby chicks","Open the coop door"];
+let hintIdx=0;
+function showHint(){$("#hint").textContent=hints[hintIdx%hints.length];hintIdx++}
+showHint();
+setInterval(showHint,6000);
+
 // Picture card
 const picImg=$("#picImg");
-const sources=["chickenhouse-photos/1.jpg","chickenhouse-banner.jpg","float-photos/chickoy.png","float-photos/chickoy-back.png"];
+const sources=["chickenhouse-photos/1.jpg","chickenhouse-banner.jpg"];
 let loaded=false;
 sources.forEach(src=>{if(!loaded){const i=new Image();i.onload=()=>{picImg.src=src;loaded=true};i.onerror=()=>{};i.src=src}});
-$("#picCard").addEventListener("click",()=>picImg.requestFullscreen?.());
+$("#picCard").addEventListener("click",()=>{
+  if(picImg.requestFullscreen) picImg.requestFullscreen().catch(()=>{});
+});
 
 // Web Audio
-const audio={ctx:null,listeners:[],init(){if(this.ctx)return;this.ctx=new(window.AudioContext||window.webkitAudioContext)();document.removeEventListener("touchstart",this.listeners[0]);document.removeEventListener("click",this.listeners[1])},play(t){if(!this.ctx)return;try{if(this.ctx.state==="suspended")this.ctx.resume();const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.connect(g);g.connect(this.ctx.destination);const n=this.ctx.currentTime;
+const audio={ctx:null,listeners:[],init(){if(this.ctx)return;this.ctx=new(window.AudioContext||window.webkitAudioContext)();document.removeEventListener("touchstart",this.listeners[0]);document.removeEventListener("click",this.listeners[1])},play(t){if(!this.ctx||muted)return;try{if(this.ctx.state==="suspended")this.ctx.resume();const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.connect(g);g.connect(this.ctx.destination);const n=this.ctx.currentTime;
 if(t==="cluck"){o.type="sine";o.frequency.setValueAtTime(400,n);o.frequency.exponentialRampToValueAtTime(250,n+.12);g.gain.setValueAtTime(.1,n);g.gain.exponentialRampToValueAtTime(.001,n+.15);o.start(n);o.stop(n+.15)}
 else if(t==="feed"){o.type="triangle";o.frequency.setValueAtTime(800,n);o.frequency.exponentialRampToValueAtTime(300,n+.15);g.gain.setValueAtTime(.07,n);g.gain.exponentialRampToValueAtTime(.001,n+.18);o.start(n);o.stop(n+.18)}
 else if(t==="egg"){o.type="sine";o.frequency.setValueAtTime(500,n);o.frequency.exponentialRampToValueAtTime(900,n+.15);g.gain.setValueAtTime(.1,n);g.gain.exponentialRampToValueAtTime(.001,n+.18);o.start(n);o.stop(n+.18)}

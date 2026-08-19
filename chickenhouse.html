@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#0d0812"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#0d0812"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Chikoy's Chicken House</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="chickenhouse.css">
 </head>
@@ -66,18 +68,19 @@
     <a href="lovepage.html" class="bk">← Back</a>
     <div class="tt">&#x1F425; Chikoy's Coop</div>
   </div>
-  <button class="day-toggle" id="dayToggle">&#x2600;&#xFE0F;</button>
+  <button class="day-toggle" id="dayToggle" aria-label="Toggle day/night">&#x2600;&#xFE0F;</button>
+  <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">&#x1F50A;</button>
   <div class="pic" id="picCard">
     <img id="picImg" src="chickenhouse-photos/1.jpg" alt="Chikoy" loading="lazy">
     <div class="pic-cap"><h2>Chikoy the Farmer</h2></div>
     <div class="pic-tag">&#x1F331; Farmer</div>
   </div>
   <div class="bot-ui">
-    <div class="ct">&#x1F423; <span class="v" id="eggC">0</span></div>
-    <div class="ct">&#x2B50; <span class="v" id="goldC">0</span></div>
-    <button class="fbtn" id="feedBtn">&#x1F33E; Feed All</button>
+    <div class="ct" aria-label="Eggs collected">&#x1F423; <span class="v" id="eggC">0</span></div>
+    <div class="ct" aria-label="Golden eggs found">&#x2B50; <span class="v" id="goldC">0</span></div>
+    <button class="fbtn" id="feedBtn" aria-label="Feed all chickens">&#x1F33E; Feed All</button>
   </div>
-  <div class="hint" id="hint">Tap chickens to pet them</div>
+  <div class="hint" id="hint"></div>
 </div>
 <script src="app.js"></script>
 <script src="chickenhouse.js"></script>
