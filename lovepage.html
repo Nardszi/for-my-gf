@@ -2831,9 +2831,11 @@
       background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 2px solid transparent;
       border-radius: 32px;
+      background-clip: padding-box;
       box-shadow:
+        0 0 0 2px rgba(201,138,143,0.3),
         0 40px 80px -20px rgba(201, 138, 143, 0.45),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
       transform-style: preserve-3d;
@@ -2846,22 +2848,32 @@
     .love-inner::before {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: 32px;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0.5), transparent 40%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      inset: -3px;
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(232,165,169,0.6), rgba(232,193,126,0.4), rgba(232,165,169,0.6));
+      z-index: -1;
+      animation: borderShift 4s ease-in-out infinite;
       pointer-events: none;
+    }
+
+    @keyframes borderShift {
+      0%, 100% { opacity: 0.5; filter: hue-rotate(0deg); }
+      50% { opacity: 0.8; filter: hue-rotate(15deg); }
     }
 
     .love-inner::after {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: 32px;
-      border: 2px solid rgba(232, 165, 169, 0.25);
-      animation: cardGlow 3s ease-in-out infinite;
+      inset: -8px;
+      border-radius: 38px;
+      box-shadow: 0 0 30px rgba(201, 138, 143, 0.3), 0 0 60px rgba(232, 165, 169, 0.15);
+      animation: cardGlowPulse 2.5s ease-in-out infinite;
       pointer-events: none;
+    }
+
+    @keyframes cardGlowPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(201, 138, 143, 0.2), 0 0 40px rgba(232, 165, 169, 0.1); opacity: 0.6; }
+      50% { box-shadow: 0 0 35px rgba(201, 138, 143, 0.45), 0 0 70px rgba(232, 165, 169, 0.25); opacity: 1; }
     }
 
     .love-heart {
@@ -2902,7 +2914,13 @@
     }
 
     .love-screen.visible .gift-wrap {
-      animation: loveReveal 0.9s var(--spring) forwards 0.1s;
+      animation: loveReveal 0.9s var(--spring) forwards 0.1s, giftFloat 3s ease-in-out infinite 1.2s;
+    }
+
+    @keyframes giftFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      30% { transform: translateY(-8px) rotate(-1.5deg); }
+      70% { transform: translateY(-4px) rotate(1deg); }
     }
 
     .gift-wrap.opened .gift-tilt { pointer-events: none; }
@@ -2994,12 +3012,14 @@
       text-transform: uppercase;
       color: var(--accent-dark);
       opacity: 0;
-      animation: giftHintPulse 2s ease-in-out infinite 1.2s;
+      animation: giftHintBounce 2.2s ease-in-out infinite 1.2s;
     }
 
-    @keyframes giftHintPulse {
-      0%, 100% { opacity: 0.35; }
-      50% { opacity: 0.85; }
+    @keyframes giftHintBounce {
+      0%, 100% { opacity: 0.35; transform: translateY(0); }
+      25% { opacity: 0.85; transform: translateY(-4px); }
+      50% { opacity: 0.35; transform: translateY(0); }
+      75% { opacity: 0.75; transform: translateY(-2px); }
     }
 
     .gift-wrap.opened .gift-lid {
@@ -3971,6 +3991,54 @@
         opacity: 0;
         transform: translate(var(--tx, 60px), var(--ty, -80px)) scale(1.1) rotate(var(--rot, 360deg));
       }
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 2001;
+      opacity: 0;
+      border-radius: 2px;
+    }
+
+    .confetti-piece.circ { border-radius: 50%; }
+
+    .confetti-piece.burst {
+      animation: confettiBurst 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes confettiBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      15% {
+        opacity: 1;
+        transform: translate(calc(var(--tx, 80px) * 0.3), calc(var(--ty, -100px) * 0.3)) scale(1.2) rotate(90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx, 80px), calc(var(--ty, -100px) + 200px)) scale(0.5) rotate(var(--rot, 720deg));
+      }
+    }
+
+    .sparkle-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      pointer-events: none;
+      z-index: 2001;
+      animation: sparklePop 0.6s ease-out forwards;
+    }
+
+    @keyframes sparklePop {
+      0% { opacity: 1; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1.5); }
+      100% { opacity: 0; transform: scale(0); }
     }
 
     .glow-ring {
@@ -5107,10 +5175,13 @@
       if (giftOpened) return;
       giftOpened = true;
       vibrate([40, 60, 40]);
+      playUnwrapSound();
       giftWrap.classList.add('opened');
       const rect = giftWrap.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
+      spawnConfetti(cx, cy, 30);
+      spawnSparkles(cx, cy, 12);
       setTimeout(function() {
         spawnBurst(cx, cy, 18);
         spawnBurst(cx, cy, 12);
@@ -5396,6 +5467,73 @@
         document.body.appendChild(heart);
         setTimeout(function() { heart.remove(); }, 1500);
       }
+    }
+
+    const CONFETTI_COLORS = ['#ff8fab','#e0567c','#e8c17e','#f2c4c7','#d99ba0','#fff7ee','#c98a8f'];
+    function spawnConfetti(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece' + (Math.random() > 0.5 ? ' circ' : '');
+        el.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.width = (Math.random() * 8 + 6) + 'px';
+        el.style.height = (Math.random() * 8 + 6) + 'px';
+        const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
+        const dist = Math.random() * 180 + 70;
+        el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        el.style.setProperty('--ty', (Math.random() * -180 - 60) + 'px');
+        el.style.setProperty('--rot', (Math.random() * 900 + 360) + 'deg');
+        el.style.animationDelay = (Math.random() * 0.2) + 's';
+        document.body.appendChild(el);
+        el.addEventListener('animationend', function() { el.remove(); });
+        setTimeout(function() { el.remove(); }, 1800);
+      }
+    }
+
+    function spawnSparkles(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'sparkle-dot';
+        dot.style.left = (x + (Math.random() * 60 - 30)) + 'px';
+        dot.style.top = (y + (Math.random() * 60 - 30)) + 'px';
+        dot.style.width = (Math.random() * 4 + 3) + 'px';
+        dot.style.height = dot.style.width;
+        dot.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+        dot.style.animationDelay = (Math.random() * 0.3) + 's';
+        document.body.appendChild(dot);
+        setTimeout(function() { dot.remove(); }, 900);
+      }
+    }
+
+    function playUnwrapSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1320, ctx.currentTime + 0.1);
+        osc2.frequency.exponentialRampToValueAtTime(2093, ctx.currentTime + 0.25);
+        gain2.gain.setValueAtTime(0.1, ctx.currentTime + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+        osc2.start(ctx.currentTime + 0.1);
+        osc2.stop(ctx.currentTime + 0.5);
+      } catch(e) {}
     }
 
     function tryUnlock() {
