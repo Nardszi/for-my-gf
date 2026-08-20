@@ -2918,12 +2918,9 @@
     }
 
     .gift-float-outer {
-      animation: giftFloat 3s ease-in-out infinite;
-      animation-play-state: paused;
     }
 
     .love-screen.visible .gift-float-outer {
-      animation-play-state: running;
       animation: giftFloat 3s ease-in-out infinite 1.2s;
     }
 
@@ -3080,12 +3077,12 @@
     }
 
     .bloom.show .bloom-head.spin {
-      animation: bloomSpin 18s linear infinite;
+      animation: bloomSpin 18s linear infinite forwards;
     }
 
     @keyframes bloomSpin {
-      0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1) rotate(360deg); }
+      0% { opacity: 1; transform: scale(1) rotate(0deg); }
+      100% { opacity: 1; transform: scale(1) rotate(360deg); }
     }
 
     .bloom-petal {
@@ -4420,7 +4417,7 @@
       .love-spark { display: none; }
       .lock-float-heart, .lock-float-flower { opacity: 0.4; }
       .lock-floating-name { opacity: 0.12; }
-      * { will-change: auto !important; }
+      *:not(.bloom-head):not(.bloom-petal):not(.bloom-petal-shape) { will-change: auto !important; }
     }
 
     @media (max-width: 420px) and (min-height: 700px) {
@@ -5231,10 +5228,21 @@
       giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
     });
 
+    loveScreen.addEventListener('pointercancel', function() {
+      if (giftOpened) return;
+      giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+
+    loveScreen.addEventListener('touchend', function() {
+      if (giftOpened) return;
+      giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+
     giftWrap.addEventListener('click', function(e) {
       e.stopPropagation();
       if (giftOpened) return;
       giftOpened = true;
+      giftWrap.style.pointerEvents = 'none';
       vibrate([40, 60, 40]);
       playUnwrapSound();
       giftWrap.classList.add('opened');
