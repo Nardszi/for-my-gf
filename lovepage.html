@@ -2568,6 +2568,83 @@
       perspective: 800px;
     }
 
+    .intro-photo-wrap {
+      margin: 0 auto 1.2rem;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(255, 246, 244, 0.4);
+      box-shadow: 0 8px 30px rgba(201, 138, 143, 0.3);
+      opacity: 0;
+      animation: introPhotoIn 0.8s var(--spring) forwards 1s;
+    }
+
+    .intro-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    @keyframes introPhotoIn {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .intro-flower {
+      position: absolute;
+      top: -20px;
+      right: -30px;
+      width: 48px;
+      height: 48px;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .intro-screen.ready .intro-flower {
+      animation: introFlowerSpin 8s linear infinite, introPhotoIn 0.8s var(--spring) forwards;
+    }
+
+    .intro-flower .petal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 14px;
+      height: 22px;
+      margin-left: -7px;
+      margin-top: -11px;
+      background: linear-gradient(180deg, #fdaeb8 0%, #f26d85 100%);
+      border-radius: 60% 60% 50% 50% / 65% 65% 35% 35%;
+      transform-origin: center center;
+    }
+
+    .intro-flower .petal:nth-child(1) { transform: rotate(0deg) translateY(-14px); }
+    .intro-flower .petal:nth-child(2) { transform: rotate(60deg) translateY(-14px); }
+    .intro-flower .petal:nth-child(3) { transform: rotate(120deg) translateY(-14px); }
+    .intro-flower .petal:nth-child(4) { transform: rotate(180deg) translateY(-14px); }
+    .intro-flower .petal:nth-child(5) { transform: rotate(240deg) translateY(-14px); }
+    .intro-flower .petal:nth-child(6) { transform: rotate(300deg) translateY(-14px); }
+
+    .intro-flower .center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      margin-top: -7px;
+      background: radial-gradient(circle at 38% 32%, #ffd9de 0%, #f48fa2 50%, #e05673 100%);
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    @keyframes introFlowerSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     .intro-word {
       display: block;
       font-family: var(--serif);
@@ -4386,6 +4463,18 @@
     <div class="lock-floating-names" id="introFloatingNames"></div>
     <div class="intro-letter-container" id="introLetterContainer"></div>
     <div class="intro-inner">
+      <div class="intro-photo-wrap">
+        <img class="intro-photo" src="float-photos/1.jpg" alt="Us" onerror="this.style.display='none'">
+      </div>
+      <div class="intro-flower">
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="center"></div>
+      </div>
       <button class="intro-letter-btn" id="introLetterBtn">Open the letter</button>
       <div class="intro-word-wrap">
         <span class="intro-word hi" id="introHi">HI</span>
@@ -5001,6 +5090,24 @@
     setTimeout(function() {
       introScreen.classList.add('ready');
     }, 1900);
+
+    (function introSlideshow() {
+      var photo = document.querySelector('.intro-photo');
+      if (!photo) return;
+      var photos = [];
+      for (var i = 1; i <= 20; i++) photos.push('float-photos/' + i + '.jpg');
+      var idx = 0;
+      setInterval(function() {
+        idx = (idx + 1) % photos.length;
+        photo.style.opacity = '0';
+        photo.style.transform = 'scale(1.08)';
+        setTimeout(function() {
+          photo.src = photos[idx];
+          photo.style.opacity = '1';
+          photo.style.transform = 'scale(1)';
+        }, 300);
+      }, 1500);
+    })();
 
     document.getElementById('loveBtn').addEventListener('click', function() {
       vibrate(30);
