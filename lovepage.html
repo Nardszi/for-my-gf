@@ -7169,6 +7169,27 @@
           }
         }
       });
+
+      /* long-press either name to open aurora */
+      var namePressTimer = null;
+      function startNamePress() {
+        namePressTimer = setTimeout(function() {
+          window.location.href = 'aurora.html';
+        }, 1000);
+      }
+      function cancelNamePress() {
+        clearTimeout(namePressTimer);
+      }
+      document.addEventListener('mousedown', function(e) {
+        if (e.target.classList && e.target.classList.contains('shimmer-text')) startNamePress();
+      });
+      document.addEventListener('mouseup', cancelNamePress);
+      document.addEventListener('mouseleave', cancelNamePress);
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.classList && e.target.classList.contains('shimmer-text')) startNamePress();
+      }, { passive: true });
+      document.addEventListener('touchend', cancelNamePress);
+      document.addEventListener('touchcancel', cancelNamePress);
     })();
 
     /* ---- skip intro flow when returning from a sub-page in the same tab ---- */
