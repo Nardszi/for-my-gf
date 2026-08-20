@@ -2637,6 +2637,7 @@
       text-transform: uppercase;
       color: rgba(255, 246, 244, 0.8);
       opacity: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .intro-screen.ready .intro-tap {
@@ -2911,6 +2912,11 @@
       --z: 70px;
       perspective: 600px;
       -webkit-tap-highlight-color: transparent;
+      transition: transform 0.15s ease;
+    }
+
+    .gift-wrap:active:not(.opened) {
+      transform: scale(0.92);
     }
 
     .love-screen.visible .gift-wrap {
@@ -4382,6 +4388,33 @@
       .love-inner { max-width: 285px; }
     }
 
+    @media (max-width: 420px) {
+      .gift-wrap { width: 100px; height: 100px; }
+      .gift-box { width: 74px; height: 52px; bottom: 12px; }
+      .gift-lid { width: 84px; height: 28px; top: 4px; }
+      .gift-bow { width: 30px; height: 18px; top: -10px; }
+      .gift-bow::before, .gift-bow::after { width: 14px; height: 14px; }
+      .gift-ribbon-v { width: 12px; }
+      .bloom { transform: scale(0.75); transform-origin: center center; top: 20%; }
+      .bloom-head.glow-ring::after { width: 140px; height: 140px; margin-left: -70px; margin-top: -70px; }
+      .love-heart { width: 60px; height: 60px; font-size: 1.5rem; margin-bottom: 1.2rem; }
+      .love-btn { padding: 0.85rem 2.2rem; font-size: 0.78rem; }
+      .love-title { font-size: clamp(1.7rem, 7.5vw, 2.2rem); }
+      .love-inner { padding: 2rem 1.5rem 1.8rem; max-width: 300px; }
+      .intro-photo-wrap { width: 76px; height: 76px; }
+      .intro-letter-btn { padding: 0.85rem 2.2rem; font-size: 0.78rem; }
+    }
+
+    @media (max-width: 340px) {
+      .gift-wrap { width: 85px; height: 85px; }
+      .gift-box { width: 64px; height: 45px; bottom: 10px; }
+      .gift-lid { width: 72px; height: 24px; top: 3px; }
+      .love-inner { padding: 1.6rem 1.2rem 1.5rem; max-width: 265px; }
+      .love-title { font-size: clamp(1.5rem, 7vw, 1.9rem); }
+      .bloom { transform: scale(0.55); top: 15%; }
+      .intro-photo-wrap { width: 66px; height: 66px; }
+    }
+
     @media (max-width: 820px) {
       .noise-overlay { animation: none; }
       .decor-circle { filter: blur(40px); opacity: 0.35; }
@@ -4418,6 +4451,25 @@
       .lock-float-heart, .lock-float-flower { opacity: 0.4; }
       .lock-floating-name { opacity: 0.12; }
       *:not(.bloom-head):not(.bloom-petal):not(.bloom-petal-shape) { will-change: auto !important; }
+      .love-btn, .intro-letter-btn, .lock-btn, .quiz-start-btn {
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+      }
+      .love-btn:active, .intro-letter-btn:active, .lock-btn:active, .quiz-start-btn:active {
+        transform: scale(0.93) !important;
+        filter: brightness(0.95);
+      }
+      .love-screen, .lock-screen, .quiz-screen, .intro-screen {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .gift-hint {
+        bottom: -28px;
+        font-size: 0.62rem;
+      }
+      .lock-heart { width: 62px; height: 62px; font-size: 1.7rem; }
+      .lock-title { font-size: clamp(1.6rem, 7vw, 2.1rem); }
+      .lock-input { font-size: 1rem; padding: 0.75rem 1rem; }
+      .lock-btn { padding: 0.8rem 2rem; font-size: 0.8rem; }
     }
 
     @media (max-width: 420px) and (min-height: 700px) {
