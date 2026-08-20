@@ -2914,7 +2914,17 @@
     }
 
     .love-screen.visible .gift-wrap {
-      animation: loveReveal 0.9s var(--spring) forwards 0.1s, giftFloat 3s ease-in-out infinite 1.2s;
+      animation: loveReveal 0.9s var(--spring) forwards 0.1s;
+    }
+
+    .gift-float-outer {
+      animation: giftFloat 3s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .love-screen.visible .gift-float-outer {
+      animation-play-state: running;
+      animation: giftFloat 3s ease-in-out infinite 1.2s;
     }
 
     @keyframes giftFloat {
@@ -3061,12 +3071,16 @@
     }
 
     .bloom.show .bloom-head {
-      animation: bloomFadeIn 1.1s ease forwards, bloomSpin 18s linear infinite 1.1s;
+      animation: bloomFadeInAndSpin 1.1s ease forwards;
     }
 
-    @keyframes bloomFadeIn {
+    @keyframes bloomFadeInAndSpin {
       0% { opacity: 0; transform: scale(0.7) rotate(0deg); }
       100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .bloom.show .bloom-head.spin {
+      animation: bloomSpin 18s linear infinite;
     }
 
     @keyframes bloomSpin {
@@ -4381,6 +4395,32 @@
         animation-timing-function: step-start;
       }
       .anniv-sparkle { display: none; }
+      .love-inner, .lock-card, .quiz-card {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.88) !important;
+      }
+      .intro-letter-line {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      :root[data-theme="dark"] .love-inner,
+      :root[data-theme="dark"] .lock-card,
+      :root[data-theme="dark"] .quiz-card {
+        background: rgba(42, 20, 32, 0.92) !important;
+        border: 1px solid rgba(255, 143, 171, 0.28);
+      }
+      .intro-depth-orb { filter: blur(50px); opacity: 0.25; animation-duration: 999s !important; animation-timing-function: step-start !important; }
+      .intro-sparkle { display: none; }
+      .bloom-particle { display: none; }
+      .gift-float-outer { animation: none !important; }
+      .gift-hint { animation-duration: 3s; }
+      .confetti-piece { display: none; }
+      .sparkle-dot { display: none; }
+      .love-spark { display: none; }
+      .lock-float-heart, .lock-float-flower { opacity: 0.4; }
+      .lock-floating-name { opacity: 0.12; }
+      * { will-change: auto !important; }
     }
 
     @media (max-width: 420px) and (min-height: 700px) {
@@ -4565,6 +4605,7 @@
     <span class="lock-name-badge">linard</span>
     <div class="love-inner" id="loveCard">
       <div class="love-heart">♥</div>
+      <div class="gift-float-outer">
       <div class="gift-wrap" id="giftWrap">
         <div class="gift-tilt" id="giftTilt">
           <div class="gift-lid">
@@ -4576,6 +4617,7 @@
           </div>
         </div>
         <span class="gift-hint">tap to unwrap</span>
+      </div>
       </div>
       <h1 class="love-title">You know how much I <em>love you</em></h1>
       <button class="love-btn" id="loveBtn">Continue</button>
@@ -5237,19 +5279,24 @@
         setTimeout(function() {
           spawnBurst(rect.left, rect.top, 16);
         }, 500);
+        setTimeout(function() {
+          head.classList.add('spin');
+        }, 1200);
       }, 650);
 
       setTimeout(function() {
         document.getElementById('loveBtn').classList.add('show');
       }, 2000);
 
-      setInterval(function() {
-        if (!bloom.classList.contains('show')) return;
-        const br = bloom.getBoundingClientRect();
-        const cx = br.left + br.width / 2;
-        const cy = br.top + br.height / 2;
-        for (let i = 0; i < 3; i++) {
-          const p = document.createElement('div');
+      var bloomParticleCount = 0;
+      var bloomInterval = setInterval(function() {
+        if (!bloom.classList.contains('show')) { clearInterval(bloomInterval); return; }
+        if (bloomParticleCount >= 30) { clearInterval(bloomInterval); return; }
+        var br = bloom.getBoundingClientRect();
+        var cx = br.left + br.width / 2;
+        var cy = br.top + br.height / 2;
+        for (var i = 0; i < 2; i++) {
+          var p = document.createElement('div');
           p.className = 'bloom-particle';
           p.style.background = ['rgba(253,174,184,0.9)', 'rgba(242,109,133,0.8)', 'rgba(232,193,126,0.7)', 'rgba(255,247,238,0.8)'][Math.floor(Math.random() * 4)];
           p.style.left = (cx + (Math.random() * 40 - 20)) + 'px';
@@ -5261,9 +5308,10 @@
           p.style.animationDelay = (Math.random() * 0.5) + 's';
           p.style.animationDuration = (Math.random() * 1.5 + 2) + 's';
           document.body.appendChild(p);
+          bloomParticleCount++;
           setTimeout(function() { p.remove(); }, 4000);
         }
-      }, 800);
+      }, 1000);
     }
 
     function spawnLoveSparks() {
@@ -5784,6 +5832,7 @@
       var photos = [];
       for (var i = 1; i <= 20; i++) photos.push('float-photos/' + i + '.jpg');
       var idx = 0;
+      var rate = IS_MOBILE ? 2000 : 1000;
       setInterval(function() {
         idx = (idx + 1) % photos.length;
         photo.style.opacity = '0';
@@ -5793,7 +5842,7 @@
           photo.style.opacity = '1';
           photo.style.transform = 'scale(1)';
         }, 300);
-      }, 1000);
+      }, rate);
     })();
 
     function enableCursorTrail(screenEl) {
