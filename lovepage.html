@@ -397,6 +397,7 @@
 
     .gallery-item {
       flex: 0 0 85%;
+      max-width: 340px;
       scroll-snap-align: center;
       opacity: 0;
       transform: scale(0.9);
@@ -416,6 +417,7 @@
       width: 100%;
       aspect-ratio: 3/4;
       object-fit: cover;
+      display: block;
       transition: transform 0.6s var(--spring);
     }
 
@@ -2877,156 +2879,17 @@
       font-size: 1.9rem;
       box-shadow: 0 20px 40px rgba(201, 138, 143, 0.45);
       margin-bottom: 1.75rem;
-      opacity: 0;
     }
 
-    .love-heart.reveal {
-      animation: heartPop 0.8s var(--spring) forwards;
+    .love-screen.visible .love-heart {
+      animation: heartPop 0.8s var(--spring) forwards 0.2s;
+      opacity: 0;
     }
 
     @keyframes heartPop {
       0% { transform: scale(0); opacity: 0; }
       70% { transform: scale(1.15); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
-    }
-
-    .gift-wrap {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 1.5rem;
-      cursor: pointer;
-      opacity: 0;
-      --z: 70px;
-      perspective: 600px;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .love-screen.visible .gift-wrap {
-      animation: loveReveal 0.9s var(--spring) forwards 0.1s;
-    }
-
-    .gift-float-outer {
-    }
-
-    .love-screen.visible .gift-float-outer {
-    }
-
-    .gift-wrap.opened .gift-tilt { pointer-events: none; }
-
-    .gift-tilt {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-      will-change: transform;
-    }
-
-    .gift-box {
-      position: absolute;
-      left: 50%;
-      bottom: 14px;
-      width: 88px;
-      height: 62px;
-      transform: translateX(-50%);
-      background: linear-gradient(165deg, #e8a5a9 0%, #c98a8f 60%, #b4757c 100%);
-      border-radius: 10px 10px 14px 14px;
-      box-shadow: 0 22px 34px -12px rgba(201, 138, 143, 0.65);
-    }
-
-    .gift-lid {
-      position: absolute;
-      left: 50%;
-      top: 6px;
-      width: 100px;
-      height: 32px;
-      transform: translateX(-50%);
-      background: linear-gradient(165deg, #f2c4c7 0%, #d99ba0 100%);
-      border-radius: 10px;
-      box-shadow: 0 10px 18px -8px rgba(201, 138, 143, 0.55);
-      z-index: 2;
-    }
-
-    .gift-ribbon-v {
-      position: absolute;
-      left: 50%;
-      top: -8px;
-      bottom: -8px;
-      width: 14px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #fbd9dd, #efb3b8);
-      border-radius: 7px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-    }
-
-    .gift-box .gift-ribbon-v { top: 0; bottom: 0; }
-
-    .gift-bow {
-      position: absolute;
-      left: 50%;
-      top: -16px;
-      width: 40px;
-      height: 28px;
-      transform: translateX(-50%);
-      background: radial-gradient(circle at 50% 35%, #fbd9dd, #efb3b8);
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      box-shadow: 0 6px 14px rgba(201, 138, 143, 0.5);
-      z-index: 3;
-    }
-
-    .gift-bow::before,
-    .gift-bow::after {
-      content: '';
-      position: absolute;
-      top: 6px;
-      width: 22px;
-      height: 16px;
-      background: #fbd9dd;
-      border-radius: 50%;
-      box-shadow: 0 4px 10px rgba(201, 138, 143, 0.4);
-    }
-
-    .gift-bow::before { left: -12px; transform: rotate(-30deg); }
-    .gift-bow::after { right: -12px; transform: rotate(30deg); }
-
-    .gift-hint {
-      position: absolute;
-      bottom: -32px;
-      left: 0;
-      right: 0;
-      font-family: var(--sans);
-      font-size: 0.68rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent-dark);
-      opacity: 0;
-      animation: giftHintPulse 2s ease-in-out infinite 1.2s;
-    }
-
-    @keyframes giftHintPulse {
-      0%, 100% { opacity: 0.35; }
-      50% { opacity: 0.85; }
-    }
-
-    .gift-wrap.opened .gift-lid {
-      animation: giftLidFly 0.55s var(--spring) forwards;
-    }
-
-    .gift-wrap.opened .gift-box {
-      animation: giftBoxPop 0.5s ease forwards;
-    }
-
-    .gift-wrap.opened .gift-hint { opacity: 0; }
-
-    @keyframes giftLidFly {
-      0% { transform: translateX(-50%) translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateX(-50%) translateY(-90px) rotate(38deg); opacity: 0; }
-    }
-
-    @keyframes giftBoxPop {
-      0% { transform: translateX(-50%) scale(1); opacity: 1; }
-      100% { transform: translateX(-50%) scale(0.6); opacity: 0; }
     }
 
     .bloom {
@@ -3117,9 +2980,13 @@
       font-weight: 400;
       line-height: 1.25;
       margin-bottom: 1rem;
-      opacity: 0;
       --z: 45px;
       text-shadow: 0 10px 30px rgba(201, 138, 143, 0.25);
+      opacity: 0;
+    }
+
+    .love-screen.visible .love-title {
+      animation: titlePop 0.9s var(--spring) forwards 0.4s;
     }
 
     .love-title.reveal {
@@ -3175,14 +3042,16 @@
       opacity: 0;
       --z: 35px;
       transition: transform 0.2s ease, filter 0.2s ease;
-      pointer-events: none;
     }
 
     .love-btn:hover { filter: brightness(1.05); }
     .love-btn:active { transform: scale(0.95); }
 
+    .love-screen.visible .love-btn {
+      animation: loveReveal 0.9s var(--spring) forwards 0.7s;
+    }
+
     .love-btn.show {
-      pointer-events: auto;
       animation: loveReveal 0.9s var(--spring) forwards;
     }
 
@@ -4516,20 +4385,6 @@
     <span class="lock-name-badge">linard</span>
     <div class="love-inner" id="loveCard">
       <div class="love-heart">♥</div>
-      <div class="gift-float-outer">
-      <div class="gift-wrap" id="giftWrap">
-        <div class="gift-tilt" id="giftTilt">
-          <div class="gift-lid">
-            <div class="gift-bow"></div>
-            <div class="gift-ribbon-v"></div>
-          </div>
-          <div class="gift-box">
-            <div class="gift-ribbon-v"></div>
-          </div>
-        </div>
-        <span class="gift-hint">tap to unwrap</span>
-      </div>
-      </div>
       <h1 class="love-title">You know how much I <em>love you</em></h1>
       <button class="love-btn" id="loveBtn">Continue</button>
     </div>
@@ -5125,54 +4980,6 @@
       }, 120);
     });
 
-    const giftWrap = document.getElementById('giftWrap');
-    const giftTilt = document.getElementById('giftTilt');
-    let giftOpened = false;
-
-    loveScreen.addEventListener('pointermove', function(e) {
-      if (giftOpened) return;
-      const rect = loveScreen.getBoundingClientRect();
-      const nx = (e.clientX - rect.left) / rect.width - 0.5;
-      const ny = (e.clientY - rect.top) / rect.height - 0.5;
-      giftTilt.style.transform = 'rotateY(' + (nx * 26) + 'deg) rotateX(' + (-ny * 22) + 'deg)';
-    });
-
-    loveScreen.addEventListener('pointerleave', function() {
-      if (giftOpened) return;
-      giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    });
-
-    loveScreen.addEventListener('pointercancel', function() {
-      if (giftOpened) return;
-      giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    });
-
-    loveScreen.addEventListener('touchend', function() {
-      if (giftOpened) return;
-      giftTilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    });
-
-    giftWrap.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (giftOpened) return;
-      giftOpened = true;
-      vibrate([40, 60, 40]);
-      giftWrap.classList.add('opened');
-      const rect = giftWrap.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      setTimeout(function() {
-        spawnBurst(cx, cy, 18);
-        spawnBurst(cx, cy, 12);
-      }, 160);
-      setTimeout(function() {
-        giftWrap.style.display = 'none';
-        const heart = document.querySelector('.love-heart');
-        if (heart) heart.classList.add('reveal');
-        bloomFlower();
-      }, 620);
-    });
-
     let bloomStarted = false;
     function bloomFlower() {
       if (bloomStarted) return;
@@ -5180,29 +4987,14 @@
       const bloom = document.getElementById('bloom');
       const head = document.getElementById('bloomHead');
 
-      const title = document.querySelector('.love-title');
-      if (title) {
-        title.classList.add('reveal');
-        const tr = title.getBoundingClientRect();
-        const tcx = tr.left + tr.width / 2;
-        const tcy = tr.top + tr.height / 2;
-        setTimeout(function() { spawnBurst(tcx, tcy, 12); }, 200);
-      }
-
       setTimeout(function() {
         bloom.classList.add('show');
         head.classList.add('glow-ring');
         vibrate(8);
-        const rect = bloom.getBoundingClientRect();
-        setTimeout(function() {
-          spawnBurst(rect.left, rect.top, 16);
-        }, 500);
       }, 650);
-
-      setTimeout(function() {
-        document.getElementById('loveBtn').classList.add('show');
-      }, 2000);
     }
+
+    setTimeout(function() { bloomFlower(); }, 1800);
 
     function spawnLoveSparks() {
       const rect = loveScreen.getBoundingClientRect();
