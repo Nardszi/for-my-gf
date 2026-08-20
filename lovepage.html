@@ -397,7 +397,6 @@
 
     .gallery-item {
       flex: 0 0 85%;
-      max-width: 340px;
       scroll-snap-align: center;
       opacity: 0;
       transform: scale(0.9);
@@ -408,19 +407,15 @@
 
     .gallery-image-wrapper {
       position: relative;
-      border-radius: 14px;
+      border-radius: 28px;
       overflow: hidden;
       box-shadow: var(--shadow-soft);
-      background: #fffdfb;
-      padding: 6px 6px 24px;
     }
 
     .gallery-item img {
       width: 100%;
       aspect-ratio: 3/4;
       object-fit: cover;
-      border-radius: 10px;
-      display: block;
       transition: transform 0.6s var(--spring);
     }
 
@@ -428,10 +423,9 @@
 
     .gallery-overlay {
       position: absolute;
-      bottom: 0; left: 6px; right: 6px;
-      padding: 2rem 1rem 1rem;
+      bottom: 0; left: 0; right: 0;
+      padding: 2rem 1.5rem 1.5rem;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-      border-radius: 0 0 10px 10px;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.4s ease;
@@ -4268,15 +4262,14 @@
     .gallery-image-wrapper::before {
       content: '';
       position: absolute;
-      top: -7px;
+      top: -9px;
       left: 50%;
-      width: 44px;
-      height: 14px;
+      width: 52px;
+      height: 18px;
       background: rgba(244, 199, 202, 0.55);
       transform: translateX(-50%) rotate(-3deg);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
       z-index: 3;
-      border-radius: 2px;
     }
 
     .gallery-image-wrapper img {
@@ -4387,8 +4380,8 @@
       }
       .time-card { padding: 1.2rem 0.5rem; }
       .time-number { font-size: 1.9rem; }
-      .gallery-section .section-header, .gallery-container { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .gallery-item { flex: 0 0 88%; max-width: 300px; }
+      .gallery-section .section-header,
+      .gallery-container { padding-left: 1.25rem; padding-right: 1.25rem; }
       .timeline-entry { padding: 1.1rem 1.15rem; }
       .lock-card { max-width: 300px; }
       .quiz-card { max-width: 300px; }
