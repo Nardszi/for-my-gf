@@ -241,9 +241,9 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 .flying-msg{position:absolute;z-index:20;pointer-events:none;padding:.2rem .5rem;border-radius:999px;background:rgba(255,143,171,.85);color:#fff;font-size:.55rem;font-weight:600;white-space:nowrap;animation:flyAcross 6s linear forwards;box-shadow:0 2px 8px rgba(255,143,171,.4)}
 @keyframes flyAcross{0%{opacity:1;transform:translate(0,0) rotate(-5deg)}50%{transform:translate(40vw,-30px) rotate(3deg)}100%{opacity:0;transform:translate(80vw,20px) rotate(-2deg)}}
 /* ── Animal Pens ── */
-.animal-pen{position:absolute;z-index:6;cursor:pointer;transition:transform .3s var(--spring)}
+.animal-pen{position:absolute;z-index:15;cursor:pointer;transition:transform .3s var(--spring)}
 .animal-pen:hover{transform:scale(1.08)}
-.animal-emoji{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:.65rem;pointer-events:auto;z-index:2;cursor:pointer}
+.animal-emoji{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.85rem;pointer-events:auto;z-index:2;cursor:pointer;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
 .animal-name{position:absolute;top:-14px;left:50%;transform:translateX(-50%);padding:.1rem .35rem;border-radius:999px;background:rgba(13,8,18,.75);font-size:.35rem;color:var(--gold);white-space:nowrap;pointer-events:none;z-index:7;border:1px solid rgba(232,193,126,.3);opacity:0;transition:opacity .3s}
 .farm-animal.named .animal-name{opacity:1}
 .pen-fence{position:absolute;bottom:-2px;left:-8px;right:-8px;height:18px;background:repeating-linear-gradient(90deg,var(--wood-dk) 0 4px,transparent 4px 12px);border-bottom:2px solid var(--wood-dk);opacity:.5;border-radius:3px}
@@ -251,7 +251,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes idleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 
 /* ── COW ── */
-.cow-pen{bottom:16%;left:3%}
+.cow-pen{bottom:22%;left:3%}
 .cow{width:clamp(48px,12vw,64px);height:clamp(40px,10vw,52px);position:relative}
 .cow-body{position:absolute;bottom:10px;left:6px;width:clamp(36px,9vw,48px);height:clamp(22px,5.5vw,30px);background:radial-gradient(ellipse at 40% 30%,#fff,#f5f5f5 60%,#e8e8e8);border-radius:45% 50% 48% 52%/55% 50% 50% 45%;box-shadow:0 3px 8px rgba(0,0,0,.2),inset 0 -3px 6px rgba(0,0,0,.06);overflow:hidden}
 .cow-spot{position:absolute;border-radius:50%;background:radial-gradient(ellipse,#3a2a1a,#2a1a0a)}
@@ -279,7 +279,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes cowHappy{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.1)}100%{transform:translateY(0) scale(1)}}
 
 /* ── CAPYBARA ── */
-.capybara-zone{bottom:15%;right:5%}
+.capybara-zone{bottom:21%;right:5%}
 .capybara{width:clamp(50px,13vw,68px);height:clamp(34px,8.5vw,44px);position:relative}
 .capy-body{position:absolute;bottom:8px;left:4px;width:clamp(42px,10.5vw,56px);height:clamp(22px,5.5vw,28px);background:linear-gradient(145deg,#8B6914,#7A5C10 40%,#6B4E0E 70%,#5C4210);border-radius:52% 48% 45% 55%/55% 55% 45% 45%;box-shadow:0 3px 8px rgba(0,0,0,.25),inset 0 -3px 6px rgba(0,0,0,.1);overflow:hidden}
 .capy-body::before{content:"";position:absolute;top:2px;left:2px;right:2px;bottom:2px;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none}
@@ -300,7 +300,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes capyHappy{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.08)}100%{transform:translateY(0) scale(1)}}
 
 /* ── RABBIT ── */
-.rabbit-hutch{bottom:20%;left:38%}
+.rabbit-hutch{bottom:26%;left:38%}
 .rabbit{width:clamp(34px,8.5vw,46px);height:clamp(40px,10vw,52px);position:relative}
 .rab-body{position:absolute;bottom:8px;left:5px;width:clamp(24px,6vw,32px);height:clamp(22px,5.5vw,28px);background:radial-gradient(ellipse at 40% 30%,#fff,#f5f0ea 60%,#e8e0d8);border-radius:50% 50% 45% 45%/55% 55% 45% 45%;box-shadow:0 3px 8px rgba(0,0,0,.15),inset 0 -3px 6px rgba(0,0,0,.05)}
 .rab-head{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:clamp(16px,4vw,22px);height:clamp(14px,3.5vw,20px);background:radial-gradient(circle at 35% 30%,#fff,#f5f0ea);border-radius:50%;z-index:2;box-shadow:0 2px 5px rgba(0,0,0,.1)}
@@ -321,7 +321,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes rHop{0%{transform:translateY(0)}40%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 
 /* ── PIG ── */
-.pig-sty{bottom:17%;right:30%}
+.pig-sty{bottom:23%;right:30%}
 .pig{width:clamp(42px,10.5vw,56px);height:clamp(36px,9vw,46px);position:relative}
 .pig-body{position:absolute;bottom:8px;left:4px;width:clamp(36px,9vw,48px);height:clamp(24px,6vw,32px);background:radial-gradient(ellipse at 40% 30%,#f8bbd0,#f48fb1 50%,#ec407a 90%);border-radius:50% 50% 48% 52%/55% 55% 45% 45%;box-shadow:0 3px 8px rgba(0,0,0,.2),inset 0 -3px 6px rgba(0,0,0,.06);overflow:hidden}
 .pig-body::before{content:"";position:absolute;top:2px;left:2px;right:2px;bottom:2px;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 50%);pointer-events:none}
