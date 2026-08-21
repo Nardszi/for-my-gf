@@ -171,7 +171,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 @keyframes achPop{from{opacity:0;transform:translateX(-50%) scale(.5) translateY(20px)}to{opacity:1;transform:translateX(-50%) scale(1) translateY(0)}}
 @keyframes achFade{to{opacity:0;transform:translateX(-50%) translateY(-20px)}}
 .top-ui{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:calc(.45rem + env(safe-area-inset-top,0px)) .7rem .45rem;background:linear-gradient(180deg,rgba(13,8,18,.7),transparent)}
-.top-ui .bk{color:var(--cream);text-decoration:none;font-size:.62rem;padding:.25rem .5rem;border-radius:999px;border:1px solid rgba(255,143,171,.3);background:rgba(13,8,18,.4);backdrop-filter:blur(6px)}
+.top-ui .bk{color:var(--cream);text-decoration:none;font-size:.62rem;padding:.35rem .7rem;border-radius:999px;border:1px solid rgba(255,143,171,.3);background:rgba(13,8,18,.4);backdrop-filter:blur(6px);min-height:32px;display:inline-flex;align-items:center}
 .top-ui .tt{font-family:"Cormorant Garamond",Georgia,serif;font-size:.78rem;font-weight:600;color:var(--gold);background:rgba(13,8,18,.4);backdrop-filter:blur(6px);padding:.2rem .65rem;border-radius:999px;border:1px solid rgba(232,193,126,.2)}
 .day-toggle{position:absolute;top:44px;right:6px;z-index:40;width:36px;height:36px;border-radius:50%;border:2px solid rgba(232,193,126,.3);background:rgba(13,8,18,.5);backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:transform .3s var(--spring)}
 .day-toggle:active{transform:scale(.9)}
@@ -243,7 +243,7 @@ body{font-family:"Quicksand",system-ui,sans-serif;background:#0d0812;color:var(-
 /* ── Animal Pens ── */
 .animal-pen{position:absolute;z-index:6;cursor:pointer;transition:transform .3s var(--spring)}
 .animal-pen:hover{transform:scale(1.08)}
-.animal-emoji{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:.65rem;pointer-events:none;z-index:2}
+.animal-emoji{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:.65rem;pointer-events:auto;z-index:2;cursor:pointer}
 .animal-name{position:absolute;top:-14px;left:50%;transform:translateX(-50%);padding:.1rem .35rem;border-radius:999px;background:rgba(13,8,18,.75);font-size:.35rem;color:var(--gold);white-space:nowrap;pointer-events:none;z-index:7;border:1px solid rgba(232,193,126,.3);opacity:0;transition:opacity .3s}
 .farm-animal.named .animal-name{opacity:1}
 .pen-fence{position:absolute;bottom:-2px;left:-8px;right:-8px;height:18px;background:repeating-linear-gradient(90deg,var(--wood-dk) 0 4px,transparent 4px 12px);border-bottom:2px solid var(--wood-dk);opacity:.5;border-radius:3px}
