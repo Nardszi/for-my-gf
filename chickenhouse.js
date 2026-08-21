@@ -62,7 +62,9 @@ const ACHS = [
   {id:"farmer",icon:"&#x1F33E;",title:"Legendary Farmer",desc:"Fed 50 times"},
   {id:"note5",icon:"&#x1F4DD;",title:"Love Writer",desc:"Found 5 love notes"},
   {id:"note15",icon:"&#x1F48C;",title:"Love Collector",desc:"Found 15 love notes"},
-  {id:"hatch1",icon:"&#x1F425;",title:"Hatchling",desc:"Hatched your first chick"}
+  {id:"hatch1",icon:"&#x1F425;",title:"Hatchling",desc:"Hatched your first chick"},
+  {id:"friend4",icon:"&#x1F31F;",title:"Animal Friend",desc:"Befriended 4 farm animals"},
+  {id:"friend8",icon:"&#x1F3E1;",title:"Farm Besties",desc:"Befriended all 8 animals"}
 ];
 
 const CHICK_NAMES=["Nugget","Clucky","Sunny","Feathers","Pip","Cheep","Goldie","Cocoa","Buttercup","Snowball","Pepper","Cinnamon","Mochi","Tofu","Waffles"];
@@ -295,10 +297,10 @@ function feedAll(){
   audio.play("feed");
   audio.play("cluck");
   $$(".chicken").forEach(c=>{c.classList.add("peck");setTimeout(()=>c.classList.remove("peck"),1200)});
-  // New animals react to feeding
-  ["cow","capybara","rabbit","pig"].forEach(type=>{
-    const el=$("#"+type) || $$(".farm-animal."+(type==="capybara"?"capybara":type))[0];
-    if(el){el.classList.add("happy");setTimeout(()=>el.classList.remove("happy"),500)}
+  // All farm animals react to feeding
+  ["cow","capybara","rabbit","pig","goat","duck","sheep","cat"].forEach(type=>{
+    const el=$("#"+type);
+    if(el){el.classList.remove("happy","hop");void el.offsetWidth;el.classList.add("happy");setTimeout(()=>el.classList.remove("happy"),500)}
   });
   toast(feedMessages[Math.floor(Math.random()*feedMessages.length)]);
   if(navigator.vibrate) navigator.vibrate(15);
@@ -473,7 +475,11 @@ const ANIMAL_NAMES={
   cow:["Bessie","Daisy","Buttercup","Clover","Milky"],
   capybara:["Chill","Zen","Mochi","Bento","Soba"],
   rabbit:["Floppy","Thumper","Honey","Cotton","Clover"],
-  pig:["Hamlet","Truffle","Snorty","Oink","Babe"]
+  pig:["Hamlet","Truffle","Snorty","Oink","Babe"],
+  goat:["Billy","Nanzy","Stickers","Ginger","Scamp"],
+  duck:["Quackers","Waddles","Donald","Mallory","Puddles"],
+  sheep:["Woolly","Baa-bra","Fluffy","Shaun","Lamby"],
+  cat:["Whiskers","Mittens","Luna","Simba","Nala"]
 };
 
 function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
@@ -489,7 +495,7 @@ function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
     spawnHeart(el, "&#x2764;&#xFE0F;", 20);
     audio.play(sound);
     if(navigator.vibrate) navigator.vibrate(15);
-    toast(toastMsg);
+    toast(randomToast(type));
 
     tapCount++;
     if(tapCount >= 5 && !savedNames[type]){
@@ -501,6 +507,10 @@ function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
       el.querySelector(".animal-name").textContent = name;
       toast("&#x1F31F; " + name + " is your friend now!");
       audio.play("golden");
+      // Check friendship achievements
+      const friendCount = Object.keys(savedNames).length;
+      if(friendCount >= 4) showAch("friend4");
+      if(friendCount >= 8) showAch("friend8");
     }
   });
 
@@ -526,7 +536,11 @@ const ANIMAL_TOASTS = {
   cow: ["&#x1F404; Moo moo!","&#x1F404; *happy cow noises*","&#x1F404; Moooo!"],
   capybara: ["&#x1F43F; *chill capybara sounds*","&#x1F43F; So relaxed...","&#x1F43F; Capybara vibes~"],
   rabbit: ["&#x1F407; *hop hop!*","&#x1F407; Thump thump!","&#x1F407; Squeak!"],
-  pig: ["&#x1F437; Oink oink!","&#x1F437; *happy pig snorts*","&#x1F437; Snorty!"]
+  pig: ["&#x1F437; Oink oink!","&#x1F437; *happy pig snorts*","&#x1F437; Snorty!"],
+  goat: ["&#x1F410; Baa! *headbutt*","&#x1F410; Maaah!","&#x1F410; *climbs on you*"],
+  duck: ["&#x1F986; Quack quack!","&#x1F986; *waddle waddle*","&#x1F986; Quaaack!"],
+  sheep: ["&#x1F411; Baa baa!","&#x1F411; *fluffy noises*","&#x1F411; Baaaa!"],
+  cat: ["&#x1F431; Purrrr~","&#x1F431; *nuzzles*","&#x1F431; Meow!"]
 };
 
 function randomToast(type){
@@ -538,6 +552,10 @@ setupAnimal($("#cow"), "cow", "happy", "moo", randomToast("cow"), {start:3, min:
 setupAnimal($("#capybara"), "capybara", "happy", "chill", randomToast("capybara"), {start:70, min:55, max:88});
 setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", randomToast("rabbit"), {start:38, min:28, max:52});
 setupAnimal($("#pig"), "pig", "happy", "oink", randomToast("pig"), {start:55, min:42, max:68});
+setupAnimal($("#goat"), "goat", "happy", "bleat", randomToast("goat"), {start:18, min:10, max:32});
+setupAnimal($("#duck"), "duck", "happy", "quack", randomToast("duck"), {start:62, min:50, max:75});
+setupAnimal($("#sheep"), "sheep", "hop", "baa", randomToast("sheep"), {start:48, min:35, max:60});
+setupAnimal($("#cat"), "cat", "happy", "purr", randomToast("cat"), {start:24, min:15, max:38});
 
 // Capybara idle animation: occasionally sit down
 setInterval(()=>{
@@ -560,7 +578,7 @@ setInterval(()=>{
 // Pig snort particles
 setInterval(()=>{
   if(Math.random()<.3){
-    const pigPen = $("#pigSty");
+    const pigPen = $("#pigPen");
     const p = document.createElement("div");
     p.className = "heart-pop";
     p.innerHTML = "&#x1F4A8;";
@@ -584,8 +602,48 @@ setInterval(()=>{
   }
 }, 7000);
 
+// Goat head shake
+setInterval(()=>{
+  const goat = $("#goat");
+  if(Math.random()<.35){
+    goat.classList.add("happy");
+    setTimeout(()=>goat.classList.remove("happy"), 500);
+  }
+}, 3000);
+
+// Duck waddle
+setInterval(()=>{
+  const duck = $("#duck");
+  if(Math.random()<.35){
+    duck.classList.add("happy");
+    setTimeout(()=>duck.classList.remove("happy"), 500);
+  }
+}, 5000);
+
+// Cat curls up occasionally
+setInterval(()=>{
+  const cat = $("#cat");
+  if(Math.random()<.25){
+    cat.style.transform = "scaleY(.85)";
+    setTimeout(()=>{ cat.style.transform = "" }, 2500);
+  }
+}, 6000);
+
+// Sheep wool puff particles
+setInterval(()=>{
+  if(Math.random()<.2){
+    const sheepPen = $("#sheepPen");
+    const p = document.createElement("div");
+    p.className = "heart-pop";
+    p.innerHTML = "&#x1F4A7;";
+    p.style.cssText = `left:${sheepPen.offsetLeft + 15}px;bottom:28%;--hx:${(Math.random()-.5)*10}px;--hy:-15px;font-size:.5rem`;
+    scene.appendChild(p);
+    setTimeout(()=>p.remove(), 700);
+  }
+}, 5000);
+
 // Hint cycling
-const hints=["Tap chickens to pet them","Tap eggs to collect love notes","Feed all chickens!","Tap the bucket to feed","Try day/night mode","Find the golden egg!","Tap baby chicks","Open the coop door","Shake to feed on mobile","Send a love message","Tap Chikoy to change mood","Try rain at night!","Chickens get names when fed","Meet the cow! Tap to pet","The capybara is so chill~","Tap the rabbit to make it hop","The pig loves oink oink!"];
+const hints=["Tap chickens to pet them","Tap eggs to collect love notes","Feed all chickens!","Tap the bucket to feed","Try day/night mode","Find the golden egg!","Tap baby chicks","Open the coop door","Shake to feed on mobile","Send a love message","Tap Chikoy to change mood","Try rain at night!","Chickens get names when fed","Meet the cow! Tap to pet","The capybara is so chill~","Tap the rabbit to make it hop","The pig loves oink oink!","The goat loves headbutts~","Quack! Tap the duck!","The sheep is so fluffy~","The cat wants belly rubs!"];
 let hintIdx=0;
 function showHint(){$("#hint").textContent=hints[hintIdx%hints.length];hintIdx++}
 showHint();
@@ -609,6 +667,10 @@ else if(t==="moo"){o.type="sawtooth";o.frequency.setValueAtTime(150,n);o.frequen
 else if(t==="oink"){o.type="square";o.frequency.setValueAtTime(350,n);o.frequency.exponentialRampToValueAtTime(200,n+.08);g.gain.setValueAtTime(.06,n);g.gain.exponentialRampToValueAtTime(.001,n+.1);o.start(n);o.stop(n+.12)}
 else if(t==="squeak"){o.type="sine";o.frequency.setValueAtTime(900,n);o.frequency.exponentialRampToValueAtTime(1200,n+.05);g.gain.setValueAtTime(.07,n);g.gain.exponentialRampToValueAtTime(.001,n+.08);o.start(n);o.stop(n+.1)}
 else if(t==="chill"){o.type="sine";o.frequency.setValueAtTime(300,n);o.frequency.exponentialRampToValueAtTime(280,n+.3);g.gain.setValueAtTime(.04,n);g.gain.exponentialRampToValueAtTime(.001,n+.35);o.start(n);o.stop(n+.35)}
+else if(t==="bleat"){o.type="sawtooth";o.frequency.setValueAtTime(250,n);o.frequency.exponentialRampToValueAtTime(350,n+.08);o.frequency.exponentialRampToValueAtTime(280,n+.15);g.gain.setValueAtTime(.05,n);g.gain.exponentialRampToValueAtTime(.001,n+.2);o.start(n);o.stop(n+.2)}
+else if(t==="quack"){o.type="square";o.frequency.setValueAtTime(400,n);o.frequency.exponentialRampToValueAtTime(200,n+.1);g.gain.setValueAtTime(.06,n);g.gain.exponentialRampToValueAtTime(.001,n+.12);o.start(n);o.stop(n+.15)}
+else if(t==="baa"){o.type="sawtooth";o.frequency.setValueAtTime(180,n);o.frequency.linearRampToValueAtTime(220,n+.1);o.frequency.linearRampToValueAtTime(180,n+.2);g.gain.setValueAtTime(.04,n);g.gain.exponentialRampToValueAtTime(.001,n+.25);o.start(n);o.stop(n+.25)}
+else if(t==="purr"){o.type="sine";o.frequency.setValueAtTime(220,n);g.gain.setValueAtTime(.03,n);g.gain.exponentialRampToValueAtTime(.001,n+.3);o.start(n);o.stop(n+.3)}
 }catch(e){}}
 };
 audio.listeners=[()=>audio.init(),()=>audio.init()];
