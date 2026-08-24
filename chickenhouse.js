@@ -81,6 +81,33 @@ soundBtn.addEventListener("click", ()=>{
   soundBtn.classList.toggle("muted", muted);
 });
 
+// Heart particle spawner
+function spawnHeart(el, emoji, radius){
+  const r=radius||20;
+  const hx=(Math.random()-.5)*r*2;
+  const hy=-r-Math.random()*r;
+  const p=document.createElement("div");
+  p.className="heart-pop";
+  p.innerHTML=emoji||"&#x2764;&#xFE0F;";
+  const rect=el.getBoundingClientRect();
+  const sceneRect=scene.getBoundingClientRect();
+  p.style.cssText=`left:${rect.left-sceneRect.left+rect.width/2}px;top:${rect.top-sceneRect.top}px;--hx:${hx}px;--hy:${hy}px`;
+  scene.appendChild(p);
+  setTimeout(()=>p.remove(),700);
+}
+
+// Achievement system
+function showAch(id){
+  if(state.earned[id]) return;
+  state.earned[id]=true;
+  const a=ACHS.find(x=>x.id===id);if(!a)return;
+  const d=document.createElement("div");d.className="achievement";
+  d.innerHTML=`<span class="ach-icon">${a.icon}</span><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div>`;
+  document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
+  audio.play("golden");
+  saveState();
+}
+
 // Stars
 const starsEl = $("#stars");
 const frag = document.createDocumentFragment();
@@ -431,18 +458,6 @@ function launchMessage(text){
   setTimeout(()=>m.remove(),6500);
 }
 
-// Achievement
-function showAch(id){
-  if(state.earned[id]) return;
-  state.earned[id]=true;
-  const a=ACHS.find(x=>x.id===id);if(!a)return;
-  const d=document.createElement("div");d.className="achievement";
-  d.innerHTML=`<span class="ach-icon">${a.icon}</span><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div>`;
-  document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
-  audio.play("golden");
-  saveState();
-}
-
 // Day/Night
 if(!state.day){scene.classList.add("night");$("#dayToggle").innerHTML="&#x1F319;"}
 dayBtn.addEventListener("click",()=>{
@@ -482,7 +497,7 @@ const ANIMAL_NAMES={
   cat:["Whiskers","Mittens","Luna","Simba","Nala"]
 };
 
-function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
+function setupAnimal(el, type, clickAnim, sound, roamArea){
   const savedNames = JSON.parse(localStorage.getItem("chickenhouse_animals") || "{}");
   let tapCount = 0;
 
@@ -504,6 +519,7 @@ function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
       savedNames[type] = name;
       localStorage.setItem("chickenhouse_animals", JSON.stringify(savedNames));
       el.classList.add("named");
+      el.parentElement.classList.add("named");
       el.querySelector(".animal-name").textContent = name;
       toast("&#x1F31F; " + name + " is your friend now!");
       audio.play("golden");
@@ -515,6 +531,7 @@ function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
 
   if(savedNames[type]){
     el.classList.add("named");
+    el.parentElement.classList.add("named");
     el.querySelector(".animal-name").textContent = savedNames[type];
   }
 
@@ -567,14 +584,14 @@ function randomToast(type){
   return msgs[Math.floor(Math.random()*msgs.length)];
 }
 
-setupAnimal($("#cow"), "cow", "happy", "moo", randomToast("cow"), {start:3, min:1, max:25, bMin:18, bMax:26});
-setupAnimal($("#capybara"), "capybara", "happy", "chill", randomToast("capybara"), {start:70, min:55, max:88, bMin:17, bMax:25});
-setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", randomToast("rabbit"), {start:38, min:28, max:52, bMin:22, bMax:30});
-setupAnimal($("#pig"), "pig", "happy", "oink", randomToast("pig"), {start:55, min:42, max:68, bMin:19, bMax:27});
-setupAnimal($("#goat"), "goat", "happy", "bleat", randomToast("goat"), {start:18, min:10, max:32, bMin:16, bMax:24});
-setupAnimal($("#duck"), "duck", "happy", "quack", randomToast("duck"), {start:62, min:50, max:75, bMin:14, bMax:22});
-setupAnimal($("#sheep"), "sheep", "hop", "baa", randomToast("sheep"), {start:48, min:35, max:60, bMin:15, bMax:23});
-setupAnimal($("#cat"), "cat", "happy", "purr", randomToast("cat"), {start:24, min:15, max:38, bMin:20, bMax:28});
+setupAnimal($("#cow"), "cow", "happy", "moo", {start:3, min:1, max:25, bMin:18, bMax:26});
+setupAnimal($("#capybara"), "capybara", "happy", "chill", {start:70, min:55, max:88, bMin:17, bMax:25});
+setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", {start:38, min:28, max:52, bMin:22, bMax:30});
+setupAnimal($("#pig"), "pig", "happy", "oink", {start:55, min:42, max:68, bMin:19, bMax:27});
+setupAnimal($("#goat"), "goat", "happy", "bleat", {start:18, min:10, max:32, bMin:16, bMax:24});
+setupAnimal($("#duck"), "duck", "happy", "quack", {start:62, min:50, max:75, bMin:14, bMax:22});
+setupAnimal($("#sheep"), "sheep", "hop", "baa", {start:48, min:35, max:60, bMin:15, bMax:23});
+setupAnimal($("#cat"), "cat", "happy", "purr", {start:24, min:15, max:38, bMin:20, bMax:28});
 
 // Duck waddle particles
 setInterval(()=>{
