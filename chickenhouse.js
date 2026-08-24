@@ -526,7 +526,7 @@ function randomToast(type){
   return msgs[Math.floor(Math.random()*msgs.length)];
 }
 
-const farmAnimalsEl = $("#farmAnimals");
+const farmAnimalsEl = scene;
 const savedAnimalNames = JSON.parse(localStorage.getItem("chickenhouse_animals") || "{}");
 const animalTapCounts = {};
 
