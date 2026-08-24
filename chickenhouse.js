@@ -325,9 +325,11 @@ function feedAll(){
   audio.play("cluck");
   $$(".chicken").forEach(c=>{c.classList.add("peck");setTimeout(()=>c.classList.remove("peck"),1200)});
   // All farm animals react to feeding
-  ["cow","capybara","rabbit","pig","goat","duck","sheep","cat"].forEach(type=>{
-    const el=$("#"+type);
-    if(el){el.classList.remove("happy","hop");void el.offsetWidth;el.classList.add("happy");setTimeout(()=>el.classList.remove("happy"),500)}
+  $$(".farm-animal").forEach(el=>{
+    el.classList.remove("happy","hop");
+    void el.offsetWidth;
+    el.classList.add("happy");
+    setTimeout(()=>el.classList.remove("happy"),500);
   });
   toast(feedMessages[Math.floor(Math.random()*feedMessages.length)]);
   if(navigator.vibrate) navigator.vibrate(15);
@@ -485,7 +487,18 @@ function toast(msg){
   document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
 }
 
-// ── New Animals: Cow, Capybara, Rabbit, Pig ──
+// ── Farm Animals (emoji-based, roam with chickens) ──
+const ANIMAL_DEFS = [
+  {type:"cow",emoji:"&#x1F404;",x:15,y:33,sound:"moo",clickAnim:"happy"},
+  {type:"capybara",emoji:"&#x1F43F;",x:85,y:31,sound:"chill",clickAnim:"happy"},
+  {type:"rabbit",emoji:"&#x1F407;",x:42,y:34,sound:"squeak",clickAnim:"hop"},
+  {type:"pig",emoji:"&#x1F437;",x:60,y:32,sound:"oink",clickAnim:"happy"},
+  {type:"goat",emoji:"&#x1F410;",x:25,y:35,sound:"bleat",clickAnim:"happy"},
+  {type:"duck",emoji:"&#x1F986;",x:75,y:33,sound:"quack",clickAnim:"happy"},
+  {type:"sheep",emoji:"&#x1F411;",x:50,y:31,sound:"baa",clickAnim:"hop"},
+  {type:"cat",emoji:"&#x1F431;",x:35,y:34,sound:"purr",clickAnim:"happy"}
+];
+
 const ANIMAL_NAMES={
   cow:["Bessie","Daisy","Buttercup","Clover","Milky"],
   capybara:["Chill","Zen","Mochi","Bento","Soba"],
@@ -496,77 +509,6 @@ const ANIMAL_NAMES={
   sheep:["Woolly","Baa-bra","Fluffy","Shaun","Lamby"],
   cat:["Whiskers","Mittens","Luna","Simba","Nala"]
 };
-
-function setupAnimal(el, type, clickAnim, sound, roamArea){
-  const savedNames = JSON.parse(localStorage.getItem("chickenhouse_animals") || "{}");
-  let tapCount = 0;
-
-  el.addEventListener("click", ()=>{
-    el.classList.remove(clickAnim);
-    void el.offsetWidth;
-    el.classList.add(clickAnim);
-    setTimeout(()=>el.classList.remove(clickAnim), 500);
-
-    spawnHeart(el, "&#x2764;&#xFE0F;", 20);
-    audio.play(sound);
-    if(navigator.vibrate) navigator.vibrate(15);
-    toast(randomToast(type));
-
-    tapCount++;
-    if(tapCount >= 5 && !savedNames[type]){
-      const names = ANIMAL_NAMES[type];
-      const name = names[Math.floor(Math.random()*names.length)];
-      savedNames[type] = name;
-      localStorage.setItem("chickenhouse_animals", JSON.stringify(savedNames));
-      el.classList.add("named");
-      el.parentElement.classList.add("named");
-      el.querySelector(".animal-name").textContent = name;
-      toast("&#x1F31F; " + name + " is your friend now!");
-      audio.play("golden");
-      const friendCount = Object.keys(savedNames).length;
-      if(friendCount >= 4) showAch("friend4");
-      if(friendCount >= 8) showAch("friend8");
-    }
-  });
-
-  if(savedNames[type]){
-    el.classList.add("named");
-    el.parentElement.classList.add("named");
-    el.querySelector(".animal-name").textContent = savedNames[type];
-  }
-
-  // Walking roaming system
-  if(roamArea){
-    const pen = el.parentElement;
-    const walkDuration = {cow:1800,capybara:1600,rabbit:1000,pig:1400,goat:1300,duck:1200,sheep:1500,cat:1100}[type]||1400;
-    const roamInterval = {cow:5000,capybara:6000,rabbit:3500,pig:4500,goat:4000,duck:3800,sheep:4800,cat:3200}[type]||4000;
-
-    function roamOnce(){
-      if(scene.classList.contains("night")) return;
-      const dx = (Math.random()-.5)*8;
-      const dy = (Math.random()-.5)*3;
-      const curX = parseFloat(pen.style.left) || roamArea.start;
-      const curY = parseFloat(pen.style.bottom) || 20;
-      const nextX = Math.max(roamArea.min, Math.min(roamArea.max, curX + dx));
-      const nextY = Math.max(roamArea.bMin||15, Math.min(roamArea.bMax||28, curY + dy));
-      pen.style.left = nextX + "%";
-      pen.style.bottom = nextY + "%";
-      el.classList.add("walk");
-      setTimeout(()=>el.classList.remove("walk"), walkDuration);
-    }
-
-    setInterval(roamOnce, roamInterval + Math.random()*2000);
-
-    // Idle behaviors
-    setInterval(()=>{
-      if(scene.classList.contains("night")) return;
-      if(Math.random()<.35){
-        el.classList.add("idle");
-        setTimeout(()=>el.classList.remove("idle"), 3000+Math.random()*2000);
-      }
-    }, 6000+Math.random()*3000);
-  }
-}
 
 const ANIMAL_TOASTS = {
   cow: ["&#x1F404; Moo moo!","&#x1F404; *happy cow noises*","&#x1F404; Moooo!"],
@@ -584,67 +526,82 @@ function randomToast(type){
   return msgs[Math.floor(Math.random()*msgs.length)];
 }
 
-setupAnimal($("#cow"), "cow", "happy", "moo", {start:3, min:1, max:25, bMin:18, bMax:26});
-setupAnimal($("#capybara"), "capybara", "happy", "chill", {start:70, min:55, max:88, bMin:17, bMax:25});
-setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", {start:38, min:28, max:52, bMin:22, bMax:30});
-setupAnimal($("#pig"), "pig", "happy", "oink", {start:55, min:42, max:68, bMin:19, bMax:27});
-setupAnimal($("#goat"), "goat", "happy", "bleat", {start:18, min:10, max:32, bMin:16, bMax:24});
-setupAnimal($("#duck"), "duck", "happy", "quack", {start:62, min:50, max:75, bMin:14, bMax:22});
-setupAnimal($("#sheep"), "sheep", "hop", "baa", {start:48, min:35, max:60, bMin:15, bMax:23});
-setupAnimal($("#cat"), "cat", "happy", "purr", {start:24, min:15, max:38, bMin:20, bMax:28});
+const farmAnimalsEl = $("#farmAnimals");
+const savedAnimalNames = JSON.parse(localStorage.getItem("chickenhouse_animals") || "{}");
+const animalTapCounts = {};
 
-// Duck waddle particles
-setInterval(()=>{
-  if(Math.random()<.25){
-    const duckPen = $("#duckPen");
-    const p = document.createElement("div");
-    p.className = "heart-pop";
-    p.innerHTML = "&#x1F4A7;";
-    p.style.cssText = `left:${duckPen.offsetLeft + 20}px;bottom:18%;--hx:${(Math.random()-.5)*15}px;--hy:-18px;font-size:.5rem`;
-    scene.appendChild(p);
-    setTimeout(()=>p.remove(), 700);
-  }
-}, 7000);
+function buildAnimal(d){
+  const el = document.createElement("div");
+  el.className = "farm-animal " + d.type;
+  el.style.cssText = `left:${d.x}%;bottom:${d.y}%`;
+  el.innerHTML = `<span>${d.emoji}</span><div class="a-name"></div>`;
+  el.dataset.type = d.type;
 
-// Cow moo particles at night
-setInterval(()=>{
-  if(!scene.classList.contains("night")) return;
-  if(Math.random()<.3){
-    const cowPen = $("#cowPen");
-    const p = document.createElement("div");
-    p.className = "heart-pop";
-    p.innerHTML = "&#x1F4AC;";
-    p.style.cssText = `left:${cowPen.offsetLeft + 20}px;bottom:20%;--hx:${(Math.random()-.5)*15}px;--hy:-25px;font-size:.5rem`;
-    scene.appendChild(p);
-    setTimeout(()=>p.remove(), 700);
+  // Restore name
+  if(savedAnimalNames[d.type]){
+    el.classList.add("named");
+    el.querySelector(".a-name").textContent = savedAnimalNames[d.type];
   }
-}, 8000);
 
-// Pig snort particles
-setInterval(()=>{
-  if(Math.random()<.3){
-    const pigPen = $("#pigPen");
-    const p = document.createElement("div");
-    p.className = "heart-pop";
-    p.innerHTML = "&#x1F4A8;";
-    p.style.cssText = `left:${pigPen.offsetLeft + 30}px;bottom:22%;--hx:${(Math.random()-.5)*20}px;--hy:-20px`;
-    scene.appendChild(p);
-    setTimeout(()=>p.remove(), 700);
-  }
-}, 6000);
+  el.addEventListener("click", ()=>{
+    el.classList.remove(d.clickAnim);
+    void el.offsetWidth;
+    el.classList.add(d.clickAnim);
+    setTimeout(()=>el.classList.remove(d.clickAnim), 500);
+    spawnHeart(el, "&#x2764;&#xFE0F;", 20);
+    audio.play(d.sound);
+    if(navigator.vibrate) navigator.vibrate(15);
+    toast(randomToast(d.type));
 
-// Sheep wool puff particles
+    animalTapCounts[d.type] = (animalTapCounts[d.type]||0)+1;
+    if(animalTapCounts[d.type] >= 5 && !savedAnimalNames[d.type]){
+      const names = ANIMAL_NAMES[d.type];
+      const name = names[Math.floor(Math.random()*names.length)];
+      savedAnimalNames[d.type] = name;
+      localStorage.setItem("chickenhouse_animals", JSON.stringify(savedAnimalNames));
+      el.classList.add("named");
+      el.querySelector(".a-name").textContent = name;
+      toast("&#x1F31F; " + name + " is your friend now!");
+      audio.play("golden");
+      const friendCount = Object.keys(savedAnimalNames).length;
+      if(friendCount >= 4) showAch("friend4");
+      if(friendCount >= 8) showAch("friend8");
+    }
+  });
+
+  return el;
+}
+
+ANIMAL_DEFS.forEach(d=>{
+  const el = buildAnimal(d);
+  farmAnimalsEl.appendChild(el);
+
+  // Roam like chickens
+  setInterval(()=>{
+    if(scene.classList.contains("night")) return;
+    const dx=(Math.random()-.5)*8;
+    const dy=(Math.random()-.5)*4;
+    const x=parseFloat(el.style.left)+dx;
+    const y=Math.max(29,Math.min(35,parseFloat(el.style.bottom)+dy));
+    el.style.left=Math.max(3,Math.min(95,x))+"%";
+    el.style.bottom=y+"%";
+    el.classList.add("walk");
+    setTimeout(()=>el.classList.remove("walk"),1500);
+  },3000+Math.random()*4000);
+});
+
+// Night mode: close animal eyes (swap emoji)
 setInterval(()=>{
-  if(Math.random()<.2){
-    const sheepPen = $("#sheepPen");
-    const p = document.createElement("div");
-    p.className = "heart-pop";
-    p.innerHTML = "&#x1F4A7;";
-    p.style.cssText = `left:${sheepPen.offsetLeft + 15}px;bottom:28%;--hx:${(Math.random()-.5)*10}px;--hy:-15px;font-size:.5rem`;
-    scene.appendChild(p);
-    setTimeout(()=>p.remove(), 700);
-  }
-}, 5000);
+  const closedAnimals={cow:"&#x1F404;",capybara:"&#x1F43F;",rabbit:"&#x1F407;",pig:"&#x1F437;",goat:"&#x1F410;",duck:"&#x1F986;",sheep:"&#x1F411;",cat:"&#x1F431;"};
+  $$(".farm-animal").forEach(el=>{
+    const span=el.querySelector("span");
+    if(scene.classList.contains("night")){
+      span.style.filter="brightness(.5)";
+    } else {
+      span.style.filter="";
+    }
+  });
+},2000);
 
 // Hint cycling
 const hints=["Tap chickens to pet them","Tap eggs to collect love notes","Feed all chickens!","Tap the bucket to feed","Try day/night mode","Find the golden egg!","Tap baby chicks","Open the coop door","Shake to feed on mobile","Send a love message","Tap Chikoy to change mood","Try rain at night!","Chickens get names when fed","Meet the cow! Tap to pet","The capybara is so chill~","Tap the rabbit to make it hop","The pig loves oink oink!","The goat loves headbutts~","Quack! Tap the duck!","The sheep is so fluffy~","The cat wants belly rubs!"];
