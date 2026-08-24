@@ -507,28 +507,47 @@ function setupAnimal(el, type, clickAnim, sound, toastMsg, roamArea){
       el.querySelector(".animal-name").textContent = name;
       toast("&#x1F31F; " + name + " is your friend now!");
       audio.play("golden");
-      // Check friendship achievements
       const friendCount = Object.keys(savedNames).length;
       if(friendCount >= 4) showAch("friend4");
       if(friendCount >= 8) showAch("friend8");
     }
   });
 
-  // Restore saved name
   if(savedNames[type]){
     el.classList.add("named");
     el.querySelector(".animal-name").textContent = savedNames[type];
   }
 
-  // Idle roaming
+  // Walking roaming system
   if(roamArea){
     const pen = el.parentElement;
+    const walkDuration = {cow:1800,capybara:1600,rabbit:1000,pig:1400,goat:1300,duck:1200,sheep:1500,cat:1100}[type]||1400;
+    const roamInterval = {cow:5000,capybara:6000,rabbit:3500,pig:4500,goat:4000,duck:3800,sheep:4800,cat:3200}[type]||4000;
+
+    function roamOnce(){
+      if(scene.classList.contains("night")) return;
+      const dx = (Math.random()-.5)*8;
+      const dy = (Math.random()-.5)*3;
+      const curX = parseFloat(pen.style.left) || roamArea.start;
+      const curY = parseFloat(pen.style.bottom) || 20;
+      const nextX = Math.max(roamArea.min, Math.min(roamArea.max, curX + dx));
+      const nextY = Math.max(roamArea.bMin||15, Math.min(roamArea.bMax||28, curY + dy));
+      pen.style.left = nextX + "%";
+      pen.style.bottom = nextY + "%";
+      el.classList.add("walk");
+      setTimeout(()=>el.classList.remove("walk"), walkDuration);
+    }
+
+    setInterval(roamOnce, roamInterval + Math.random()*2000);
+
+    // Idle behaviors
     setInterval(()=>{
-      const dx = (Math.random()-.5)*6;
-      const cur = parseFloat(pen.style.left) || roamArea.start;
-      const next = Math.max(roamArea.min, Math.min(roamArea.max, cur + dx));
-      pen.style.left = next + "%";
-    }, 3000 + Math.random()*3000);
+      if(scene.classList.contains("night")) return;
+      if(Math.random()<.35){
+        el.classList.add("idle");
+        setTimeout(()=>el.classList.remove("idle"), 3000+Math.random()*2000);
+      }
+    }, 6000+Math.random()*3000);
   }
 }
 
@@ -548,45 +567,27 @@ function randomToast(type){
   return msgs[Math.floor(Math.random()*msgs.length)];
 }
 
-setupAnimal($("#cow"), "cow", "happy", "moo", randomToast("cow"), {start:3, min:1, max:25});
-setupAnimal($("#capybara"), "capybara", "happy", "chill", randomToast("capybara"), {start:70, min:55, max:88});
-setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", randomToast("rabbit"), {start:38, min:28, max:52});
-setupAnimal($("#pig"), "pig", "happy", "oink", randomToast("pig"), {start:55, min:42, max:68});
-setupAnimal($("#goat"), "goat", "happy", "bleat", randomToast("goat"), {start:18, min:10, max:32});
-setupAnimal($("#duck"), "duck", "happy", "quack", randomToast("duck"), {start:62, min:50, max:75});
-setupAnimal($("#sheep"), "sheep", "hop", "baa", randomToast("sheep"), {start:48, min:35, max:60});
-setupAnimal($("#cat"), "cat", "happy", "purr", randomToast("cat"), {start:24, min:15, max:38});
+setupAnimal($("#cow"), "cow", "happy", "moo", randomToast("cow"), {start:3, min:1, max:25, bMin:18, bMax:26});
+setupAnimal($("#capybara"), "capybara", "happy", "chill", randomToast("capybara"), {start:70, min:55, max:88, bMin:17, bMax:25});
+setupAnimal($("#rabbit"), "rabbit", "hop", "squeak", randomToast("rabbit"), {start:38, min:28, max:52, bMin:22, bMax:30});
+setupAnimal($("#pig"), "pig", "happy", "oink", randomToast("pig"), {start:55, min:42, max:68, bMin:19, bMax:27});
+setupAnimal($("#goat"), "goat", "happy", "bleat", randomToast("goat"), {start:18, min:10, max:32, bMin:16, bMax:24});
+setupAnimal($("#duck"), "duck", "happy", "quack", randomToast("duck"), {start:62, min:50, max:75, bMin:14, bMax:22});
+setupAnimal($("#sheep"), "sheep", "hop", "baa", randomToast("sheep"), {start:48, min:35, max:60, bMin:15, bMax:23});
+setupAnimal($("#cat"), "cat", "happy", "purr", randomToast("cat"), {start:24, min:15, max:38, bMin:20, bMax:28});
 
-// Capybara idle animation: occasionally sit down
+// Duck waddle particles
 setInterval(()=>{
-  const capy = $("#capybara");
-  if(Math.random()<.3){
-    capy.style.transform = "scaleY(.9)";
-    setTimeout(()=>{ capy.style.transform = "" }, 2000);
-  }
-}, 5000);
-
-// Rabbit random hop
-setInterval(()=>{
-  const rab = $("#rabbit");
-  if(Math.random()<.4){
-    rab.classList.add("hop");
-    setTimeout(()=>rab.classList.remove("hop"), 400);
-  }
-}, 4000);
-
-// Pig snort particles
-setInterval(()=>{
-  if(Math.random()<.3){
-    const pigPen = $("#pigPen");
+  if(Math.random()<.25){
+    const duckPen = $("#duckPen");
     const p = document.createElement("div");
     p.className = "heart-pop";
-    p.innerHTML = "&#x1F4A8;";
-    p.style.cssText = `left:${pigPen.offsetLeft + 30}px;bottom:22%;--hx:${(Math.random()-.5)*20}px;--hy:-20px`;
+    p.innerHTML = "&#x1F4A7;";
+    p.style.cssText = `left:${duckPen.offsetLeft + 20}px;bottom:18%;--hx:${(Math.random()-.5)*15}px;--hy:-18px;font-size:.5rem`;
     scene.appendChild(p);
     setTimeout(()=>p.remove(), 700);
   }
-}, 6000);
+}, 7000);
 
 // Cow moo particles at night
 setInterval(()=>{
@@ -600,32 +601,18 @@ setInterval(()=>{
     scene.appendChild(p);
     setTimeout(()=>p.remove(), 700);
   }
-}, 7000);
+}, 8000);
 
-// Goat head shake
+// Pig snort particles
 setInterval(()=>{
-  const goat = $("#goat");
-  if(Math.random()<.35){
-    goat.classList.add("happy");
-    setTimeout(()=>goat.classList.remove("happy"), 500);
-  }
-}, 3000);
-
-// Duck waddle
-setInterval(()=>{
-  const duck = $("#duck");
-  if(Math.random()<.35){
-    duck.classList.add("happy");
-    setTimeout(()=>duck.classList.remove("happy"), 500);
-  }
-}, 5000);
-
-// Cat curls up occasionally
-setInterval(()=>{
-  const cat = $("#cat");
-  if(Math.random()<.25){
-    cat.style.transform = "scaleY(.85)";
-    setTimeout(()=>{ cat.style.transform = "" }, 2500);
+  if(Math.random()<.3){
+    const pigPen = $("#pigPen");
+    const p = document.createElement("div");
+    p.className = "heart-pop";
+    p.innerHTML = "&#x1F4A8;";
+    p.style.cssText = `left:${pigPen.offsetLeft + 30}px;bottom:22%;--hx:${(Math.random()-.5)*20}px;--hy:-20px`;
+    scene.appendChild(p);
+    setTimeout(()=>p.remove(), 700);
   }
 }, 6000);
 
