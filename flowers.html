@@ -247,15 +247,15 @@
       transform-style: preserve-3d;
     }
 
-    /* ── Connector stem from flower to bouquet center ── */
+    /* ── Connector stem from flower to main stem ── */
     .flower-stem {
       position: absolute;
       width: 2px;
-      background: linear-gradient(to bottom, #3a8a28, #2d6a1e);
+      background: linear-gradient(to bottom, #4a9a30, #2d6a1e);
       transform-origin: top center;
       pointer-events: none;
       z-index: -1;
-      opacity: 0.6;
+      opacity: 0.7;
       border-radius: 1px;
     }
 
@@ -767,14 +767,19 @@
           var z = Math.cos(rad) * layer.radiusZ;
           var y = layer.y;
 
-          // Connector stem from flower to bouquet center
-          var stemLen = Math.sqrt(x * x + y * y) * 0.7;
-          var stemAngle = Math.atan2(x, -y) * 180 / Math.PI;
+          // Connector stem from flower bottom to main stem top (bouquet center)
+          var stemTargetY = 0;
+          var stemTargetX = 0;
+          var flowerBottomY = y + 30; // offset from flower center to bottom edge
+          var dx = x - stemTargetX;
+          var dy = flowerBottomY - stemTargetY;
+          var stemLen = Math.sqrt(dx * dx + dy * dy);
+          var stemAngle = Math.atan2(dx, -dy) * 180 / Math.PI;
           var stem = document.createElement("div");
           stem.className = "flower-stem";
           stem.style.height = stemLen + "px";
           stem.style.left = "calc(50% + " + x + "px)";
-          stem.style.top = "calc(50% + " + y + "px)";
+          stem.style.top = "calc(50% + " + flowerBottomY + "px)";
           stem.style.transform = "translateX(-50%) rotate(" + stemAngle + "deg)";
           bouquet.appendChild(stem);
 
