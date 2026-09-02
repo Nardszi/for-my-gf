@@ -10,6 +10,9 @@ var ANNIVERSARY_DATE = new Date(2026, 8, 10);
 var ANNIVERSARY_MSG  = "Happy 2nd Anniversary, my love!";
 var GOLD_PRIMARY     = "#d4a017";
 var GOLD_LIGHT       = "#f5d76e";
+var HER_NAME         = "Rezil";
+var OUR_DATE         = "September 10, 2024";
+var DAILY_PAGES      = ["lovepage.html","letters.html","chickenhouse.html","finale.html","stars.html","lovejar.html","photovault.html"];
 
 function isAnniversary(){
   var n = new Date();
@@ -84,7 +87,9 @@ function spawnConfetti(count){
 function showAnniversaryToast(msg, sub, emoji){
   var t = document.createElement("div");
   t.className = "anniversary-toast";
-  t.innerHTML = '<div class="at-emoji">'+(emoji||"🥂")+'</div><div class="at-msg">'+(msg||ANNIVERSARY_MSG)+'</div><div class="at-sub">'+(sub||"September 10, 2026 — 2 Years Together")+'</div>';
+  var displayMsg = msg || personalize(ANNIVERSARY_MSG + ", {name}!");
+  var displaySub = sub || personalize("September 10, 2024 — {date}. 2 Years Together");
+  t.innerHTML = '<div class="at-emoji">'+(emoji||"🥂")+'</div><div class="at-msg">'+displayMsg+'</div><div class="at-sub">'+displaySub+'</div>';
   document.body.appendChild(t);
   setTimeout(function(){t.remove()},4500);
 }
@@ -193,7 +198,7 @@ var pageSurprises = {
     // Change tagline
     var tagline = document.querySelector(".hero-tagline");
     if(tagline){
-      tagline.textContent = "2 years of love, laughter, and forever";
+      tagline.textContent = personalize("2 years since {date}, {name}. I love you more than words.");
       tagline.style.color = GOLD_LIGHT;
     }
     // Change scroll hint
@@ -312,7 +317,7 @@ var pageSurprises = {
 
   // ── FINALE: "2 Years" badge + extra fireworks ──
   "finale.html": function(){
-    showAnniversaryBanner("🎆 Two years of love, laughter, and forever");
+    showAnniversaryBanner("🎆 " + HER_NAME + ", two years of love, laughter, and forever");
     // Add anniversary badge to the page
     setTimeout(function(){
       var hero = document.querySelector(".hero, .finale-hero, [class*=hero], [class*=title]");
@@ -324,7 +329,7 @@ var pageSurprises = {
 
   // ── AURORA: fireworks theme auto-activates + constellation ──
   "aurora.html": function(){
-    showAnniversaryBanner("🌌 The sky celebrates our love tonight");
+    showAnniversaryBanner("🌌 " + HER_NAME + ", the sky celebrates our love tonight");
     // Try to switch to fireworks theme if the theme switcher exists
     setTimeout(function(){
       var pills = document.querySelectorAll("[data-theme], .pill, .theme-pill");
@@ -336,7 +341,7 @@ var pageSurprises = {
 
   // ── CHIKOY ROOM: party hat + balloons + confetti ──
   "chikoy-room.html": function(){
-    showAnniversaryBanner("🎊 Chikoy's room is decorated for our anniversary!");
+    showAnniversaryBanner("🎊 " + HER_NAME + ", Chikoy's room is decorated for our anniversary!");
     // Add party overlay
     setTimeout(function(){
       var canvas = document.querySelector("canvas");
@@ -353,12 +358,12 @@ var pageSurprises = {
 
   // ── DIARY: auto-write an anniversary entry ──
   "diary.html": function(){
-    showAnniversaryBanner("📖 A special entry for today...");
+    showAnniversaryBanner("📖 A special entry for today, " + HER_NAME + "...");
     // Pre-fill the diary with an anniversary entry
     setTimeout(function(){
       var ta = document.querySelector("textarea, .diary-input, [contenteditable]");
       if(ta){
-        var msg = "Today marks 2 years since our love story began. Every day with you has been a gift. I love you more than words on this page could ever express. Happy anniversary, my love. ♥";
+        var msg = personalize("Today marks 2 years since {date}. Every day with you, {name}, has been a gift. I love you more than words on this page could ever express. Happy anniversary, my love. ♥");
         if(ta.tagName === "TEXTAREA") ta.value = msg;
         else ta.textContent = msg;
         ta.style.borderColor = GOLD_PRIMARY;
@@ -380,7 +385,7 @@ var pageSurprises = {
 
   // ── LETTERS: 7th secret letter auto-unlocked ──
   "letters.html": function(){
-    showAnniversaryBanner("💌 A 7th letter appears on our anniversary...");
+    showAnniversaryBanner("💌 " + HER_NAME + ", a 7th letter appears on our anniversary...");
     // Highlight all envelopes with gold glow
     setTimeout(function(){
       document.querySelectorAll("[class*=envelope], [class*=card], [class*=letter]").forEach(function(el){
@@ -393,7 +398,7 @@ var pageSurprises = {
 
   // ── LOVE JAR: golden notes + extra sparkles ──
   "lovejar.html": function(){
-    showAnniversaryBanner("✨ The love jar glows gold on our special day");
+    showAnniversaryBanner("✨ " + HER_NAME + ", the love jar glows gold on our special day");
     // Make the jar glow
     setTimeout(function(){
       var jar = document.querySelector("[class*=jar], .jar, main");
@@ -403,7 +408,7 @@ var pageSurprises = {
 
   // ── PHOTO VAULT: auto-unlock + anniversary photos ──
   "photovault.html": function(){
-    showAnniversaryBanner("📸 The vault opens — anniversary memories inside!");
+    showAnniversaryBanner("📸 " + HER_NAME + ", the vault opens — anniversary memories inside!");
     // Auto-unlock if there's a lock mechanism
     setTimeout(function(){
       var lock = document.querySelector("[class*=lock], [class*=pattern], .vault-lock");
@@ -416,11 +421,11 @@ var pageSurprises = {
 
   // ── REASONS: "2 Years of Reasons" + special reason ──
   "reasons.html": function(){
-    showAnniversaryBanner("💖 730 days, 730 reasons, infinite love");
+    showAnniversaryBanner("💖 " + HER_NAME + ", 730 days, 730 reasons, infinite love");
     // Add anniversary badge near the counter
     setTimeout(function(){
       var counter = document.querySelector("[class*=counter], [class*=progress], [class*=reason]");
-      if(counter) counter.parentElement.appendChild(makeAnnivBadge("Two Years of Loving You"));
+      if(counter) counter.parentElement.appendChild(makeAnnivBadge("Two Years of Loving " + HER_NAME));
     }, 1000);
     setTimeout(spawnGifts, 2500);
   },
@@ -450,7 +455,7 @@ var pageSurprises = {
 
   // ── STARS: anniversary constellation + special star ──
   "stars.html": function(){
-    showAnniversaryBanner("⭐ Our stars shine brighter tonight");
+    showAnniversaryBanner("⭐ " + HER_NAME + ", our stars shine brighter tonight");
     // Add a special golden star to the sky
     setTimeout(function(){
       var star = document.createElement("div");
@@ -479,29 +484,40 @@ var pageSurprises = {
 
   // ── FLOWERS: golden petals + 3D bouquet glow ──
   "flowers.html": function(){
-    showAnniversaryBanner("💐 Happy Anniversary! — Every flower blooms for you");
-    // Make all flower heads glow gold
-    setTimeout(function(){
-      var heads = document.querySelectorAll(".flower-head");
-      heads.forEach(function(h, i){
-        setTimeout(function(){
-          h.classList.add("active");
-          h.style.filter = "drop-shadow(0 0 16px rgba(212,160,23,0.7)) brightness(1.3)";
-        }, i * 150);
-      });
-      // Show special anniversary message
-      var flowerName = document.getElementById("flowerName");
-      var flowerText = document.getElementById("flowerText");
-      var flowerMessage = document.getElementById("flowerMessage");
-      if(flowerText && flowerMessage){
-        setTimeout(function(){
-          flowerName.textContent = "💐 Happy 2nd Anniversary!";
-          flowerText.textContent = "Two years of love, two years of us. You are my forever garden. Every flower here blooms for you, today and always.";
+    // Staged reveal: tease → reveal → celebrate
+    stagedReveal([
+      { delay: 500, fn: function(){
+        showAnniversaryBanner("💐 " + HER_NAME + ", every flower blooms for you");
+      }},
+      { delay: 1200, fn: function(){
+        // Make all flower heads glow gold
+        var heads = document.querySelectorAll(".flower-head");
+        heads.forEach(function(h, i){
+          setTimeout(function(){
+            h.classList.add("active");
+            h.style.filter = "drop-shadow(0 0 16px rgba(212,160,23,0.7)) brightness(1.3)";
+          }, i * 150);
+        });
+        // Title gold
+        var title = document.querySelector(".flowers-title");
+        if(title) title.style.color = GOLD_LIGHT;
+        // Change bouquet to gold
+        var bouquet = document.getElementById("bouquet");
+        if(bouquet) bouquet.style.filter = "drop-shadow(0 10px 30px rgba(212,160,23,0.4))";
+      }},
+      { delay: 3000, fn: function(){
+        // Show special anniversary message
+        var flowerName = document.getElementById("flowerName");
+        var flowerText = document.getElementById("flowerText");
+        var flowerMessage = document.getElementById("flowerMessage");
+        if(flowerText && flowerMessage){
+          flowerName.textContent = "💐 Happy 2nd Anniversary, " + HER_NAME + "!";
+          flowerText.textContent = personalize("Two years of love, two years of us. You are my forever garden, {name}. Every flower here blooms for you, today and always. Since {date}, you have been my everything.");
           flowerText.style.color = GOLD_LIGHT;
           flowerMessage.classList.add("show");
-        }, heads.length * 150 + 600);
-      }
-    }, 1500);
+        }
+      }}
+    ]);
     // Golden petals continuously
     var petalInterval = setInterval(function(){
       var petals = ["🌹","🌻","🌷","🌸","✨","💗","🏵️","💮"];
@@ -516,17 +532,124 @@ var pageSurprises = {
     // Gold sparkle ring
     var ring = document.querySelector(".sparkle-ring");
     if(ring) ring.style.borderColor = "rgba(212,160,23,0.3)";
-    // Title gold
-    var title = document.querySelector(".flowers-title");
-    if(title) title.style.color = GOLD_LIGHT;
-    // Change bouquet to gold
-    var bouquet = document.getElementById("bouquet");
-    if(bouquet) bouquet.style.filter = "drop-shadow(0 10px 30px rgba(212,160,23,0.4))";
-    // Change title color
-    var title = document.querySelector(".flowers-title");
-    if(title) title.style.color = GOLD_LIGHT;
   }
 };
+
+// ══════════════════════════════════════════════════
+// STAGED REVEAL SYSTEM
+// ══════════════════════════════════════════════════
+
+function stagedReveal(stages, onComplete){
+  // stages: [{ delay, fn }] — runs each stage in sequence
+  var i = 0;
+  function next(){
+    if(i >= stages.length){ if(onComplete) onComplete(); return; }
+    var s = stages[i++];
+    setTimeout(function(){
+      s.fn();
+      next();
+    }, s.delay || 500);
+  }
+  next();
+}
+
+function personalize(text){
+  return text.replace(/\{name\}/g, HER_NAME).replace(/\{date\}/g, OUR_DATE);
+}
+
+// ══════════════════════════════════════════════════
+// EASTER EGG CHAIN — visit 3+ pages unlocks secret
+// ══════════════════════════════════════════════════
+
+function trackPageVisit(){
+  var visited = JSON.parse(storeGet("anniv_visited") || "[]");
+  var page = getPageName();
+  if(visited.indexOf(page) === -1) visited.push(page);
+  storeSet("anniv_visited", JSON.stringify(visited));
+  return visited;
+}
+
+function checkEasterEgg(visited){
+  if(visited.length < 3) return;
+  if(storeGet("anniv_egg_unlocked") === "1") return;
+  storeSet("anniv_egg_unlocked", "1");
+  // Secret 17th surprise
+  setTimeout(function(){
+    showAnniversaryToast(
+      " You found the secret, " + HER_NAME + "!",
+      "You've visited " + visited.length + " pages — this moment is just for us.",
+      "🔮"
+    );
+    spawnConfetti(20);
+    // Floating golden heart
+    var heart = document.createElement("div");
+    heart.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:10001;font-size:4rem;pointer-events:none;animation:annivHeartBurst 3s cubic-bezier(.34,1.56,.64,1) forwards";
+    heart.textContent = "💛";
+    document.body.appendChild(heart);
+    setTimeout(function(){ heart.remove(); }, 3500);
+    // Add the keyframe
+    if(!document.getElementById("anniv-heart-keyframe")){
+      var s = document.createElement("style");
+      s.id = "anniv-heart-keyframe";
+      s.textContent = "@keyframes annivHeartBurst{0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}30%{transform:translate(-50%,-50%) scale(1.3) rotate(10deg);opacity:1}60%{transform:translate(-50%,-50%) scale(1) rotate(-5deg);opacity:1}100%{transform:translate(-50%,-50%) scale(0.8) rotate(0);opacity:0}}";
+      document.head.appendChild(s);
+    }
+  }, 2000);
+}
+
+// ══════════════════════════════════════════════════
+// DAILY UNLOCK — one surprise per day Sep 7–13
+// ══════════════════════════════════════════════════
+
+function getDailyUnlockDay(){
+  var n = new Date();
+  if(n.getFullYear() !== 2026 || n.getMonth() !== 8) return -1;
+  var day = n.getDate();
+  if(day < 7 || day > 13) return -1;
+  return day - 7; // 0–6
+}
+
+function checkDailyUnlock(){
+  var dayIdx = getDailyUnlockDay();
+  if(dayIdx < 0) return;
+  var unlocked = JSON.parse(storeGet("anniv_daily") || "[]");
+  if(unlocked.indexOf(dayIdx) !== -1) return; // already unlocked today
+  unlocked.push(dayIdx);
+  storeSet("anniv_daily", JSON.stringify(unlocked));
+
+  var dailyMessages = [
+    { emoji: "🌸", msg: "3 days until our anniversary, " + HER_NAME + ". I'm counting every moment.", sub: "Day 1 of 7" },
+    { emoji: "💛", msg: "2 more days, my love. You are my every heartbeat.", sub: "Day 2 of 7" },
+    { emoji: "✨", msg: "Tomorrow is our day, " + HER_NAME + ". I have something special planned.", sub: "Day 3 of 7" },
+    { emoji: "🥂", msg: "Today is the day, " + HER_NAME + ". Happy Anniversary, my forever love.", sub: "Day 4 of 7 — Today!" },
+    { emoji: "💐", msg: "The celebration continues, " + HER_NAME + ". Every day with you is a gift.", sub: "Day 5 of 7" },
+    { emoji: "🔮", msg: "Still celebrating us, " + HER_NAME + ". Our love grows stronger.", sub: "Day 6 of 7" },
+    { emoji: "💛", msg: "What a week, " + HER_NAME + ". Here's to forever more.", sub: "Day 7 of 7" }
+  ];
+  var d = dailyMessages[dayIdx];
+  setTimeout(function(){
+    showAnniversaryToast(d.msg, d.sub, d.emoji);
+    spawnSparkles();
+  }, 2000);
+}
+
+// ══════════════════════════════════════════════════
+// FLOWERS: GOLDEN MESSAGE CARDS
+// ══════════════════════════════════════════════════
+
+function spawnGoldenCard(x, y, text){
+  var card = document.createElement("div");
+  card.style.cssText = "position:fixed;left:"+x+"px;top:"+y+"px;z-index:9998;pointer-events:none;padding:.6rem 1rem;border-radius:10px;background:rgba(13,8,18,.92);border:1px solid rgba(212,160,23,.4);backdrop-filter:blur(8px);font-family:'Cormorant Garamond',serif;font-size:.85rem;color:"+GOLD_LIGHT+";box-shadow:0 0 20px rgba(212,160,23,.2);animation:goldenCardFloat 3s ease-out forwards;max-width:200px;text-align:center";
+  card.textContent = text;
+  document.body.appendChild(card);
+  if(!document.getElementById("golden-card-keyframe")){
+    var s = document.createElement("style");
+    s.id = "golden-card-keyframe";
+    s.textContent = "@keyframes goldenCardFloat{0%{opacity:0;transform:translateY(0) scale(.8)}15%{opacity:1;transform:translateY(-10px) scale(1)}70%{opacity:1;transform:translateY(-40px) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(.9)}}";
+    document.head.appendChild(s);
+  }
+  setTimeout(function(){ card.remove(); }, 3200);
+}
 
 // ══════════════════════════════════════════════════
 // MAIN INIT
@@ -535,11 +658,15 @@ var pageSurprises = {
 function init(){
   var page = getPageName();
   var nearDays = daysUntilAnniversary();
+  var visited = trackPageVisit();
 
   // Always apply theme if within 30 days or on anniversary day
   if(isAnniversary() || nearDays <= 30){
     applyAnniversaryTheme();
   }
+
+  // Daily unlock check
+  checkDailyUnlock();
 
   // Countdown bar (30 days before) — skip on flowers page
   if(nearDays <= 30 && !document.getElementById("bouquet")){
@@ -557,7 +684,10 @@ function init(){
     spawnSparkles();
     setInterval(spawnSparkles, 8000);
 
-    // Page-specific surprise
+    // Easter egg check
+    checkEasterEgg(visited);
+
+    // Page-specific surprise (staged)
     if(pageSurprises[page]){
       setTimeout(function(){ pageSurprises[page](); }, 800);
     }
@@ -576,7 +706,10 @@ window.Anniversary = {
   applyTheme: applyAnniversaryTheme,
   showBanner: showAnniversaryBanner,
   spawnGifts: spawnGifts,
-  makeBadge: makeAnnivBadge
+  makeBadge: makeAnnivBadge,
+  stagedReveal: stagedReveal,
+  spawnGoldenCard: spawnGoldenCard,
+  personalize: personalize
 };
 
 if(document.readyState === "loading"){

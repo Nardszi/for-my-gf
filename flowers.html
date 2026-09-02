@@ -734,6 +734,27 @@
             bouquet.querySelectorAll(".flower-head").forEach(function(h){ h.classList.remove("active"); });
             this.classList.add("active");
             spawnPetals(6);
+            // Golden card on anniversary day
+            if(window.Anniversary && window.Anniversary.isAnniversary()){
+              var rect = this.getBoundingClientRect();
+              var msgs = [
+                "You are my everything, Rezil",
+                "Forever starts with you",
+                "Every petal is a love note",
+                "My heart blooms for you",
+                "Two years of magic",
+                "You are my sunshine",
+                "I love you more each day",
+                "You are my forever",
+                "Pure devotion",
+                "Gentle love",
+                "You bring me joy",
+                "New beginnings with you"
+              ];
+              if(window.Anniversary.spawnGoldenCard){
+                window.Anniversary.spawnGoldenCard(rect.left + rect.width/2 - 50, rect.top - 20, msgs[fi] || msgs[0]);
+              }
+            }
             try { navigator.vibrate(15); } catch(err){}
           });
 
