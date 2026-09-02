@@ -878,13 +878,13 @@
         var zIndex = Math.round(rotatedZ + 200);
         f.el.style.zIndex = zIndex;
 
-        // Depth of field: blur + brightness + size based on Z
+        // Depth of field: subtle blur + brightness + size based on Z
         var depthFactor = (rotatedZ + 110) / 220; // 0 = farthest, 1 = closest
-        depthFactor = Math.max(0.3, Math.min(1, depthFactor));
-        var brightness = 0.5 + depthFactor * 0.5;
-        var sat = 0.6 + depthFactor * 0.4;
-        var blur = (1 - depthFactor) * 1.5; // max 1.5px blur on farthest
-        var depthScale = 0.75 + depthFactor * 0.25; // 0.75–1.0 scale
+        depthFactor = Math.max(0.5, Math.min(1, depthFactor));
+        var brightness = 0.7 + depthFactor * 0.3;
+        var sat = 0.8 + depthFactor * 0.2;
+        var blur = (1 - depthFactor) * 0.4; // max 0.4px blur — very subtle
+        var depthScale = 0.88 + depthFactor * 0.12; // 0.88–1.0 scale — less extreme
 
         if(!f.el.classList.contains("active") && !f.el.matches(":hover")){
           f.el.style.filter = "brightness(" + brightness + ") saturate(" + sat + ") blur(" + blur + "px)";
