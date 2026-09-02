@@ -156,13 +156,6 @@
       to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    @keyframes gentleSway {
-      0%, 100% { transform: rotateX(-10deg) rotateY(-2deg) rotateZ(0.5deg); }
-      25% { transform: rotateX(-10deg) rotateY(1deg) rotateZ(-0.3deg); }
-      50% { transform: rotateX(-10deg) rotateY(2deg) rotateZ(0.4deg); }
-      75% { transform: rotateX(-10deg) rotateY(-1deg) rotateZ(-0.5deg); }
-    }
-
     .bouquet {
       width: 100%;
       height: 100%;
@@ -171,12 +164,10 @@
       transform: rotateX(-10deg) rotateY(0deg);
       transition: transform 0.05s linear;
       z-index: 1;
-      animation: gentleSway 8s ease-in-out infinite;
     }
 
     .bouquet.dragging {
       transition: none;
-      animation-play-state: paused;
     }
 
     .scene.dragging .bouquet {
