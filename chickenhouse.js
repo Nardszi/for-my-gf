@@ -104,7 +104,7 @@ function showAch(id){
   const d=document.createElement("div");d.className="achievement";
   d.innerHTML=`<span class="ach-icon">${a.icon}</span><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div>`;
   document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
-  audio.play("golden");
+  try{audio.play("golden")}catch(e){}
   saveState();
 }
 
@@ -145,7 +145,7 @@ function petChicken(el){
   el.classList.add("happy");
   setTimeout(()=>el.classList.remove("happy"),500);
   spawnHeart(el,"&#x2764;&#xFE0F;",25);
-  audio.play("heart");
+  try{audio.play("heart")}catch(e){}
   if(navigator.vibrate) navigator.vibrate(15);
   const idx=el.dataset.idx;
   chickenFeedCount[idx]=(chickenFeedCount[idx]||0)+1;
@@ -190,7 +190,7 @@ moveChicks();
 $$(".baby-chick").forEach(bc=>{
   bc.addEventListener("click",()=>{
     spawnHeart(bc,"&#x1F496;",20);
-    audio.play("heart");
+    try{audio.play("heart")}catch(e){}
     toast("&#x1F423; Cheep cheep!");
   });
 });
@@ -253,7 +253,7 @@ $$(".egg").forEach(e=>{
     $("#eggC").textContent=state.eggs;
     $("#goldC").textContent=state.gold;
     $("#eggTotal").textContent=state.totalEggs;
-    audio.play("egg");
+    try{audio.play("egg")}catch(e){}
     if(navigator.vibrate) navigator.vibrate(15);
     // Love note inside egg
     const note=LOVE_NOTES[Math.floor(Math.random()*LOVE_NOTES.length)];
@@ -287,7 +287,7 @@ function hatchEgg(){
   document.body.appendChild(d);
   d.querySelector(".hatch-btn").addEventListener("click",()=>d.remove());
   d.addEventListener("click",e=>{if(e.target===d) d.remove()});
-  audio.play("golden");
+  try{audio.play("golden")}catch(e){}
   showAch("hatch1");
   saveState();
 }
@@ -321,8 +321,8 @@ function feedAll(){
   });
   state.feedCount++;
   if(state.feedCount>=50) showAch("farmer");
-  audio.play("feed");
-  audio.play("cluck");
+  try{audio.play("feed")}catch(e){}
+  try{audio.play("cluck")}catch(e){}
   $$(".chicken").forEach(c=>{c.classList.add("peck");setTimeout(()=>c.classList.remove("peck"),1200)});
   // All farm animals react to feeding
   $$(".farm-animal").forEach(el=>{
@@ -330,6 +330,16 @@ function feedAll(){
     void el.offsetWidth;
     el.classList.add("happy");
     setTimeout(()=>el.classList.remove("happy"),500);
+    // Drop feed particles near each animal
+    const ax=parseFloat(el.style.left);
+    const ay=parseFloat(el.style.bottom);
+    if(!isNaN(ax)&&!isNaN(ay)){
+      for(let i=0;i<2;i++){
+        const fp=document.createElement("div");fp.className="feed-p";
+        fp.style.cssText=`left:${ax+(Math.random()-.5)*6}%;bottom:${ay+2}%;--fx:${(Math.random()-.5)*16}px;--fy:${-8-Math.random()*12}px`;
+        scene.appendChild(fp);setTimeout(()=>fp.remove(),700);
+      }
+    }
   });
   toast(feedMessages[Math.floor(Math.random()*feedMessages.length)]);
   if(navigator.vibrate) navigator.vibrate(15);
@@ -476,7 +486,7 @@ if(doorEl){
   doorEl.addEventListener("click",()=>{
     doorOpen=!doorOpen;
     doorEl.classList.toggle("open",doorOpen);
-    if(doorOpen){toast("&#x1F425; Welcome inside!");audio.play("cluck")}
+    if(doorOpen){toast("&#x1F425; Welcome inside!");try{audio.play("cluck")}catch(e){}}
     else toast("&#x1F425; Door closed");
   });
 }
@@ -549,7 +559,7 @@ function buildAnimal(d){
     el.classList.add(d.clickAnim);
     setTimeout(()=>el.classList.remove(d.clickAnim), 500);
     spawnHeart(el, "&#x2764;&#xFE0F;", 20);
-    audio.play(d.sound);
+    try{audio.play(d.sound)}catch(e){}
     if(navigator.vibrate) navigator.vibrate(15);
     toast(randomToast(d.type));
 
@@ -562,7 +572,7 @@ function buildAnimal(d){
       el.classList.add("named");
       el.querySelector(".a-name").textContent = name;
       toast("&#x1F31F; " + name + " is your friend now!");
-      audio.play("golden");
+      try{audio.play("golden")}catch(e){}
       const friendCount = Object.keys(savedAnimalNames).length;
       if(friendCount >= 4) showAch("friend4");
       if(friendCount >= 8) showAch("friend8");
@@ -590,16 +600,10 @@ ANIMAL_DEFS.forEach(d=>{
   },3000+Math.random()*4000);
 });
 
-// Night mode: close animal eyes (swap emoji)
+// Night mode: dim animals
 setInterval(()=>{
-  const closedAnimals={cow:"&#x1F404;",capybara:"&#x1F43F;",rabbit:"&#x1F407;",pig:"&#x1F437;",goat:"&#x1F410;",duck:"&#x1F986;",sheep:"&#x1F411;",cat:"&#x1F431;"};
-  $$(".farm-animal").forEach(el=>{
-    const span=el.querySelector("span");
-    if(scene.classList.contains("night")){
-      span.style.filter="brightness(.5)";
-    } else {
-      span.style.filter="";
-    }
+  $$(".farm-animal span").forEach(s=>{
+    s.style.filter=scene.classList.contains("night")?"brightness(.5)":"";
   });
 },2000);
 
