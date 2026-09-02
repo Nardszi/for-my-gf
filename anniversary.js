@@ -542,7 +542,7 @@ function init(){
   }
 
   // Countdown bar (30 days before) — skip on flowers page
-  if(nearDays <= 30 && page !== "flowers.html"){
+  if(nearDays <= 30 && !document.getElementById("bouquet")){
     buildCountdownBar();
   }
 
