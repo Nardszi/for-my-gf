@@ -236,10 +236,9 @@
       transform: rotate(10deg);
     }
 
-    /* ── Flower heads (3D icons) ── */
+    /* ── Flower heads (CSS 3D icons) ── */
     .flower-head {
       position: absolute;
-      font-size: 2.4rem;
       cursor: pointer;
       transition: filter 0.3s ease, transform 0.3s var(--spring);
       transform-style: preserve-3d;
@@ -249,21 +248,108 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, rgba(255,200,210,0.2), rgba(224,86,124,0.08) 50%, rgba(18,10,16,0.3) 100%);
-      box-shadow:
-        inset 0 -6px 12px rgba(0,0,0,0.3),
-        inset 0 4px 8px rgba(255,200,220,0.15),
-        inset 8px -4px 12px rgba(255,255,255,0.06),
-        0 6px 20px rgba(0,0,0,0.4),
-        0 0 30px rgba(224,86,124,0.08);
-      text-shadow:
-        0 2px 3px rgba(0,0,0,0.5),
-        0 -1px 1px rgba(255,255,255,0.15),
-        1px 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* Glow aura only — no ::before to avoid overlapping emoji */
+    /* ── CSS 3D Flower ── */
+    .css-flower {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      transform-style: preserve-3d;
+      animation: flowerBreathe 3s ease-in-out infinite;
+    }
+
+    @keyframes flowerBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .css-flower .petal {
+      position: absolute;
+      width: 16px;
+      height: 24px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      top: 50%;
+      left: 50%;
+      transform-origin: center bottom;
+      box-shadow: inset 0 -4px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.15);
+      transform-style: preserve-3d;
+    }
+
+    /* 3D highlight on each petal */
+    .css-flower .petal::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      width: 6px;
+      height: 10px;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.35), transparent);
+      border-radius: 50%;
+      transform: rotate(-10deg);
+    }
+
+    .css-flower .pistil {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translateZ(6px);
+      z-index: 5;
+      box-shadow: inset 0 -3px 4px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.2), 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .css-flower .pistil::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+    }
+
+    /* ── Flower type colors ── */
+    .css-flower.type-rose .petal { background: linear-gradient(to top, #c0392b, #e74c3c, #ff6b6b); }
+    .css-flower.type-rose .pistil { background: radial-gradient(circle, #f39c12, #e67e22); }
+
+    .css-flower.type-sunflower .petal { background: linear-gradient(to top, #d4a017, #f1c40f, #f9e547); width: 14px; height: 26px; }
+    .css-flower.type-sunflower .pistil { background: radial-gradient(circle, #5d4037, #3e2723); width: 18px; height: 18px; }
+
+    .css-flower.type-tulip .petal { background: linear-gradient(to top, #e91e63, #f06292, #f8bbd0); border-radius: 40% 40% 50% 50% / 50% 50% 50% 50%; }
+    .css-flower.type-tulip .pistil { background: radial-gradient(circle, #fff176, #ffee58); width: 10px; height: 10px; }
+
+    .css-flower.type-cherry .petal { background: linear-gradient(to top, #f48fb1, #fce4ec, #fff); width: 14px; height: 20px; }
+    .css-flower.type-cherry .pistil { background: radial-gradient(circle, #e91e63, #c2185b); width: 8px; height: 8px; }
+
+    .css-flower.type-daisy .petal { background: linear-gradient(to top, #fff9c4, #fff, #fff); width: 12px; height: 22px; }
+    .css-flower.type-daisy .pistil { background: radial-gradient(circle, #f9a825, #f57f17); width: 12px; height: 12px; }
+
+    .css-flower.type-lotus .petal { background: linear-gradient(to top, #f8bbd0, #fce4ec, #fff); border-radius: 45% 45% 50% 50% / 55% 55% 45% 45%; }
+    .css-flower.type-lotus .pistil { background: radial-gradient(circle, #aed581, #7cb342); width: 10px; height: 10px; }
+
+    .css-flower.type-hibiscus .petal { background: linear-gradient(to top, #d81b60, #ec407a, #f48fb1); }
+    .css-flower.type-hibiscus .pistil { background: radial-gradient(circle, #fff176, #fdd835); width: 10px; height: 10px; }
+
+    .css-flower.type-bouquet .petal { background: linear-gradient(to top, #ce93d8, #e1bee7, #f3e5f5); }
+    .css-flower.type-bouquet .pistil { background: radial-gradient(circle, #ff8a65, #ff7043); }
+
+    .css-flower.type-white .petal { background: linear-gradient(to top, #e0e0e0, #fafafa, #fff); }
+    .css-flower.type-white .pistil { background: radial-gradient(circle, #aed581, #8bc34a); }
+
+    .css-flower.type-pink .petal { background: linear-gradient(to top, #f06292, #f8bbd0, #fce4ec); }
+    .css-flower.type-pink .pistil { background: radial-gradient(circle, #fff176, #ffee58); width: 10px; height: 10px; }
+
+    .css-flower.type-calendula .petal { background: linear-gradient(to top, #ff8f00, #ffb300, #ffd54f); width: 13px; height: 22px; }
+    .css-flower.type-calendula .pistil { background: radial-gradient(circle, #5d4037, #4e342e); width: 12px; height: 12px; }
+
+    .css-flower.type-plumeria .petal { background: linear-gradient(to top, #fff9c4, #fff, #fff); border-radius: 45% 45% 50% 50% / 60% 60% 40% 40%; }
+    .css-flower.type-plumeria .pistil { background: radial-gradient(circle, #f9a825, #f57f17); }
+
+    /* Glow aura only */
     .flower-head::after {
       content: '';
       position: absolute;
@@ -276,14 +362,7 @@
     }
 
     .flower-head:hover {
-      filter: brightness(1.3) saturate(1.2);
-      transform: translate(-50%,-50%) translateZ(var(--tz, 0px)) scale(1.15);
       z-index: 10;
-      box-shadow:
-        inset 0 -6px 12px rgba(0,0,0,0.3),
-        inset 0 4px 8px rgba(255,200,220,0.2),
-        0 8px 30px rgba(224,86,124,0.3),
-        0 0 40px rgba(255,143,171,0.15);
     }
 
     .flower-head:hover::after {
@@ -291,14 +370,7 @@
     }
 
     .flower-head.active {
-      filter: brightness(1.4) saturate(1.3);
       z-index: 10;
-      box-shadow:
-        inset 0 -6px 12px rgba(0,0,0,0.25),
-        inset 0 4px 8px rgba(255,200,220,0.25),
-        0 0 30px rgba(255,143,171,0.4),
-        0 0 60px rgba(224,86,124,0.2),
-        0 8px 30px rgba(0,0,0,0.3);
     }
 
     .flower-head.active::after {
@@ -458,7 +530,8 @@
     @media (max-height: 650px) {
       .scene { height: 280px; width: 240px; }
       .stem { height: 120px; }
-      .flower-head { font-size: 1.8rem; width: 52px; height: 52px; }
+      .flower-head { width: 52px; height: 52px; }
+      .css-flower { transform: scale(0.8); }
       .bouquet-glow { width: 200px; height: 200px; }
     }
   </style>
@@ -562,19 +635,48 @@
 
     /* ═══ FLOWERS DATA ═══ */
     var flowers = [
-      { emoji: "🌹", name: "Red Rose",     meaning: "I love you",              msg: "You are the love of my life. Every beat of my heart spells your name." },
-      { emoji: "🌻", name: "Sunflower",    meaning: "I adore you",             msg: "You are my sunshine. Wherever you go, my eyes will follow." },
-      { emoji: "🌷", name: "Tulip",        meaning: "Perfect love",            msg: "Our love is perfect, just as it is. I wouldn't change a thing." },
-      { emoji: "🌸", name: "Cherry Blossom", meaning: "Beauty & grace",        msg: "You are the most beautiful thing that has ever happened to me." },
-      { emoji: "🌼", name: "Daisy",        meaning: "Innocent love",           msg: "I fell in love with your innocence, your kindness, your soul." },
-      { emoji: "🪷", name: "Lotus",        meaning: "Purity of heart",         msg: "Your heart is pure gold. I am lucky to be loved by you." },
-      { emoji: "🌺", name: "Hibiscus",     meaning: "Delicate beauty",         msg: "You are delicate yet strong. My forever flower." },
-      { emoji: "🏵️", name: "Bouquet",      meaning: "Gratitude",               msg: "This bouquet is just a fraction of my love for you." },
-      { emoji: "💮", name: "White Rose",   meaning: "Pure devotion",           msg: "My love for you is pure, eternal, and unconditional." },
-      { emoji: "🌸", name: "Pink Rose",    meaning: "Gentle love",             msg: "Every petal of my love is colored with your name." },
-      { emoji: "🌼", name: "Calendula",    meaning: "Warmth & joy",            msg: "You bring warmth to my coldest days and joy to my quietest moments." },
-      { emoji: "🌺", name: "Plumeria",     meaning: "New beginnings",          msg: "Every day with you is a beautiful new beginning." }
+      { type: "rose",       petals: 8, name: "Red Rose",        meaning: "I love you",              msg: "You are the love of my life. Every beat of my heart spells your name." },
+      { type: "sunflower",  petals: 12, name: "Sunflower",       meaning: "I adore you",             msg: "You are my sunshine. Wherever you go, my eyes will follow." },
+      { type: "tulip",      petals: 6, name: "Tulip",           meaning: "Perfect love",            msg: "Our love is perfect, just as it is. I wouldn't change a thing." },
+      { type: "cherry",     petals: 5, name: "Cherry Blossom",  meaning: "Beauty & grace",          msg: "You are the most beautiful thing that has ever happened to me." },
+      { type: "daisy",      petals: 10, name: "Daisy",           meaning: "Innocent love",           msg: "I fell in love with your innocence, your kindness, your soul." },
+      { type: "lotus",      petals: 8, name: "Lotus",           meaning: "Purity of heart",         msg: "Your heart is pure gold. I am lucky to be loved by you." },
+      { type: "hibiscus",   petals: 5, name: "Hibiscus",        meaning: "Delicate beauty",         msg: "You are delicate yet strong. My forever flower." },
+      { type: "bouquet",    petals: 7, name: "Bouquet",         meaning: "Gratitude",               msg: "This bouquet is just a fraction of my love for you." },
+      { type: "white",      petals: 8, name: "White Rose",      meaning: "Pure devotion",           msg: "My love for you is pure, eternal, and unconditional." },
+      { type: "pink",       petals: 8, name: "Pink Rose",       meaning: "Gentle love",             msg: "Every petal of my love is colored with your name." },
+      { type: "calendula",  petals: 12, name: "Calendula",       meaning: "Warmth & joy",            msg: "You bring warmth to my coldest days and joy to my quietest moments." },
+      { type: "plumeria",   petals: 5, name: "Plumeria",        meaning: "New beginnings",          msg: "Every day with you is a beautiful new beginning." }
     ];
+
+    /* ═══ BUILD CSS 3D FLOWER ═══ */
+    function buildCSSFlower(type, petalCount, size){
+      var wrapper = document.createElement("div");
+      wrapper.className = "css-flower type-" + type;
+      wrapper.style.width = size + "px";
+      wrapper.style.height = size + "px";
+
+      for(var i = 0; i < petalCount; i++){
+        var angle = (360 / petalCount) * i;
+        var petal = document.createElement("div");
+        petal.className = "petal";
+        var petalW = size * 0.33;
+        var petalH = size * 0.5;
+        petal.style.width = petalW + "px";
+        petal.style.height = petalH + "px";
+        petal.style.transform = "translate(-50%, -100%) rotate(" + angle + "deg) rotateX(25deg) translateZ(" + (size * 0.15) + "px)";
+        wrapper.appendChild(petal);
+      }
+
+      var pistil = document.createElement("div");
+      pistil.className = "pistil";
+      var pistilSize = size * 0.28;
+      pistil.style.width = pistilSize + "px";
+      pistil.style.height = pistilSize + "px";
+      wrapper.appendChild(pistil);
+
+      return wrapper;
+    }
 
     var bouquet = document.getElementById("bouquet");
     var scene = document.getElementById("scene");
@@ -617,14 +719,24 @@
           var y = layer.y;
 
           var f = flowers[idx];
+          var sz = layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]);
           var el = document.createElement("div");
           el.className = "flower-head";
           el.setAttribute("data-idx", idx);
           el.setAttribute("data-base-z", z);
-          el.innerHTML = f.emoji + '<span class="tooltip">' + f.name + '</span>';
+
+          // Build CSS 3D flower
+          var flowerSize = sz * 28;
+          var cssFlower = buildCSSFlower(f.type, f.petals, flowerSize);
+          el.appendChild(cssFlower);
+
+          // Tooltip
+          var tip = document.createElement("span");
+          tip.className = "tooltip";
+          tip.textContent = f.name;
+          el.appendChild(tip);
+
           el.style.cssText = "left:calc(50% + " + x + "px);top:calc(50% + " + y + "px);transform:translate(-50%,-50%) translateZ(" + z + "px);--tz:" + z + "px";
-          var sz = layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]);
-          el.style.fontSize = sz + "rem";
 
           el.addEventListener("click", function(e){
             e.stopPropagation();
@@ -683,7 +795,7 @@
     /* ═══ SHOW MESSAGE ═══ */
     function showFlowerMessage(idx){
       var f = flowers[idx];
-      flowerName.textContent = f.emoji + " " + f.name + " — " + f.meaning;
+      flowerName.textContent = f.name + " — " + f.meaning;
       flowerText.textContent = f.msg;
       flowerMessage.classList.add("show");
     }
