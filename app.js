@@ -827,5 +827,40 @@
     },{passive:true});
   })();
 
-})();
+  // ── Shared Utilities ──
+
+  window.typeLetter = function(el, text, speed, onDone) {
+    if (!el || !text) return;
+    var i = 0;
+    el.textContent = '';
+    var iv = setInterval(function() {
+      el.textContent += text[i];
+      i++;
+      if (i >= text.length) {
+        clearInterval(iv);
+        if (typeof onDone === 'function') onDone();
+      }
+    }, speed || 60);
+  };
+
+  window.scrollToTop = function() {
+    window.scrollTo(0, 0);
+  };
+  window.addEventListener('pageshow', function() {
+    window.scrollTo(0, 0);
+  });
+
+  window.haptic = function(ms) {
+    try { navigator.vibrate(ms || 10); } catch(e) {}
+  };
+
+  window.storeGet = function(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+    catch(e) { return fallback; }
+  };
+
+  window.storeSet = function(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+  };
+
 })();

@@ -11,13 +11,9 @@
 <meta property="og:title" content="Our visitor log">
 <meta property="og:description" content="Wholesome stalking, for your eyes only.">
 <meta property="og:image" content="og-preview.png">
+<link rel="stylesheet" href="base.css">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  :root { --rose: #ff8fab; --rose-deep: #e0567c; --cream: #fff7ee; --gold: #e8c17e; }
-  body {
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    background: #120a10; color: var(--cream); min-height: 100vh; overflow-x: hidden;
-  }
   .bg-fade {
     position: fixed; inset: 0; z-index: 0;
     background: radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.22), transparent 60%),
@@ -74,7 +70,6 @@
 
   .back { display: inline-block; margin-top: 1.6rem; color: rgba(255,247,238,0.55); text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,247,238,0.3); padding-bottom: 2px; }
 
-  @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
 </style>
 </head>
 <body>
@@ -203,8 +198,6 @@
 
   if (unlocked) openLog();
 
-  window.scrollTo(0, 0);
-  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
 <script src="anniversary.js"></script>
 <script src="app.js"></script>

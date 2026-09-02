@@ -13,57 +13,16 @@
 <meta property="og:description" content="One hundred little reasons, made with all my love, Nard.">
 <meta property="og:image" content="og-preview.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="base.css">
+
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  :root {
-    --rose: #ff8fab;
-    --rose-deep: #e0567c;
-    --cream: #fff7ee;
-    --gold: #e8c17e;
-    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  body {
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    background: #120a10;
-    color: var(--cream);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  .bg-fade {
-    position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.3), transparent 60%),
-      radial-gradient(800px 500px at 100% 110%, rgba(232,193,126,0.14), transparent 55%),
-      linear-gradient(180deg, #1a0f14, #120a10);
-  }
   .page {
     position: relative; z-index: 1;
     max-width: 540px; margin: 0 auto;
     padding: 0 1.2rem 4rem;
   }
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 0;
-  }
-  .topbar a {
-    color: var(--cream); text-decoration: none; font-size: 0.82rem;
-    letter-spacing: 0.06em; border: 1px solid rgba(255,143,171,0.35);
-    padding: 0.45rem 0.9rem; border-radius: 999px;
-    transition: background 0.3s ease;
-  }
-  .topbar a:hover { background: rgba(224,86,124,0.25); }
-  .topbar .brand { font-family: Georgia, serif; letter-spacing: 0.14em; color: var(--gold); font-size: 0.95rem; }
 
   header { text-align: center; padding: 1.4rem 0 1.8rem; }
-  header h1 {
-    font-family: Georgia, serif; font-weight: 500;
-    font-size: clamp(2rem, 8vw, 3rem);
-    background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
-    background-size: 250% auto;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: shimmer 5s linear infinite;
-  }
-  header p { font-size: 0.86rem; font-style: italic; color: rgba(255,247,238,0.6); margin-top: 0.5rem; }
 
   .progress-wrap {
     display: flex; align-items: center; gap: 0.9rem;
@@ -200,15 +159,7 @@
 
   .footer-note { text-align: center; margin-top: 2rem; font-size: 0.78rem; font-style: italic; color: rgba(255,247,238,0.4); }
 
-  @keyframes shimmer { to { background-position: 250% center; } }
-  @keyframes softBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-  @keyframes fadeUpIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-up { opacity: 0; animation: fadeUpIn 0.9s var(--spring) forwards; }
   .d1 { animation-delay: 0.2s; } .d2 { animation-delay: 0.4s; } .d3 { animation-delay: 0.6s; }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-  }
 </style>
 </head>
 <body>
@@ -443,8 +394,6 @@
 
   updateProgress();
 
-  window.scrollTo(0, 0);
-  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
 <script src="anniversary.js"></script>
 <script src="app.js"></script>

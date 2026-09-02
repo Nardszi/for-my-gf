@@ -15,10 +15,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="base.css">
 
+  <style>
     :root {
       --bg-primary: #1a0f14;
       --bg-secondary: #241218;
@@ -730,7 +730,7 @@
 
     .dream-card.locked:hover .dream-text { filter: blur(3px); opacity: 0.55; }
 
-    
+    .dream-card .dream-text {
       font-family: var(--serif);
       font-size: 1.02rem;
       line-height: 1.5;
@@ -4314,12 +4314,7 @@
       .letter-content { font-size: 1.05rem; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
+
     }
 
     /* ---- dark mode: love screen ---- */

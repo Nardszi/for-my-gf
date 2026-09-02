@@ -14,26 +14,15 @@
 <meta property="og:image" content="og-preview.png">
 <meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
-    --rose: #ff8fab;
-    --rose-deep: #e0567c;
-    --cream: #fff7ee;
-    --gold: #e8c17e;
     --ink: #2a1420;
     --bg: #0d0812;
-    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
   html { scroll-behavior: smooth; }
-  body {
-    font-family: "Quicksand", "Segoe UI", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--cream);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
   ::selection { background: var(--rose-deep); color: #fff; }
 
   /* ===== ANIMATED BACKGROUND ===== */
@@ -55,9 +44,6 @@
     0% { transform: translate(0, 0) scale(1); }
     100% { transform: translate(40px, 30px) scale(1.1); }
   }
-
-  /* ===== PAGE ===== */
-  .page { position: relative; z-index: 1; }
 
   /* ===== NAV ===== */
   .nav {
@@ -366,16 +352,12 @@
 
   /* ===== ANIMATIONS ===== */
   @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-  .anim { opacity: 0; animation: fadeUp 0.8s var(--smooth) forwards; }
+  .anim { opacity: 0; animation: fadeUpIn 0.8s var(--smooth) forwards; }
   .anim-d1 { animation-delay: 0.1s; }
   .anim-d2 { animation-delay: 0.2s; }
   .anim-d3 { animation-delay: 0.3s; }
   .anim-d4 { animation-delay: 0.4s; }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  }
 </style>
 </head>
 <body>
@@ -650,8 +632,6 @@
     if (Math.abs(dx) > 50) { stopAutoPlay(); showSlide(slideIdx + (dx < 0 ? 1 : -1)); }
   }, { passive: true });
 
-  window.scrollTo(0, 0);
-  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
 </script>
 <script src="anniversary.js"></script>
 <script src="app.js"></script>
