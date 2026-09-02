@@ -256,6 +256,14 @@ var pageSurprises = {
       heroContent.appendChild(badge);
     }
 
+    // Gold flower gift
+    var flowerGift = document.getElementById("flowerGift");
+    if(flowerGift){
+      flowerGift.style.borderColor = "rgba(212,160,23,0.5)";
+      flowerGift.style.background = "rgba(212,160,23,0.1)";
+      flowerGift.style.color = GOLD_LIGHT;
+    }
+
     // Banner
     showAnniversaryBanner("🥂 Happy 2nd Anniversary! — Today is OUR day");
 
@@ -467,6 +475,51 @@ var pageSurprises = {
       var main = document.querySelector("main, [class*=container], [class*=content]");
       if(main) main.prepend(makeAnnivBadge("2nd Anniversary Visit ♥"));
     }, 1000);
+  },
+
+  // ── FLOWERS: golden petals + all flowers auto-bloom ──
+  "flowers.html": function(){
+    showAnniversaryBanner("💐 Happy Anniversary! — Every flower blooms for you");
+    // Auto-bloom all flowers
+    setTimeout(function(){
+      var cards = document.querySelectorAll(".flower-card");
+      cards.forEach(function(c, i){
+        setTimeout(function(){
+          c.classList.add("active");
+          c.style.borderColor = "rgba(212,160,23,0.5)";
+          c.style.boxShadow = "0 4px 20px rgba(212,160,23,0.2)";
+        }, i * 200);
+      });
+      // Show a special anniversary message
+      var flowerText = document.getElementById("flowerText");
+      var flowerMessage = document.getElementById("flowerMessage");
+      if(flowerText){
+        flowerText.classList.remove("show");
+        setTimeout(function(){
+          flowerText.textContent = "Two years of love, two years of us. You are my forever garden. 🌹";
+          flowerText.classList.add("show");
+          flowerText.style.color = GOLD_LIGHT;
+        }, cards.length * 200 + 500);
+      }
+    }, 1500);
+    // Golden petals
+    setInterval(function(){
+      var petals = ["🌹","🌻","🌷","🌸","✨","💗","🏵️"];
+      var el = document.createElement("span");
+      el.className = "petal";
+      el.textContent = petals[Math.floor(Math.random() * petals.length)];
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.animationDuration = (Math.random() * 3 + 3) + "s";
+      el.style.color = GOLD_LIGHT;
+      document.body.appendChild(el);
+      setTimeout(function(){ el.remove(); }, 6000);
+    }, 800);
+    // Change bouquet to gold
+    var bouquet = document.getElementById("bouquet");
+    if(bouquet) bouquet.style.filter = "drop-shadow(0 10px 30px rgba(212,160,23,0.4))";
+    // Change title color
+    var title = document.querySelector(".flowers-title");
+    if(title) title.style.color = GOLD_LIGHT;
   }
 };
 

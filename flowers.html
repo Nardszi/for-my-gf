@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Flowers for You</title>
+  <meta name="theme-color" content="#1a0f14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="base.css">
+  <style>
+    body {
+      background: #120a10;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bg-fade {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(224,86,124,0.28), transparent 60%),
+        radial-gradient(900px 500px at 100% 110%, rgba(232,193,126,0.12), transparent 55%),
+        linear-gradient(180deg, #1a0f14, #120a10);
+    }
+
+    .flowers-page {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      max-width: 600px;
+    }
+
+    .flower-bouquet {
+      font-size: 5rem;
+      display: inline-block;
+      animation: bouquetFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(224,86,124,0.3));
+      cursor: default;
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes bouquetFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+    }
+
+    .flowers-title {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      font-weight: 400;
+      background: linear-gradient(90deg, #ffd3e0, var(--gold), #fff, var(--gold), #ffd3e0);
+      background-size: 250% auto;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: shimmer 5s linear infinite;
+      margin-bottom: 0.5rem;
+    }
+
+    .flowers-subtitle {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(255,247,238,0.6);
+      margin-bottom: 2rem;
+    }
+
+    .flower-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .flower-card {
+      background: rgba(42, 20, 32, 0.6);
+      border: 1px solid rgba(255,143,171,0.2);
+      border-radius: 16px;
+      padding: 1.5rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.4s var(--spring);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flower-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,143,171,0.1), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .flower-card:hover::before,
+    .flower-card.active::before {
+      opacity: 1;
+    }
+
+    .flower-card:hover,
+    .flower-card.active {
+      border-color: rgba(255,143,171,0.5);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(224,86,124,0.2);
+    }
+
+    .flower-emoji {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: transform 0.4s var(--spring);
+    }
+
+    .flower-card:hover .flower-emoji,
+    .flower-card.active .flower-emoji {
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    .flower-name {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 0.95rem;
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+    }
+
+    .flower-meaning {
+      font-size: 0.72rem;
+      color: rgba(255,247,238,0.5);
+      line-height: 1.4;
+    }
+
+    .flower-message {
+      background: rgba(42, 20, 32, 0.5);
+      border: 1px solid rgba(255,143,171,0.15);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flower-message p {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(255,247,238,0.8);
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s var(--spring);
+    }
+
+    .flower-message p.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(255,143,171,0.35);
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(224,86,124,0.25);
+      border-color: rgba(255,143,171,0.6);
+    }
+
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: petalFall linear forwards;
+    }
+
+    @keyframes petalFall {
+      0% { opacity: 0.8; transform: translateY(-20px) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flower-bouquet { animation: none; }
+      .petal { animation: none; display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-fade"></div>
+
+  <div class="flowers-page">
+    <div class="flower-bouquet" id="bouquet">💐</div>
+
+    <h1 class="flowers-title">A Bouquet for You</h1>
+    <p class="flowers-subtitle">every flower speaks the words I can never say</p>
+
+    <div class="flower-grid" id="flowerGrid">
+      <div class="flower-card" data-flower="rose">
+        <span class="flower-emoji">🌹</span>
+        <div class="flower-name">Red Rose</div>
+        <div class="flower-meaning">I love you</div>
+      </div>
+      <div class="flower-card" data-flower="sunflower">
+        <span class="flower-emoji">🌻</span>
+        <div class="flower-name">Sunflower</div>
+        <div class="flower-meaning">I adore you</div>
+      </div>
+      <div class="flower-card" data-flower="tulip">
+        <span class="flower-emoji">🌷</span>
+        <div class="flower-name">Tulip</div>
+        <div class="flower-meaning">Perfect love</div>
+      </div>
+      <div class="flower-card" data-flower="cherry">
+        <span class="flower-emoji">🌸</span>
+        <div class="flower-name">Cherry Blossom</div>
+        <div class="flower-meaning">Beauty & grace</div>
+      </div>
+      <div class="flower-card" data-flower="daisy">
+        <span class="flower-emoji">🌼</span>
+        <div class="flower-name">Daisy</div>
+        <div class="flower-meaning">Innocent love</div>
+      </div>
+      <div class="flower-card" data-flower="lily">
+        <span class="flower-emoji">🪷</span>
+        <div class="flower-name">Lotus</div>
+        <div class="flower-meaning">Purity of heart</div>
+      </div>
+      <div class="flower-card" data-flower="hibiscus">
+        <span class="flower-emoji">🌺</span>
+        <div class="flower-name">Hibiscus</div>
+        <div class="flower-meaning">Delicate beauty</div>
+      </div>
+      <div class="flower-card" data-flower="bouquet">
+        <span class="flower-emoji">🏵️</span>
+        <div class="flower-name">Bouquet</div>
+        <div class="flower-meaning">Gratitude</div>
+      </div>
+      <div class="flower-card" data-flower="white">
+        <span class="flower-emoji">White Rose</span>
+        <div class="flower-name">White Rose</div>
+        <div class="flower-meaning">Pure devotion</div>
+      </div>
+    </div>
+
+    <div class="flower-message" id="flowerMessage">
+      <p id="flowerText">tap a flower to see its message</p>
+    </div>
+
+    <a href="lovepage.html" class="back-link">← back to our story</a>
+  </div>
+
+  <script src="anniversary.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (function(){
+    var messages = {
+      rose: "You are the love of my life. Every beat of my heart spells your name.",
+      sunflower: "You are my sunshine. Wherever you go, my eyes will follow.",
+      tulip: "Our love is perfect, just as it is. I wouldn't change a thing.",
+      cherry: "You are the most beautiful thing that has ever happened to me.",
+      daisy: "I fell in love with your innocence, your kindness, your soul.",
+      lily: "Your heart is pure gold. I am lucky to be loved by you.",
+      hibiscus: "You are delicate yet strong. My forever flower.",
+      bouquet: "This bouquet is just a fraction of my love for you.",
+      white: "My love for you is pure, eternal, and unconditional."
+    };
+
+    var cards = document.querySelectorAll(".flower-card");
+    var flowerText = document.getElementById("flowerText");
+    var flowerMessage = document.getElementById("flowerMessage");
+
+    cards.forEach(function(card){
+      card.addEventListener("click", function(){
+        cards.forEach(function(c){ c.classList.remove("active"); });
+        card.classList.add("active");
+
+        var key = card.getAttribute("data-flower");
+        flowerText.classList.remove("show");
+
+        setTimeout(function(){
+          flowerText.textContent = messages[key] || "";
+          flowerText.classList.add("show");
+          spawnPetals();
+          try { navigator.vibrate(15); } catch(e){}
+        }, 200);
+      });
+    });
+
+    function spawnPetals(){
+      var petals = ["🌸","🌹","🌷","🌺","💐","💗","✨"];
+      for(var i = 0; i < 8; i++){
+        (function(d){
+          setTimeout(function(){
+            var el = document.createElement("span");
+            el.className = "petal";
+            el.textContent = petals[Math.floor(Math.random() * petals.length)];
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.animationDuration = (Math.random() * 3 + 3) + "s";
+            document.body.appendChild(el);
+            setTimeout(function(){ el.remove(); }, 6000);
+          }, d);
+        })(i * 200);
+      }
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -257,6 +257,43 @@
       width: 1px;
       height: 40px;
       background: linear-gradient(to bottom, var(--accent-primary), transparent);
+
+    .flower-gift {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+      padding: 0.6rem 1.4rem;
+      background: rgba(255,143,171,0.1);
+      border: 1px solid rgba(255,143,171,0.3);
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--fg-primary);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      transition: all 0.4s var(--spring);
+      animation: revealUp 1s var(--spring) forwards 1.4s;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .flower-gift:hover {
+      background: rgba(255,143,171,0.2);
+      border-color: rgba(255,143,171,0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(224,86,124,0.25);
+    }
+
+    .gift-icon {
+      font-size: 1.3rem;
+      display: inline-block;
+      animation: bouquetFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes bouquetFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-4px) rotate(3deg); }
+    }
       position: relative;
     }
 
@@ -4784,6 +4821,10 @@
         <h1 id="heroNames"></h1>
         <p class="hero-tagline">every moment with you is a gift</p>
         <div id="heroCountdown" style="margin-top:1rem"></div>
+        <a href="flowers.html" class="flower-gift" id="flowerGift" aria-label="Open flower gift">
+          <span class="gift-icon">💐</span>
+          <span class="gift-label">a gift for you</span>
+        </a>
       </div>
       <div class="scroll-hint">
         <span>scroll</span>
