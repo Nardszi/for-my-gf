@@ -65,6 +65,7 @@
       animation: shimmer 5s linear infinite;
       margin-bottom: 0.2rem;
       z-index: 5;
+      transition: transform 0.1s linear;
     }
 
     .flowers-subtitle {
@@ -74,6 +75,7 @@
       color: rgba(255,247,238,0.45);
       margin-bottom: 0.6rem;
       z-index: 5;
+      transition: transform 0.1s linear;
     }
 
     .drag-hint {
@@ -168,17 +170,24 @@
       transition: none;
     }
 
-    /* ── Stem ── */
+    .scene.dragging .bouquet {
+      filter: drop-shadow(0 0 30px rgba(224,86,124,0.2));
+    }
+
+    /* ── Stem (3D cylindrical) ── */
     .stem {
       position: absolute;
       bottom: 20px;
       left: 50%;
-      width: 5px;
+      width: 6px;
       height: 160px;
-      background: linear-gradient(to top, #1e4012, #2d6a1e, #3a8a28);
+      background: linear-gradient(to right, #1a3a10, #3a8a28 30%, #4aaa38 50%, #3a8a28 70%, #1a3a10);
       transform: translateX(-50%);
       border-radius: 3px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.4), -1px 0 6px rgba(0,0,0,0.2);
+      box-shadow:
+        2px 0 10px rgba(0,0,0,0.4),
+        -1px 0 6px rgba(0,0,0,0.2),
+        inset 1px 0 2px rgba(255,255,255,0.1);
     }
 
     .stem::before {
@@ -574,6 +583,8 @@
     var flowerText = document.getElementById("flowerText");
     var closeMsg = document.getElementById("closeMsg");
     var dragHint = document.getElementById("dragHint");
+    var titleEl = document.querySelector(".flowers-title");
+    var subEl = document.querySelector(".flowers-subtitle");
 
     var rotX = -10, rotY = 0;
     var autoRotY = 0;
@@ -584,8 +595,11 @@
     var hintTimer = null;
 
     /* ═══ PLACE FLOWERS IN 3D ═══ */
+    var flowerEls = [];
+
     function placeFlowers(){
       bouquet.querySelectorAll(".flower-head").forEach(function(e){ e.remove(); });
+      flowerEls = [];
 
       var layers = [
         { count: 4, radiusX: 78, radiusZ: 78, y: -45,  rotOffset: 0,   size: [2.0, 2.4] },
@@ -606,6 +620,7 @@
           var el = document.createElement("div");
           el.className = "flower-head";
           el.setAttribute("data-idx", idx);
+          el.setAttribute("data-base-z", z);
           el.innerHTML = f.emoji + '<span class="tooltip">' + f.name + '</span>';
           el.style.cssText = "left:calc(50% + " + x + "px);top:calc(50% + " + y + "px);transform:translate(-50%,-50%) translateZ(" + z + "px);--tz:" + z + "px";
           var sz = layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]);
@@ -622,9 +637,47 @@
           });
 
           bouquet.appendChild(el);
+          flowerEls.push({ el: el, baseZ: z, baseX: x, baseY: y });
           idx++;
         }
       });
+    }
+
+    /* ═══ UPDATE 3D EFFECTS EVERY FRAME ═══ */
+    function update3D(){
+      var radY = rotY * Math.PI / 180;
+      var radX = rotX * Math.PI / 180;
+
+      flowerEls.forEach(function(f){
+        // Rotate the base position around Y axis
+        var rotatedZ = f.baseX * Math.sin(radY) + f.baseZ * Math.cos(radY);
+        // Depth-based z-index (front = higher)
+        var zIndex = Math.round(rotatedZ + 200);
+        f.el.style.zIndex = zIndex;
+
+        // Depth fog: flowers further from camera get dimmer
+        var depthFactor = (rotatedZ + 110) / 220; // 0 = farthest, 1 = closest
+        depthFactor = Math.max(0.4, Math.min(1, depthFactor));
+        var brightness = 0.6 + depthFactor * 0.4;
+        var sat = 0.7 + depthFactor * 0.3;
+        if(!f.el.classList.contains("active") && !f.el.matches(":hover")){
+          f.el.style.filter = "brightness(" + brightness + ") saturate(" + sat + ")";
+        }
+      });
+
+      // Dynamic lighting: shift sphere gradient based on rotation
+      var lightX = 35 + Math.sin(radY) * 20;
+      var lightY = 30 + Math.sin(radX) * 15;
+      var lightStr = "circle at " + lightX + "% " + lightY + "%";
+      bouquet.querySelectorAll(".flower-head").forEach(function(el){
+        el.style.background = "radial-gradient(" + lightStr + ", rgba(255,200,210,0.2), rgba(224,86,124,0.08) 50%, rgba(18,10,16,0.3) 100%)";
+      });
+
+      // Parallax: title moves slower, subtitle even slower
+      var titleShift = Math.sin(radY) * 8;
+      var subShift = Math.sin(radY) * 4;
+      if(titleEl) titleEl.style.transform = "translateX(" + titleShift + "px)";
+      if(subEl) subEl.style.transform = "translateX(" + subShift + "px)";
     }
 
     /* ═══ SHOW MESSAGE ═══ */
@@ -656,6 +709,7 @@
       startRotX = rotX;
       startRotY = rotY;
       bouquet.classList.add("dragging");
+      scene.classList.add("dragging");
       if(dragHint) dragHint.style.opacity = "0";
       clearTimeout(hintTimer);
     }
@@ -675,6 +729,7 @@
       if(!isDragging) return;
       isDragging = false;
       bouquet.classList.remove("dragging");
+      scene.classList.remove("dragging");
       clearTimeout(hintTimer);
       hintTimer = setTimeout(function(){ autoRotate = true; }, 3000);
     }
@@ -694,6 +749,7 @@
         rotX = -10 + Math.sin(autoRotY * 0.008) * 6;
         bouquet.style.transform = "rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
       }
+      update3D();
       requestAnimationFrame(animate);
     }
 
