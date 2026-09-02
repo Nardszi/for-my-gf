@@ -6392,6 +6392,7 @@
         if (annivTypewriter) annivTypewriter();
       }, 1500);
     }
+    window.openAnnivPage = openAnnivPage;
 
     function tryAnnivUnlock() {
       const value = annivInput.value.trim().toLowerCase();
@@ -6413,24 +6414,6 @@
     annivInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') tryAnnivUnlock();
     });
-
-    // ── Anniversary auto-unlock on Sep 10 ──
-    (function checkAnniversaryAutoOpen(){
-      var now = new Date();
-      var isAnnivDay = (now.getMonth()===8 && now.getDate()===10); // Sept 10
-      if(isAnnivDay || (typeof window.Anniversary === 'object' && window.Anniversary.isAnniversary())){
-        // Auto-open without password on our anniversary!
-        setTimeout(function(){ openAnnivPage(); }, 1500);
-        // Show special message
-        setTimeout(function(){
-          var msg = document.createElement('div');
-          msg.className = 'anniversary-toast';
-          msg.innerHTML = '<div class="at-emoji">🥂</div><div class="at-msg">Happy 2nd Anniversary, my love!</div><div class="at-sub">Today is OUR day — September 10, 2026</div>';
-          document.body.appendChild(msg);
-          setTimeout(function(){ msg.remove(); }, 5000);
-        }, 800);
-      }
-    })();
 
     annivEye.addEventListener('click', function() {
       const showing = annivInput.type === 'text';
