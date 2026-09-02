@@ -541,8 +541,8 @@ function init(){
     applyAnniversaryTheme();
   }
 
-  // Countdown bar (30 days before)
-  if(nearDays <= 30){
+  // Countdown bar (30 days before) — skip on flowers page
+  if(nearDays <= 30 && page !== "flowers.html"){
     buildCountdownBar();
   }
 
