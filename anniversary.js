@@ -175,13 +175,95 @@ function makeAnnivBadge(text){
 
 var pageSurprises = {
 
-  // ── LOVEPAGE: auto-open anniversary section + hero countdown ──
+  // ── LOVEPAGE: full anniversary transformation ──
   "lovepage.html": function(){
+    // Transform the hero section
+    var hero = document.getElementById("hero");
+    if(hero){
+      hero.style.background = "linear-gradient(135deg,rgba(26,15,20,.95),rgba(50,30,15,.9))";
+      hero.style.transition = "background 2s ease";
+    }
+    // Change "Our Love Story" to anniversary message
+    var label = document.querySelector(".hero-label");
+    if(label){
+      label.textContent = "Our Anniversary";
+      label.style.color = GOLD_LIGHT;
+      label.style.textShadow = "0 0 20px rgba(212,160,23,.6)";
+    }
+    // Change tagline
+    var tagline = document.querySelector(".hero-tagline");
+    if(tagline){
+      tagline.textContent = "2 years of love, laughter, and forever";
+      tagline.style.color = GOLD_LIGHT;
+    }
+    // Change scroll hint
+    var scrollHint = document.querySelector(".scroll-hint span");
+    if(scrollHint) scrollHint.textContent = "celebrate";
+
+    // Override CSS variables for full gold theme
+    var s = document.createElement("style");
+    s.id = "anniversary-lovepage";
+    s.textContent =
+      ".anniversary .hero{background:linear-gradient(180deg,rgba(26,15,20,.95),rgba(50,30,15,.95))!important}" +
+      ".anniversary .section{border-color:rgba(212,160,23,.2)!important}" +
+      ".anniversary .section-header .section-label{color:"+GOLD_LIGHT+"!important}" +
+      ".anniversary .section-header .section-title{color:"+GOLD_LIGHT+"!important;text-shadow:0 0 30px rgba(212,160,23,.3)}" +
+      ".anniversary .time-card{border-color:rgba(212,160,23,.3)!important;background:rgba(50,30,15,.8)!important}" +
+      ".anniversary .time-number{color:"+GOLD_LIGHT+"!important}" +
+      ".anniversary .time-label{color:rgba(245,215,110,.5)!important}" +
+      ".anniversary .forever-note{color:"+GOLD_LIGHT+"!important}" +
+      ".anniversary .hero-names,.anniversary #heroNames{color:"+GOLD_LIGHT+"!important}" +
+      ".anniversary .shimmer-text{background:linear-gradient(90deg,#d4a017,#f5d76e,#d4a017)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}" +
+      ".anniversary .ampersand{color:"+GOLD_PRIMARY+"!important}" +
+      ".anniversary .section-card,.anniversary .card{border-color:rgba(212,160,23,.25)!important}" +
+      ".anniversary .scroll-progress{background:"+GOLD_PRIMARY+"!important}" +
+      ".anniversary .scroll-progress::-webkit-progress-bar{background:"+GOLD_PRIMARY+"!important}" +
+      ".anniversary .music-toggle{border-color:rgba(212,160,23,.4)!important}" +
+      ".anniversary .anniv-lock{border-color:rgba(212,160,23,.3)!important}" +
+      ".anniversary .anniv-lock-title{color:"+GOLD_LIGHT+"!important}" +
+      ".anniversary .anniv-lock-emoji{color:"+GOLD_LIGHT+"!important;font-size:2rem!important;animation:pulse 2s infinite}" +
+      "@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}" +
+      ".anniversary .anniv-sub{color:rgba(245,215,110,.6)!important}" +
+      ".anniversary .lock-title .shimmer{background:linear-gradient(90deg,#d4a017,#f5d76e,#d4a017)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}" +
+      ".anniversary .lock-subtitle{color:rgba(245,215,110,.5)!important}" +
+      ".anniversary .hero{position:relative;overflow:hidden}" +
+      ".anniversary .hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 30%,rgba(212,160,23,.08),transparent 70%);pointer-events:none;z-index:1}" +
+      ".anniversary-hearts .heart{color:"+GOLD_LIGHT+"!important}";
+    document.head.appendChild(s);
+
+    // Spawn gold floating hearts in hero
+    var heartsContainer = document.getElementById("heartsContainer");
+    if(heartsContainer){
+      for(var i=0;i<15;i++){
+        (function(d){
+          setTimeout(function(){
+            var h = document.createElement("span");
+            h.className = "heart";
+            h.textContent = "♥";
+            h.style.cssText = "position:absolute;left:"+Math.random()*100+"%;bottom:-20px;font-size:"+(Math.random()*1.5+.5)+"rem;color:"+GOLD_LIGHT+";opacity:.6;animation:annivFall "+(Math.random()*4+4)+"s linear forwards;pointer-events:none";
+            heartsContainer.appendChild(h);
+            setTimeout(function(){h.remove()},8000);
+          }, d);
+        })(i * 300);
+      }
+    }
+
+    // Add "2 Years" badge to hero
+    var heroContent = document.querySelector(".hero-content");
+    if(heroContent){
+      var badge = makeAnnivBadge("2 Years of Loving You ♥");
+      badge.style.marginTop = ".8rem";
+      heroContent.appendChild(badge);
+    }
+
+    // Banner
     showAnniversaryBanner("🥂 Happy 2nd Anniversary! — Today is OUR day");
+
     // Auto-open anniversary section
     setTimeout(function(){
       if(typeof window.openAnnivPage === "function") window.openAnnivPage();
-    }, 2000);
+    }, 3000);
+
     // Extra confetti wave
     setTimeout(function(){ spawnConfetti(20); }, 6000);
   },
