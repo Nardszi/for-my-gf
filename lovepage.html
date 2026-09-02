@@ -4788,6 +4788,7 @@
         <p class="hero-label">Our Love Story</p>
         <h1 id="heroNames"></h1>
         <p class="hero-tagline">every moment with you is a gift</p>
+        <div id="heroCountdown" style="margin-top:1rem"></div>
       </div>
       <div class="scroll-hint">
         <span>scroll</span>
@@ -5617,6 +5618,28 @@
     enableCursorTrail(quizScreen);
 
     document.getElementById('heroNames').innerHTML = '<span class="shimmer-text">' + YOUR_NAME + '</span> <span class="ampersand">&</span> <span class="shimmer-text">' + PARTNER_NAME + '</span>';
+
+    // Hero countdown (shows 30 days before anniversary)
+    (function buildHeroCountdown(){
+      var el = document.getElementById('heroCountdown');
+      if(!el) return;
+      var now = new Date();
+      var next = new Date(now.getFullYear(), 8, 10); // Sept 10
+      if(next < now) next = new Date(now.getFullYear()+1, 8, 10);
+      var diff = next - now;
+      var daysLeft = Math.ceil(diff / 86400000);
+      if(daysLeft > 30) return; // don't show yet
+      var isToday = (now.getMonth()===8 && now.getDate()===10);
+      if(isToday){
+        el.innerHTML = '<div style="padding:.6rem 1.2rem;border-radius:12px;background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.3);text-align:center"><div style="font-size:1.5rem;margin-bottom:.2rem">🥂</div><div style="font-family:\'Cormorant Garamux,Georgia,serif;font-size:1rem;color:#f5d76e;font-weight:600">Happy 2nd Anniversary!</div><div style="font-size:.65rem;color:rgba(255,247,238,.5);margin-top:.15rem">September 10, 2026 — 2 Years of Us</div></div>';
+      } else {
+        var s = Math.floor(diff/1000);
+        var d = Math.floor(s/86400);
+        var h = Math.floor((s%86400)/3600);
+        var m = Math.floor((s%3600)/60);
+        el.innerHTML = '<div style="padding:.5rem 1rem;border-radius:12px;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.2);display:inline-flex;align-items:center;gap:.8rem"><span style="font-size:.9rem">💛</span><div><div style="font-family:\'Cormorant Garamux,Georgia,serif;font-size:.75rem;color:#f5d76e">Our Anniversary</div><div style="display:flex;gap:.5rem;margin-top:.15rem"><span style="font-size:.85rem;font-weight:700;color:#f5d76e">'+d+'</span><span style="font-size:.55rem;color:rgba(255,247,238,.4)">days</span><span style="font-size:.85rem;font-weight:700;color:#f5d76e">'+(h<10?"0"+h:h)+'</span><span style="font-size:.55rem;color:rgba(255,247,238,.4)">hrs</span><span style="font-size:.85rem;font-weight:700;color:#f5d76e">'+(m<10?"0"+m:m)+'</span><span style="font-size:.55rem;color:rgba(255,247,238,.4)">min</span></div></div></div>';
+      }
+    })();
     document.getElementById('bgMusic').querySelector('source').src = MUSIC_FILE;
     document.getElementById('bgMusic').load();
     document.getElementById('closingText').textContent = CLOSING_MESSAGE;
@@ -6390,6 +6413,24 @@
     annivInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') tryAnnivUnlock();
     });
+
+    // ── Anniversary auto-unlock on Sep 10 ──
+    (function checkAnniversaryAutoOpen(){
+      var now = new Date();
+      var isAnnivDay = (now.getMonth()===8 && now.getDate()===10); // Sept 10
+      if(isAnnivDay || (typeof window.Anniversary === 'object' && window.Anniversary.isAnniversary())){
+        // Auto-open without password on our anniversary!
+        setTimeout(function(){ openAnnivPage(); }, 1500);
+        // Show special message
+        setTimeout(function(){
+          var msg = document.createElement('div');
+          msg.className = 'anniversary-toast';
+          msg.innerHTML = '<div class="at-emoji">🥂</div><div class="at-msg">Happy 2nd Anniversary, my love!</div><div class="at-sub">Today is OUR day — September 10, 2026</div>';
+          document.body.appendChild(msg);
+          setTimeout(function(){ msg.remove(); }, 5000);
+        }, 800);
+      }
+    })();
 
     annivEye.addEventListener('click', function() {
       const showing = annivInput.type === 'text';
@@ -7511,6 +7552,7 @@
       });
     })();
   </script>
+  <script src="anniversary.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

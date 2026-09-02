@@ -16,6 +16,7 @@ var CORE = [
   'chickenhouse.html',
   'chickenhouse.css',
   'chickenhouse.js',
+  'anniversary.js',
   'manifest.json',
   'app.js',
   'icons/icon-192.png',
