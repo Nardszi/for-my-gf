@@ -247,6 +247,18 @@
       transform-style: preserve-3d;
     }
 
+    /* ── Connector stem from flower to bouquet center ── */
+    .flower-stem {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(to bottom, #3a8a28, #2d6a1e);
+      transform-origin: top center;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.6;
+      border-radius: 1px;
+    }
+
     /* ── CSS 3D Flower ── */
     .css-flower {
       position: relative;
@@ -737,7 +749,7 @@
     var flowerEls = [];
 
     function placeFlowers(){
-      bouquet.querySelectorAll(".flower-head").forEach(function(e){ e.remove(); });
+      bouquet.querySelectorAll(".flower-head,.flower-stem").forEach(function(e){ e.remove(); });
       flowerEls = [];
 
       var layers = [
@@ -754,6 +766,17 @@
           var x = Math.sin(rad) * layer.radiusX;
           var z = Math.cos(rad) * layer.radiusZ;
           var y = layer.y;
+
+          // Connector stem from flower to bouquet center
+          var stemLen = Math.sqrt(x * x + y * y) * 0.7;
+          var stemAngle = Math.atan2(x, -y) * 180 / Math.PI;
+          var stem = document.createElement("div");
+          stem.className = "flower-stem";
+          stem.style.height = stemLen + "px";
+          stem.style.left = "calc(50% + " + x + "px)";
+          stem.style.top = "calc(50% + " + y + "px)";
+          stem.style.transform = "translateX(-50%) rotate(" + stemAngle + "deg)";
+          bouquet.appendChild(stem);
 
           var f = flowers[idx];
           var sz = layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]);
