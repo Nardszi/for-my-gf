@@ -236,6 +236,52 @@
       transform: rotate(10deg);
     }
 
+    /* ── Ribbon bow ── */
+    .ribbon-bow {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateZ(8px);
+      width: 22px;
+      height: 14px;
+      z-index: 3;
+    }
+
+    .ribbon-bow::before, .ribbon-bow::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 14px;
+      height: 12px;
+      border-radius: 50% 50% 50% 50%;
+      background: radial-gradient(circle at 40% 40%, #ffb0c8, #e0567c);
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.3);
+    }
+
+    .ribbon-bow::before {
+      left: -1px;
+      transform: rotate(-15deg);
+    }
+
+    .ribbon-bow::after {
+      right: -1px;
+      transform: rotate(15deg);
+    }
+
+    /* ── Ground shadow ── */
+    .ground-shadow {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 20px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4), transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
     /* ── Flower heads ── */
     .flower-head {
       position: absolute;
@@ -245,6 +291,16 @@
       height: 60px;
       transition: filter 0.3s ease, transform 0.3s var(--spring);
       transform-style: preserve-3d;
+    }
+
+    .flower-head:hover {
+      filter: brightness(1.2) saturate(1.2) drop-shadow(0 0 12px rgba(255,143,171,0.5)) !important;
+      transform: scale(1.15) translateZ(10px);
+    }
+
+    .flower-head.active {
+      filter: brightness(1.3) saturate(1.3) drop-shadow(0 0 18px rgba(255,143,171,0.6)) !important;
+      transform: scale(1.2) translateZ(15px);
     }
 
     /* ── Connector stem from flower to main stem ── */
@@ -441,6 +497,7 @@
       color: var(--gold);
       margin-bottom: 0.4rem;
       text-shadow: 0 0 20px rgba(232,193,126,0.2);
+      animation: msgSlideUp 0.5s 0.1s var(--spring) both;
     }
 
     .flower-message p {
@@ -449,6 +506,12 @@
       font-style: italic;
       color: rgba(255,247,238,0.7);
       line-height: 1.6;
+      animation: msgSlideUp 0.5s 0.2s var(--spring) both;
+    }
+
+    @keyframes msgSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .flower-message .close-msg {
@@ -526,6 +589,8 @@
       <div class="bouquet" id="bouquet">
         <div class="stem"></div>
         <div class="ribbon"></div>
+        <div class="ribbon-bow"></div>
+        <div class="ground-shadow" id="groundShadow"></div>
         <div class="leaf" style="bottom:80px;left:calc(50% - 20px);transform:rotate(-30deg) translateZ(-4px)"></div>
         <div class="leaf" style="bottom:100px;left:calc(50% + 8px);transform:rotate(30deg) scaleX(-1) translateZ(5px)"></div>
         <div class="leaf" style="bottom:55px;left:calc(50% + 5px);transform:rotate(25deg) scaleX(-1) translateZ(-6px)"></div>
@@ -598,9 +663,24 @@
 
     function animateParticles(){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Parallax offset based on bouquet rotation
+      var offsetX = Math.sin(rotY * Math.PI / 180) * 30;
+      var offsetY = Math.sin(rotX * Math.PI / 180) * 15;
       particles.forEach(function(p){
         p.update();
-        p.draw();
+        // Apply parallax: particles at different depths move differently
+        var depth = (p.size / 2.5); // bigger = closer = more parallax
+        var px = p.x + offsetX * depth;
+        var py = p.y + offsetY * depth;
+        ctx.beginPath();
+        ctx.arc(px, py, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(" + p.color + "," + p.opacity + ")";
+        ctx.fill();
+        // glow
+        ctx.beginPath();
+        ctx.arc(px, py, p.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(" + p.color + "," + (p.opacity * 0.15) + ")";
+        ctx.fill();
       });
       requestAnimationFrame(animateParticles);
     }
@@ -673,7 +753,7 @@
     var flowerEls = [];
 
     function placeFlowers(){
-      bouquet.querySelectorAll(".flower-head,.flower-stem").forEach(function(e){ e.remove(); });
+      bouquet.querySelectorAll(".flower-head,.flower-stem,svg.flower-stem").forEach(function(e){ e.remove(); });
       flowerEls = [];
 
       var layers = [
@@ -694,18 +774,39 @@
           // Connector stem from flower bottom to main stem top (bouquet center)
           var stemTargetY = 0;
           var stemTargetX = 0;
-          var flowerBottomY = y + 30; // offset from flower center to bottom edge
+          var flowerBottomY = y + 30;
           var dx = x - stemTargetX;
           var dy = flowerBottomY - stemTargetY;
           var stemLen = Math.sqrt(dx * dx + dy * dy);
           var stemAngle = Math.atan2(dx, -dy) * 180 / Math.PI;
-          var stem = document.createElement("div");
-          stem.className = "flower-stem";
-          stem.style.height = stemLen + "px";
-          stem.style.left = "calc(50% + " + x + "px)";
-          stem.style.top = "calc(50% + " + flowerBottomY + "px)";
-          stem.style.transform = "translateX(-50%) rotate(" + stemAngle + "deg)";
-          bouquet.appendChild(stem);
+
+          // Create curved stem using SVG path
+          var svgNS = "http://www.w3.org/2000/svg";
+          var svg = document.createElementNS(svgNS, "svg");
+          svg.setAttribute("class", "flower-stem");
+          svg.style.cssText = "position:absolute;left:calc(50%);top:calc(50%);width:0;height:0;overflow:visible;pointer-events:none;z-index:-1;transform:translateZ(-2px)";
+          var path = document.createElementNS(svgNS, "path");
+          // Bezier curve: start at flower bottom, end at center, curve outward
+          var midX = dx * 0.3;
+          var midY = dy * 0.5;
+          var cp1x = dx * 0.1 + (Math.random() * 20 - 10);
+          var cp1y = dy * 0.4;
+          var cp2x = dx * 0.6 + (Math.random() * 15 - 7);
+          var cp2y = dy * 0.7;
+          path.setAttribute("d", "M " + x + " " + flowerBottomY + " C " + cp1x + " " + cp1y + " " + cp2x + " " + cp2y + " " + stemTargetX + " " + stemTargetY);
+          path.setAttribute("stroke", "#4a9a30");
+          path.setAttribute("stroke-width", "2");
+          path.setAttribute("fill", "none");
+          path.setAttribute("opacity", "0.7");
+          var path2 = document.createElementNS(svgNS, "path");
+          path2.setAttribute("d", "M " + x + " " + flowerBottomY + " C " + cp1x + " " + cp1y + " " + cp2x + " " + cp2y + " " + stemTargetX + " " + stemTargetY);
+          path2.setAttribute("stroke", "#2d6a1e");
+          path2.setAttribute("stroke-width", "3");
+          path2.setAttribute("fill", "none");
+          path2.setAttribute("opacity", "0.3");
+          svg.appendChild(path2);
+          svg.appendChild(path);
+          bouquet.appendChild(svg);
 
           var f = flowers[idx];
           var sz = layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]);
@@ -749,6 +850,27 @@
       var radY = rotY * Math.PI / 180;
       var radX = rotX * Math.PI / 180;
 
+      // Dynamic lighting: shift bg glow based on rotation
+      var lightX = 50 + Math.sin(radY) * 15;
+      var lightY = 40 + Math.sin(radX) * 10;
+      var bgFade = document.querySelector(".bg-fade");
+      if(bgFade){
+        bgFade.style.background =
+          "radial-gradient(900px 500px at " + lightX + "% " + lightY + "%, rgba(224,86,124,0.12), transparent 60%)," +
+          "radial-gradient(600px 400px at 30% 70%, rgba(180,60,100,0.08), transparent 50%)," +
+          "radial-gradient(600px 400px at 70% 30%, rgba(232,193,126,0.06), transparent 50%)," +
+          "linear-gradient(180deg, #140c12, #0e0810)";
+      }
+
+      // Ground shadow responds to rotation
+      var shadow = document.getElementById("groundShadow");
+      if(shadow){
+        var shadowSkew = Math.sin(radY) * 30;
+        var shadowScale = 1 + Math.abs(Math.sin(radX)) * 0.3;
+        shadow.style.transform = "translateX(calc(-50% + " + shadowSkew + "px)) scaleX(" + shadowScale + ")";
+        shadow.style.opacity = 0.3 + Math.abs(Math.sin(radX)) * 0.2;
+      }
+
       flowerEls.forEach(function(f){
         // Rotate the base position around Y axis
         var rotatedZ = f.baseX * Math.sin(radY) + f.baseZ * Math.cos(radY);
@@ -756,13 +878,17 @@
         var zIndex = Math.round(rotatedZ + 200);
         f.el.style.zIndex = zIndex;
 
-        // Depth fog: flowers further from camera get dimmer
+        // Depth of field: blur + brightness + size based on Z
         var depthFactor = (rotatedZ + 110) / 220; // 0 = farthest, 1 = closest
-        depthFactor = Math.max(0.4, Math.min(1, depthFactor));
-        var brightness = 0.6 + depthFactor * 0.4;
-        var sat = 0.7 + depthFactor * 0.3;
+        depthFactor = Math.max(0.3, Math.min(1, depthFactor));
+        var brightness = 0.5 + depthFactor * 0.5;
+        var sat = 0.6 + depthFactor * 0.4;
+        var blur = (1 - depthFactor) * 1.5; // max 1.5px blur on farthest
+        var depthScale = 0.75 + depthFactor * 0.25; // 0.75–1.0 scale
+
         if(!f.el.classList.contains("active") && !f.el.matches(":hover")){
-          f.el.style.filter = "brightness(" + brightness + ") saturate(" + sat + ")";
+          f.el.style.filter = "brightness(" + brightness + ") saturate(" + sat + ") blur(" + blur + "px)";
+          f.el.style.transform = "scale(" + depthScale + ")";
         }
       });
 
