@@ -156,6 +156,13 @@
       to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
+    @keyframes gentleSway {
+      0%, 100% { transform: rotateX(-10deg) rotateY(-2deg) rotateZ(0.5deg); }
+      25% { transform: rotateX(-10deg) rotateY(1deg) rotateZ(-0.3deg); }
+      50% { transform: rotateX(-10deg) rotateY(2deg) rotateZ(0.4deg); }
+      75% { transform: rotateX(-10deg) rotateY(-1deg) rotateZ(-0.5deg); }
+    }
+
     .bouquet {
       width: 100%;
       height: 100%;
@@ -164,10 +171,12 @@
       transform: rotateX(-10deg) rotateY(0deg);
       transition: transform 0.05s linear;
       z-index: 1;
+      animation: gentleSway 8s ease-in-out infinite;
     }
 
     .bouquet.dragging {
       transition: none;
+      animation-play-state: paused;
     }
 
     .scene.dragging .bouquet {
@@ -266,168 +275,91 @@
       height: 100%;
     }
 
-    /* ── Petal ── */
+    /* ── Petal (natural organic shape) ── */
     .css-flower .petal {
       position: absolute;
       bottom: 50%;
       left: 50%;
       transform-origin: 50% 100%;
-      border-radius: 50% 50% 4px 4px;
-      backface-visibility: hidden;
+      border-radius: 51% 49% 47% 53% / 44% 45% 55% 69%;
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.15), inset 0 4px 10px rgba(255,255,255,0.35);
+      opacity: 0.92;
     }
 
     .css-flower .petal::after {
       content: '';
       position: absolute;
       top: 8%;
-      left: 12%;
-      width: 45%;
-      height: 55%;
-      background: linear-gradient(160deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.1) 40%, transparent 100%);
+      left: 10%;
+      width: 50%;
+      height: 60%;
+      background: linear-gradient(160deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.15) 35%, transparent 100%);
       border-radius: 50%;
     }
 
     /* ── Pistil ── */
     .css-flower .pistil {
       position: absolute;
-      width: 30%;
-      height: 30%;
+      width: 28%;
+      height: 28%;
       border-radius: 50%;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
       box-shadow:
-        inset 0 -2px 4px rgba(0,0,0,0.35),
-        inset 0 2px 3px rgba(255,255,255,0.3),
-        0 0 6px rgba(0,0,0,0.15);
+        inset 0 -3px 5px rgba(0,0,0,0.35),
+        inset 0 2px 4px rgba(255,255,255,0.3),
+        0 0 8px rgba(0,0,0,0.15);
     }
 
     .css-flower .pistil::after {
       content: '';
       position: absolute;
-      top: 12%;
-      left: 18%;
+      top: 10%;
+      left: 15%;
       width: 35%;
       height: 35%;
-      background: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.55);
       border-radius: 50%;
     }
 
-    /* ── Rose ── */
-    .css-flower.type-rose .petal {
-      background: linear-gradient(to top, #b71c1c, #e53935, #ef5350);
-    }
-    .css-flower.type-rose .pistil {
-      background: radial-gradient(circle at 40% 35%, #ffb300, #ff8f00);
-    }
+    /* ── Flower type colors ── */
+    .css-flower.type-rose .petal { background: linear-gradient(to top, #b71c1c, #e53935 50%, #ef9a9a); }
+    .css-flower.type-rose .pistil { background: radial-gradient(circle at 40% 35%, #ffb300, #ff8f00); }
 
-    /* ── Sunflower ── */
-    .css-flower.type-sunflower .petal {
-      background: linear-gradient(to top, #f57f17, #fdd835, #fff176);
-    }
-    .css-flower.type-sunflower .pistil {
-      background: radial-gradient(circle at 40% 35%, #5d4037, #3e2723);
-      width: 38%;
-      height: 38%;
-    }
+    .css-flower.type-sunflower .petal { background: linear-gradient(to top, #e65100, #f9a825 40%, #fff176); }
+    .css-flower.type-sunflower .pistil { background: radial-gradient(circle at 40% 35%, #5d4037, #3e2723); width: 36%; height: 36%; }
 
-    /* ── Tulip ── */
-    .css-flower.type-tulip .petal {
-      background: linear-gradient(to top, #ad1457, #e91e63, #f48fb1);
-      border-radius: 40% 40% 4px 4px;
-    }
-    .css-flower.type-tulip .pistil {
-      background: radial-gradient(circle at 40% 35%, #fff176, #ffee58);
-      width: 22%;
-      height: 22%;
-    }
+    .css-flower.type-tulip .petal { background: linear-gradient(to top, #880e4f, #e91e63 50%, #f8bbd0); border-radius: 42% 42% 48% 48% / 50% 50% 50% 50%; }
+    .css-flower.type-tulip .pistil { background: radial-gradient(circle at 40% 35%, #fff9c4, #ffee58); width: 20%; height: 20%; }
 
-    /* ── Cherry Blossom ── */
-    .css-flower.type-cherry .petal {
-      background: linear-gradient(to top, #f48fb1, #fce4ec, #fff);
-    }
-    .css-flower.type-cherry .pistil {
-      background: radial-gradient(circle at 40% 35%, #e91e63, #c2185b);
-      width: 22%;
-      height: 22%;
-    }
+    .css-flower.type-cherry .petal { background: linear-gradient(to top, #f48fb1, #fce4ec 50%, #fff); }
+    .css-flower.type-cherry .pistil { background: radial-gradient(circle at 40% 35%, #e91e63, #c2185b); width: 20%; height: 20%; }
 
-    /* ── Daisy ── */
-    .css-flower.type-daisy .petal {
-      background: linear-gradient(to top, #e0e0e0, #fafafa, #fff);
-    }
-    .css-flower.type-daisy .pistil {
-      background: radial-gradient(circle at 40% 35%, #f9a825, #f57f17);
-      width: 28%;
-      height: 28%;
-    }
+    .css-flower.type-daisy .petal { background: linear-gradient(to top, #e0e0e0, #fafafa 50%, #fff); }
+    .css-flower.type-daisy .pistil { background: radial-gradient(circle at 40% 35%, #f9a825, #f57f17); width: 26%; height: 26%; }
 
-    /* ── Lotus ── */
-    .css-flower.type-lotus .petal {
-      background: linear-gradient(to top, #f48fb1, #fce4ec, #fff);
-      border-radius: 45% 45% 4px 4px;
-    }
-    .css-flower.type-lotus .pistil {
-      background: radial-gradient(circle at 40% 35%, #aed581, #7cb342);
-      width: 24%;
-      height: 24%;
-    }
+    .css-flower.type-lotus .petal { background: linear-gradient(to top, #f48fb1, #fce4ec 50%, #fff); border-radius: 46% 44% 48% 52% / 52% 48% 52% 48%; }
+    .css-flower.type-lotus .pistil { background: radial-gradient(circle at 40% 35%, #aed581, #7cb342); width: 22%; height: 22%; }
 
-    /* ── Hibiscus ── */
-    .css-flower.type-hibiscus .petal {
-      background: linear-gradient(to top, #c2185b, #ec407a, #f48fb1);
-    }
-    .css-flower.type-hibiscus .pistil {
-      background: radial-gradient(circle at 40% 35%, #fff176, #fdd835);
-      width: 24%;
-      height: 24%;
-    }
+    .css-flower.type-hibiscus .petal { background: linear-gradient(to top, #ad1457, #ec407a 50%, #f8bbd0); }
+    .css-flower.type-hibiscus .pistil { background: radial-gradient(circle at 40% 35%, #fff176, #fdd835); width: 22%; height: 22%; }
 
-    /* ── Bouquet ── */
-    .css-flower.type-bouquet .petal {
-      background: linear-gradient(to top, #ab47bc, #ce93d8, #e1bee7);
-    }
-    .css-flower.type-bouquet .pistil {
-      background: radial-gradient(circle at 40% 35%, #ff8a65, #ff7043);
-    }
+    .css-flower.type-bouquet .petal { background: linear-gradient(to top, #7b1fa2, #ba68c8 50%, #e1bee7); }
+    .css-flower.type-bouquet .pistil { background: radial-gradient(circle at 40% 35%, #ff8a65, #ff7043); }
 
-    /* ── White Rose ── */
-    .css-flower.type-white .petal {
-      background: linear-gradient(to top, #bdbdbd, #e0e0e0, #fff);
-    }
-    .css-flower.type-white .pistil {
-      background: radial-gradient(circle at 40% 35%, #aed581, #8bc34a);
-    }
+    .css-flower.type-white .petal { background: linear-gradient(to top, #bdbdbd, #e0e0e0 50%, #fff); }
+    .css-flower.type-white .pistil { background: radial-gradient(circle at 40% 35%, #aed581, #8bc34a); }
 
-    /* ── Pink Rose ── */
-    .css-flower.type-pink .petal {
-      background: linear-gradient(to top, #ec407a, #f48fb1, #fce4ec);
-    }
-    .css-flower.type-pink .pistil {
-      background: radial-gradient(circle at 40% 35%, #fff176, #ffee58);
-      width: 24%;
-      height: 24%;
-    }
+    .css-flower.type-pink .petal { background: linear-gradient(to top, #d81b60, #f06292 50%, #fce4ec); }
+    .css-flower.type-pink .pistil { background: radial-gradient(circle at 40% 35%, #fff176, #ffee58); width: 22%; height: 22%; }
 
-    /* ── Calendula ── */
-    .css-flower.type-calendula .petal {
-      background: linear-gradient(to top, #e65100, #ff9800, #ffcc02);
-    }
-    .css-flower.type-calendula .pistil {
-      background: radial-gradient(circle at 40% 35%, #5d4037, #4e342e);
-      width: 30%;
-      height: 30%;
-    }
+    .css-flower.type-calendula .petal { background: linear-gradient(to top, #e65100, #ff9800 40%, #ffd54f); }
+    .css-flower.type-calendula .pistil { background: radial-gradient(circle at 40% 35%, #5d4037, #4e342e); width: 28%; height: 28%; }
 
-    /* ── Plumeria ── */
-    .css-flower.type-plumeria .petal {
-      background: linear-gradient(to top, #fff9c4, #fff, #fff);
-      border-radius: 45% 45% 4px 4px;
-    }
-    .css-flower.type-plumeria .pistil {
-      background: radial-gradient(circle at 40% 35%, #f9a825, #f57f17);
-    }
+    .css-flower.type-plumeria .petal { background: linear-gradient(to top, #fff9c4, #fff 50%, #fff); border-radius: 46% 44% 48% 52% / 52% 48% 52% 48%; }
+    .css-flower.type-plumeria .pistil { background: radial-gradient(circle at 40% 35%, #f9a825, #f57f17); }
 
     /* Glow aura */
     .flower-head::after {
@@ -706,17 +638,18 @@
       wrapper.style.width = size + "px";
       wrapper.style.height = size + "px";
 
-      var petalW = Math.round(size * 0.3);
-      var petalH = Math.round(size * 0.44);
-
       for(var i = 0; i < petalCount; i++){
-        var angle = (360 / petalCount) * i;
+        var angle = (360 / petalCount) * i + (Math.random() * 6 - 3); // slight random tilt
+        var scaleVar = 0.88 + Math.random() * 0.24; // 0.88–1.12 size variation
+        var petalW = Math.round(size * (0.26 + Math.random() * 0.08) * scaleVar);
+        var petalH = Math.round(size * (0.38 + Math.random() * 0.1) * scaleVar);
         var petal = document.createElement("div");
         petal.className = "petal";
         petal.style.width = petalW + "px";
         petal.style.height = petalH + "px";
         petal.style.marginLeft = Math.round(-petalW / 2) + "px";
         petal.style.transform = "rotate(" + angle + "deg)";
+        petal.style.opacity = (0.88 + Math.random() * 0.12).toFixed(2);
         wrapper.appendChild(petal);
       }
 
